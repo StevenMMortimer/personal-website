@@ -16,16 +16,16 @@ pluralizelisttitles = false
 
 [Params]
     intro = true
-    author = "Steven Mortimer"
+    author = "Steven M. Mortimer"
     headline = "Blog"
     description = "R Packages, Machine Learning, Salesforce, DoubleClick, et cetera."
     image = "img/headshot.png"
     avatar = "headshot.jpg"
-    github = "reportmort"
-    linkedin = "steven-mortimer"
-    twitter = "reportmort"
-    stackoverflow = "users/5258043/steven-mortimer"
-    kofi = "reportmort"
+    github = "StevenMMortimer"
+    linkedin = "StevenMMortimer"
+    twitter = "StevenMMortimer"
+    stackoverflow = "users/5258043/steven-m-mortimer"
+    kofi = "StevenMMortimer"
     email = "reportmort@gmail.com"
     opengraph = true
     twittercards = true
