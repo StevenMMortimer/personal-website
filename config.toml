@@ -1,0 +1,77 @@
+baseURL = "https://stevenmortimer.com/"
+languageCode = "en-us"
+title = "Home"
+theme = "hugo-sustain"
+enableEmoji = true
+googleAnalytics = "UA-98603021-1"
+# disqusShortname = "iamwhatir"
+canonifyURLs = true
+pluralizelisttitles = false
+
+[blackfriday] 
+    hrefTargetBlank = true
+
+[Taxonomies]
+    tag = "tags"
+
+[Params]
+    intro = true
+    author = "Steven Mortimer"
+    headline = "Blog"
+    description = "R Packages, Machine Learning, Salesforce, DoubleClick, et cetera."
+    image = "img/headshot.png"
+    avatar = "headshot.jpg"
+    github = "reportmort"
+    linkedin = "steven-mortimer"
+    twitter = "reportmort"
+    stackoverflow = "users/5258043/steven-mortimer"
+    kofi = "reportmort"
+    email = "reportmort@gmail.com"
+    opengraph = true
+    twittercards = true
+    shareTwitter = true
+    shareFacebook = true
+    shareGooglePlus = true
+    shareLinkedIn = true
+    
+	# Date format (refer to Go's date format: http://flippinggodateformat.com )
+  #   Examples: "Mon, Jan 2, 2006" or "2006-01-02"
+  dateFormat = "January 2, 2006"
+	
+	# Enable global LaTeX math rendering?
+	#   If false, you can enable it locally on a per page basis.
+	math = true
+
+	# Highlight.js options
+	highlight = true
+	highlight_languages = ["r"]
+	highlight_style = "github"
+	highlight_version = "9.11.0"
+
+[Permalinks]
+    post = "/:year/:month/:day/:filename/"
+
+[[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+    
+[[menu.main]]
+    name = "About"
+    url = "/about"
+    weight = 2
+    
+[[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 3
+    
+[[menu.main]]
+    name = "Presentations"
+    url = "/presentations/"
+    weight = 4
+
+[[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 5

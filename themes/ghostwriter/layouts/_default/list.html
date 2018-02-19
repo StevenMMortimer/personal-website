@@ -1,0 +1,31 @@
+{{ partial "header.html" . }}
+
+<div id="post-index" class="container">
+    {{ partial "intro.html" . }}
+
+    <ol class="post-list">
+        {{ $pag := .Paginate .Data.Pages }}
+        {{ range $pag.Pages }}
+            {{ if .Description }}
+              {{ partial "page-stub.html" . }}
+            {{ end }}
+        {{ end }}
+    </ol>
+
+    <div class="post-navigation">
+        {{ partial "pagination.html" . }}
+    </div>
+    
+    {{ if eq .URL "/project/" }}
+      {{ partial "paypal-sobstory.html" . }}
+      <div class="paypal">
+          {{ partial "paypal-button.html" . }}
+      </div>
+      {{ partial "kofi-sobstory.html" . }}
+      <div class="kofi">
+          {{ partial "kofi-button.html" . }}
+      </div>      
+    {{ end }}
+</div>
+
+{{ partial "footer.html" . }}

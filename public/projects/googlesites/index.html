@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>googlesites | Steven Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="An R Package for the Classic Google Sites API">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="googlesites" />
+<meta property="og:description" content="An R Package for the Classic Google Sites API" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/projects/googlesites/" />
+<meta property="og:image" content="/img/headshot.png" />
+    <meta name="twitter:site" content="@reportmort" />
+<meta name="twitter:creator" content="@reportmort" />
+<meta name="twitter:title" content="googlesites" />
+<meta name="twitter:description" content="An R Package for the Classic Google Sites API" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/img/headshot.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/">HOME</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/projects/googlesites/">googlesites</a></strong>
+          </h3>
+        </div>
+        
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div id="TOC">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#how-to-get-started">How to Get Started</a><ul>
+<li><a href="#add-a-page-from-html">Add a page from HTML</a></li>
+<li><a href="#find-your-content">Find your Content</a></li>
+<li><a href="#upload-an-attachment-to-your-page">Upload an Attachment to your Page</a></li>
+<li><a href="#delete-your-page">Delete your Page</a></li>
+</ul></li>
+<li><a href="#additional-features">Additional Features</a></li>
+<li><a href="#questions">Questions</a></li>
+<li><a href="#support">Support</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>The <strong>googlesites</strong> package is the R implementation of the Google Sites API. Using this package assumes you’ve used the Web UI to create your site. Once you’ve got a site (and maybe some templates), you can use this package to add more content, add attachments, find content, and delete content. This package allows you to store HTML pages and other static content locally and under version control and push it to your site programmatically whenever you feel like it.</p>
+<p>See my blog post on why Google Sites aren’t such a bad thing: <a href="https://reportmort.netlify.com/2017/06/01/google-sites-for-documentation/">Google Sites for Documentation</a></p>
+<p><img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/googlesites">https://github.com/ReportMort/googlesites</a>.</p>
+</div>
+<div id="how-to-get-started" class="section level2">
+<h2>How to Get Started</h2>
+<p>First, you’ll need to install this package from GitHub.</p>
+<pre class="r"><code>devtools::install_github(&quot;ReportMort/googlesites&quot;)</code></pre>
+<p>Second, you’ll need to go through a process of authenticating with Google and specifying the domain and site name so you don’t have to refer to it explicitly each time you call a function.</p>
+<pre class="r"><code>library(googlesites)
+options(googlesites.site_domain = &quot;site&quot;) # or your Apps domain
+options(googlesites.site_name = &quot;my-site&quot;)
+
+library(googleAuthR)
+options(googleAuthR.scopes.selected = &quot;https://sites.google.com/feeds/&quot;)
+gar_auth()</code></pre>
+<p>Third, do stuff to your site! After you’ve loaded and configured that package, you can take advantage of all the functionality of this package to manage your site. Like this:</p>
+<div id="add-a-page-from-html" class="section level3">
+<h3>Add a page from HTML</h3>
+<pre class="r"><code>test_html &lt;- system.file(&quot;extdata&quot;, &quot;example-site&quot;, &quot;test.html&quot;, package=&quot;googlesites&quot;)
+add_html_page(page_xhtml_source = test_html,
+              page_title = &#39;API Test&#39;,
+              page_custom_url = &#39;api-test&#39;,
+              overwrite=TRUE)</code></pre>
+</div>
+<div id="find-your-content" class="section level3">
+<h3>Find your Content</h3>
+<pre class="r"><code>find_content(value_to_match=&#39;API Test&#39;, 
+             field_to_match=&#39;title&#39;, 
+             content_category=&#39;webpage&#39;)</code></pre>
+</div>
+<div id="upload-an-attachment-to-your-page" class="section level3">
+<h3>Upload an Attachment to your Page</h3>
+<pre class="r"><code>pdf_cheatsheet &lt;- &#39;https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf&#39;
+download.file(pdf_cheatsheet, &#39;rmarkdown-cheatsheet-2.0.pdf&#39;, mode=&quot;wb&quot;)
+
+upload_file_to_site(local_file_path = &quot;rmarkdown-cheatsheet-2,0.pdf&quot;,
+                    parent_page_id = find_content(value_to_match=&#39;API Test&#39;, 
+                                                  field_to_match=&#39;title&#39;)$id)</code></pre>
+</div>
+<div id="delete-your-page" class="section level3">
+<h3>Delete your Page</h3>
+<pre class="r"><code>delete_content(id = find_content(value_to_match=&#39;API Test&#39;,
+                                 field_to_match=&#39;title&#39;)$id)</code></pre>
+</div>
+</div>
+<div id="additional-features" class="section level2">
+<h2>Additional Features</h2>
+<p>This package currently supports the bare minimum for maintaining and uploading content to a Google Site. It’s anticipated that other functions to list sites, create sites, update site categories, and manage user permissions will be created and added to this package in the future to expand its capabilities. Thank you for using.</p>
+</div>
+<div id="questions" class="section level2">
+<h2>Questions</h2>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/ReportMort/googlesites/issues">https://github.com/ReportMort/googlesites/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+</div>
+<div id="support" class="section level2">
+<h2>Support</h2>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>Thank you for your support!</p>
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<div style="text-align: center;">
+<script type='text/javascript'>
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+  </script>
+</div>
+<p><br></p>
+</div>
+
+              
+              
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2017  / Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

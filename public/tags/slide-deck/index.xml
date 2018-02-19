@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Slide Deck on Home</title>
+    <link>/tags/slide-deck/</link>
+    <description>Recent content in Slide Deck on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 13 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/slide-deck/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Land a Job Writing R Code</title>
+      <link>/presentations/land-a-job-writing-r-code/</link>
+      <pubDate>Wed, 13 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/presentations/land-a-job-writing-r-code/</guid>
+      <description>iframe[seamless] { background-color: transparent; border: #555555 1px solid; margin: 10px; padding-bottom: 5px; overflow: hidden; display: block; height: 40vw; width: 80vw; max-width: 780px; }  Summary I was inspired to create this presentation after hearing Ruby enthusiast Chris Mar (@cmar) at a meetup talk. He laid out some very nice tips on becoming a Ruby programmer and I thought it would be interesting to put an R spin on the content.</description>
+    </item>
+    
+    <item>
+      <title>Learning Git with Scenarios</title>
+      <link>/presentations/learning-git-with-scenarios/</link>
+      <pubDate>Tue, 11 Aug 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/presentations/learning-git-with-scenarios/</guid>
+      <description>iframe[seamless] { background-color: transparent; border: #555555 1px solid; margin: 10px; padding-bottom: 5px; overflow: hidden; display: block; height: 40vw; width: 80vw; max-width: 780px; }  Summary It is challenging to learn git. This presentation aims to make it easier to learn and remember git commands based on common scenarios that a new user of version control might run into. Here is a list of commands covered in the presentation:
+git init, add, commit, push git clone git remote git reset git fetch/pull git checkout git rebase git status</description>
+    </item>
+    
+  </channel>
+</rss>

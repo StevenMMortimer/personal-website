@@ -1,0 +1,26 @@
+---
+title: Deduping Records
+author: ~
+date: '2016-12-01'
+slug: deduping-records
+categories: []
+tags:
+  - r-code
+description: ''
+draft: true
+---
+
+Common Data Deduping Logic
+
+A while ago I was working on migration of 4 separate legacy Salesforce systems into a single org. Naturally, the lack of consistency and controls led to each of those systems containing slighly different versions of the same data. A requirement for the migration was to remove any duplicate records and preserve the best version of the truth for a single entity. This concept is known as master data management. After reading up on it, I thought MDM was easy, but it's never easy. I could spend my entire working life defining logic and criteria for creating a master set of records on a moderately small dataset (1 million). In this post I'll outline some ways I've removed duplicates using R. 
+
+## A Single Column (e.g. Same Email Address)
+
+This is an obvious one and you've got two ways to execute, one with base R and one with the `distinct()` function from the `dplyr` package. 
+
+
+## Two or More Columns  (e.g. Name and Email)
+
+
+## Fuzzy Address and Something Else (e.g. Name and Fuzzy Address)
+

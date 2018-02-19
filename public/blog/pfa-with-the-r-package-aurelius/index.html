@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>PFA with the R Package aurelius | Steven Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="PFA with the R Package aurelius" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/pfa-with-the-r-package-aurelius/" />
+<meta property="og:image" content="/img/headshot.png" />
+    <meta name="twitter:site" content="@reportmort" />
+<meta name="twitter:creator" content="@reportmort" />
+<meta name="twitter:title" content="PFA with the R Package aurelius" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/img/headshot.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/">HOME</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/blog/pfa-with-the-r-package-aurelius/">PFA with the R Package aurelius</a></strong>
+          </h3>
+        </div>
+        
+        
+        <div class="blog-title">
+          <span class="icon">
+           <i class="fa fa-pencil" aria-hidden="false"></i>
+          </span>
+          <span>Published 
+            <time datetime="2017-02-13" itemprop="datePublished">
+              February 13, 2017
+            </time>
+          </span>
+          <br>
+          <span class="icon">
+            <i class="fa fa-clock-o" aria-hidden="false"></i>
+          </span>
+          <span>
+              5 minute read
+          </span>
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <p>I first heard about the Portable Format for Analytics (PFA) through KDnuggets in 2016. There was a <a href="http://www.kdnuggets.com/2016/01/portable-format-analytics-models-production.html" target="_blank">post</a> that in vague way talked about the virtues and benefits of PFA, but not to completely supplant PMML, which I was already familiar with. PMML was pretty cool, but I couldn’t find good support and felt that the XML-based approach was clumsy and outdated so when I heard about PFA, I was pretty excited. A new JSON-based standard for encoding any type of analytics, not just certain supported models like PMML. I mainly work in the R programming language, so I was disappointed to find resources lacking that would convert models made in R into the PFA standard. The great folks at the <a href="http://dmg.org" target="_blank">Data Mining Group</a> (DMG) had started on an R package called <code>aurelius</code> that contained the bare bones functions to construct the syntax. After reading through the Project pages on GitHub, I saw everything was there, but it wasn’t as convenient as I would like so I started writing “model producers”. Model producers are functions that convert model objects in R into their PFA equivalent to be exported and used in other systems. In this process I learned a great deal. I thought I knew how models worked, but actually reading through the mechanics of scoring has made me appreciate them so much more. Below is an outline of working with the <code>aurelius</code> package, but note that this work has yet to be integrated into the project and exists on forked branch in my GitHub (installation command shown below).</p>
+<pre class="r"><code># you only need to run this once because it 
+# installs the package
+devtools::install_github(&#39;ReportMort/hadrian&#39;, 
+                         ref=&#39;feature/add-r-package-structure&#39;, 
+                         subdir=&#39;aurelius&#39;, 
+                         quick=T) </code></pre>
+<p>In this example we’ll load the randomForest package to demonstrate how to convert randomForest models into PFA. Currently, the package converts models of many types: <code>lm</code>, <code>glm</code>, <code>glmnet</code>, <code>gbm</code>, <code>randomForest</code>, <code>naivebayes</code>, <code>lda</code>, <code>kcca</code>, and <code>kmeans</code>.</p>
+<pre class="r"><code>options(stringsAsFactors = FALSE)
+library(aurelius)
+library(randomForest) </code></pre>
+<div id="pfa-structure" class="section level2">
+<h2>PFA Structure</h2>
+<p>Before we get started it’s helpful to understand the basic components of a valid PFA document. Every PFA document has an input spec, output spec, and an action. The reason for the specifications on the input and output is so that the machine executing your PFA can safely and reliably excute. PFA relies on the <a href="http://avro.apache.org/" target="_blank">Avro serialization format</a> for its type system, whichsupports your typical primitive data types like boolean, integer, and string, but also, arrays, maps, and <a href="http://dmg.org/pfa/docs/avro_types/" target="_blank">more</a>. You can define these types in R by using any of the functions like <code>avro_*</code>.</p>
+<pre class="r"><code>avro_double
+#&gt; [1] &quot;double&quot;
+
+avro_enum(list(&quot;one&quot;, &quot;two&quot;))
+#&gt; $type
+#&gt; [1] &quot;enum&quot;
+#&gt; 
+#&gt; $symbols
+#&gt; $symbols[[1]]
+#&gt; [1] &quot;one&quot;
+#&gt; 
+#&gt; $symbols[[2]]
+#&gt; [1] &quot;two&quot;
+#&gt; 
+#&gt; 
+#&gt; $name
+#&gt; [1] &quot;Enum_1&quot;</code></pre>
+<p>After specifying inputs and outputs, you must specify an action. With <code>aurelius</code> an action can be specified from an R expression. A simple example is <code>2+2</code>. This can be expanded to manipulate the input and/or derivatives of it. Here is a simple analytics spec that takes a double and adds 10 to it.</p>
+<pre class="r"><code>pfa_document(input = avro_double, 
+             output = avro_double, 
+             action = expression(input + 10))
+#&gt; $input
+#&gt; [1] &quot;double&quot;
+#&gt; 
+#&gt; $output
+#&gt; [1] &quot;double&quot;
+#&gt; 
+#&gt; $action
+#&gt; $action[[1]]
+#&gt; $action[[1]]$`+`
+#&gt; $action[[1]]$`+`[[1]]
+#&gt; [1] &quot;input&quot;
+#&gt; 
+#&gt; $action[[1]]$`+`[[2]]
+#&gt; [1] 10</code></pre>
+<p>You’ll notice that the resulting output is a list. PFA is based on JSON, so it’s natural for the document, when it’s in R, to be a list that can always later be converted to JSON for export.</p>
+</div>
+<div id="converting-a-tree-model" class="section level2">
+<h2>Converting a Tree Model</h2>
+<p>Let’s step through a more realistic example that predicts the species in the iris dataset, based on the other variables using a random forest model. First, format the columns to meet Avro guidelines: <code>[A-Za-z_][A-Za-z0-9_]*</code>. Having periods in the variable names (e.g. <code>Sepal.Length</code>) is not encouraged.</p>
+<pre class="r"><code># make sure column names dont have periods in them
+iris2 &lt;- iris
+colnames(iris2) &lt;- gsub(&#39;\\.&#39;, &#39;_&#39;, colnames(iris2)) </code></pre>
+<p>Creating the PFA is very easy. Simply fit your model, then call <code>pfa()</code>.</p>
+<pre class="r"><code># fit a random forest model
+rf_model &lt;- randomForest(Species ~ ., data=iris2) 
+ 
+# convert that model to PFA
+# pred_type=&#39;prob&#39; means that the output is the 
+# probability of all classes. If you want 
+# the majority vote, then specify pred_type=&#39;response&#39;
+# check all options by running ?pfa.randomForest
+rf_model_as_pfa &lt;- pfa(rf_model, pred_type=&#39;prob&#39;) </code></pre>
+<p>If you have the <a href="https://cran.r-project.org/web/packages/rPython/index.html" target="_blank">rPython</a> package installed and <a href="https://github.com/opendatagroup/hadrian/wiki/Installation#case-4-you-want-to-install-titus-in-python" target="_blank">Titus</a> (PFA for Python), then you can create an engine in R and see how the PFA behaves. In this case it predicts the same as the <code>predict()</code> function in R. This way we can test that the behavior of the PFA is what we expect.</p>
+<pre class="r"><code># you can check the predictions from this model
+# by first converting to a pfa_engine
+pfa_model &lt;- pfa_engine(rf_model_as_pfa) 
+ 
+# confirm that the pfa engine produces the 
+# same prediction as the &quot;predict&quot; method in R
+test_dat &lt;- iris2[73,1:4]
+round(pfa_model$action(as.list(test_dat)), 6)
+#&gt;     setosa versicolor  virginica 
+#&gt;      0.000      0.862      0.138
+round(unclass(predict(object=rf_model, newdata=test_dat, type=&#39;prob&#39;)), 6) 
+#&gt;    setosa versicolor virginica
+#&gt; 73      0      0.862     0.138</code></pre>
+<p>Once you’re happy with your model, just export to a flat file using <code>write_pfa()</code>. This format can be read and used by any PFA interpreter. With R you can read the file back in using <code>read_pfa()</code>.</p>
+<pre class="r"><code># you can export your model for use in other systems
+write_pfa(rf_model_as_pfa, file = &#39;~/my_rf_model.pfa&#39;)
+
+my_model &lt;- read_pfa(file(&quot;~/my_rf_model.pfa&quot;))
+
+# see that all PFA components are there
+names(my_model)
+#&gt; [1] &quot;input&quot;  &quot;output&quot; &quot;action&quot; &quot;cells&quot;</code></pre>
+</div>
+<div id="final-thoughts" class="section level2">
+<h2>Final Thoughts</h2>
+<p>PFA is a measurable step in open, portable, and reprodcible analytics. I hope to see the standard more widely adopted and tools developed to help others implement it. One final thing: Check out the <a href="https://github.com/ReportMort/hadrian/tree/feature/add-r-package-structure/aurelius/tests/testthat" target="_blank">unit tests</a>. I’ve recently added quite a bit of unit test coverage and these tests are an excellent source of examples because they cover most all cases of utilizing the package functions.</p>
+</div>
+
+              
+              
+              
+                
+              
+              
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        July 28, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/">A Scalable Predictive API with PFA and AWS Lambda</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 2, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/google-sites-for-documentation/">Google Sites for Documentation</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 1, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/projects/googlesites/">googlesites</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2017  / Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

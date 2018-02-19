@@ -1,0 +1,113 @@
+---
+title: Creating an RStudio Addin
+author: ~
+date: '2016-12-10'
+slug: creating-an-rstudio-addin
+categories: []
+tags:
+  - r-code
+description: 'I created my own RStudio Addin called sectioncomment. It was suprisingly easier than I thought.'
+image: "blog/creating-an-rstudio-addin/example-section-break.png"
+output:
+  blogdown::html_page
+---
+
+```{r setup, include = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = TRUE,
+  fig.align = "center"
+)
+```
+
+I never thought too much about RStudio addins, but I saw a few cool examples (
+<a href="https://github.com/jennybc/jadd" target="_blank">jadd</a>, 
+<a href="https://github.com/daattali/colourpicker" target="_blank">colorpicker</a>, and 
+<a href="https://github.com/daattali/addinslist" target="_blank">addinslist</a>) and 
+decided to take a closer look. After a little research, it seemed easier than I thought. 
+It was easier because RStudio provided some excellent 
+<a href="https://rstudio.github.io/rstudioaddins" target="_blank">documentation on addins</a> 
+and it turns out that if you can write R code, then you can write an RStudio addin.
+
+## My Idea
+
+Around the time I was looking at addins, I started taking advantage of a little
+RStudio trick to navigate long scripts. If you create comments that are a pound sign and 
+end with at least 4 dashes (`# Comment ----`), then they will automatically be 
+organized and appear in an organizational perspective at the bottom left of the Source pane.
+
+![](/blog/creating-an-rstudio-addin/example-section-break.png)
+
+I'll take any extra organizational help I can get so I started annotating my code 
+with comments like these to break it up. Then the idea hit me to create an Addin 
+and link a keyboard shortcut to it so I can format comments quickly to this standard.
+
+## The Implementation
+
+The logic is written in R code and the `rstudioapi` package is used so that your 
+code can interact with RStudio. The R code can be complex or really simple (see 
+the RStudio example on <a href="https://rstudio.github.io/rstudioaddins/#addin-basics" target="_blank">Addin basics</a>). 
+However, you must structure your project with certain metadata, like an R package, that 
+will allow RStudio to automatically discover and register these addins when the 
+addin is installed.
+
+The R code should be documented using the `roxygen2` style. Here is the small 
+bit of regex that powers most of my sectioncomment addin.
+
+```{r example, eval=FALSE}
+#' Function to create the padded comment
+#' 
+#' This function is the logic that runs to reformat
+#' the comment as a section break
+#' 
+#' @usage comment_styler(x, doc_mode=FALSE, l = 80)
+#' @importFrom stringr str_pad
+#' @param x a string to format
+#' @param doc_mode a logical indicating only to convert 
+#' lines starting with at least a double hash sign
+#' @param l an integer indicating length to pad
+#' @return a string that is formatted
+comment_styler <- function(x, doc_mode=FALSE, l=80) {
+  
+  starter_regex <- '(\\s*#+\\s*)(.*)'
+  
+  if(doc_mode)
+    starter_regex <- '(\\s*#{2,}\\s*)(.*)'
+  
+  if(grepl(starter_regex, x)){
+    clean_x <- trimws(gsub('-*$', '', gsub('-+\\s+-+', '', trimws(x))))
+    x <- str_pad(gsub(starter_regex, '# \\2 ', clean_x), 
+                 width=l, side='right', pad='-')  
+  }
+  
+  return(x)
+}
+```
+
+As you can see, it's not very sophisticated. I just look for text in the Source 
+pane that appear to be a section comment and pad the line up.
+
+## How to Use this Addin
+
+If you like the idea of my Addin you can install from RStudio with the following 
+command: 
+
+```{r install-my-addin, eval=FALSE}
+devtools::install_github("ReportMort/sectioncomment")
+```
+
+After installing it should apper in your Addins dropdown and you can use it, like so:
+
+![](/blog/creating-an-rstudio-addin/existing_comment.gif)
+
+My favorite reason to use is that I can write an entire outline of the steps I want 
+to perform before writing a single line of code, then turn those steps into sections.
+
+![](/blog/creating-an-rstudio-addin/comment_selection.gif)
+
+This a great way to force yourself to think about what you are 
+going to code before diving in head first and getting lost in a jumbled mess of 
+your own thoughts. I hope you enjoy using it as much as I do and you consider 
+creating your own addin.

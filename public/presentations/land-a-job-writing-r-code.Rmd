@@ -1,0 +1,59 @@
+---
+title: "Land a Job Writing R Code"
+description: "A Presentation on How to Find a Job Where You Get Paid to Write R Code"
+image: "presentations/land-a-job-writing-r-code/img/programmer-md.png"
+author: ~
+tags:
+ - slide-deck
+date: 2017-09-13
+output:
+  blogdown::html_page
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+<style>
+iframe[seamless] {
+    background-color: transparent;
+    border: #555555 1px solid;
+    margin: 10px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    display: block;
+    height: 40vw;
+    width: 80vw;
+    max-width: 780px;
+}
+</style>
+
+## Summary
+
+I was inspired to create this presentation after hearing Ruby enthusiast Chris Mar 
+(<a target="_blank" href="https://twitter.com/cmar">@cmar</a>) at a meetup talk. 
+He laid out some very nice tips on becoming a Ruby programmer and I thought it 
+would be interesting to put an R spin on the content. If you're preparing to get 
+your first job writing R Code here are the key takeaways from the presentation: 
+
+1. Pick a project you're passionate about that forces you to write R code
+2. Build it and put it on GitHub with a nice README
+3. Follow the R community (i.e. follow breaking news, influencers, and key conferences)
+4. Be opinionated! Know popular packages and a preference for certain ones
+5. Commit to open source
+6. Find jobs specifically listing R skills and follow employees at that company
+7. At the interview, say you're proficient and act curious and enthusiastic
+8. When answering technical questions, ask for help and be yourself.
+
+<div style="text-align:center;margin-top:30px;">
+  <iframe src="/presentations/land-a-job-writing-r-code/presentation/index.html" seamless></iframe>
+</div>
+<a target="_blank" href="/presentations/land-a-job-writing-r-code/presentation/index.html">
+  Click Here to View in New Tab
+</a>

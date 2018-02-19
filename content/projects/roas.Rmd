@@ -1,0 +1,224 @@
+---
+title: "roas"
+description: "An R Package for the Open Ad Stream (OAS) API"
+author: ~
+tags:
+ - r-code
+ - ad-serving
+date: 2017-05-21
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+## Overview
+
+The **roas** package is the R implementation of the Open Ad Stream (OAS) API. 
+I created the package because very few tools and documentation exist for the OAS API.
+
+<img alt="GitHub - roas" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
+View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/roas">https://github.com/ReportMort/roas</a>.
+
+## Features
+
+Anything that the OAS API supports, you can do with this R package!
+
+ - List, Create, Copy, and Update operations on OAS objects
+ - Forecasting & Inventory Management Reports
+ - Precanned Reports (By Site, Advertiser, Campaign, and many more)
+ 
+## Functions
+
+The functions are named to mimic each OAS request action ('Add', 'List', 'Update', 
+'Delete', 'Read', 'Copy', 'Upload', 'Run Live', 'Reports', 'Inventory'), but 
+many of these actions are reserved words, so the functions are named {oas_action}(). 
+For example, running the 'List' action is done with the function oas_list().
+
+## How to Get Started
+
+### Install roas Library
+
+```{r eval=FALSE}
+devtools::install_github("ReportMort/roas")
+```
+
+### Setup and Authenticate
+
+The only required authentication parameters are the Account, Username, and Password 
+for the OAS instance you'd like to access. There is another option if you have a 
+different URL endpoint.
+
+```{r load-package, eval=FALSE}
+library(roas)
+options(stringsAsFactors = FALSE)
+
+# setting authentication parameters
+options(roas.account = "myaccountname")
+options(roas.username = "myusername")
+options(roas.password = "mypassword")
+
+# setting a new endpoint to use for requests
+# only required if you need to
+options(roas.url_endpoint = "https://openadstream11.247realmedia.com/oasapi/OaxApi")
+```
+
+### Authenticate with oas_build_credentials()
+
+Build credentials for authorization and pass them into subsequent request function 
+calls. The credentials can be reused as many times as needed.
+
+``` r
+my_credentials <- oas_build_credentials('myaccount', 
+                                        'myusername', 
+                                        'mypassword')
+```
+
+### Listing OAS Objects
+
+``` r
+# list all of the sites in my account
+list_my_sites <- oas_list(credentials = my_credentials, 
+                          request_type = 'Site')
+```
+
+Here is a more complicated list example that will list all pages from the "mySite" 
+domain and have a URL containing "001", but they must be from the section matching 
+the wildcard "Ar%ves" and created after Dec. 31st, 2016 and modified after Jan. 
+31st, 2017. This example is very specific, but we're using this example to show 
+how you can specify multiple difference criteria all at once to narrow down your 
+resultset.
+
+``` r
+my_criteria <- list(newXMLNode("Domain", "mySite"), 
+                    newXMLNode("Url", "001"), 
+                    newXMLNode("SectionId", "Ar%ves"), 
+                    newXMLNode("WhenCreated", 
+                               attrs = c(condition = "GT"), 
+                               '2016-12-31'), 
+                    newXMLNode("WhenModified", 
+                               attrs = c(condition = "GT"), 
+                               '2017-01-31')
+                    ) 
+list_w_criteria <- oas_list(credentials = my_credentials, 
+                            request_type = 'Page',
+                            search_criteria = my_criteria)
+```
+
+The OAS system also contains codes for enumerated fields. For example, there is a 
+finite list of Designated Market Areas (DMAs) that your campaigns can target. Each 
+DMA has a code that corresponds to a longer, more descriptive name. The campaigns 
+only show the code, so you'll need this list of DMA codes to figure out more 
+descriptive names of the targeting that your campaign is implementing.
+
+```r
+dma_codes <- oas_list_code(credentials = my_credentials, 
+                           code_type = 'DMA')
+```
+
+### Reading an OAS Object
+
+OAS objects are uniquely identified by their Id. Typically, you use the `oas_list()` 
+function to pull down a list and figure out the Ids of objects you'd like to read. 
+Once you've identified those individual objects you can use the `oas_read()` function to 
+retrieve all available fields the object. In the examples below you can see how 
+we pull back the details on a site with the Id: "www.mysite.com" and we also pull back 
+details on a campaign with the Id: "one_campaign_id". 
+
+``` r
+# details for "www.mysite.com"
+site_details <- oas_read(credentials = my_credentials, 
+                         request_type ='Site', 
+                         id = 'www.mysite.com')
+                             
+# details for "one_campaign_id"                             
+campaign_details <- oas_read(credentials = my_credentials, 
+                             request_type = 'Campaign', 
+                             id = 'one_campaign_id')
+```
+
+### Running Reports
+
+The OAS API supports over **800** different template reports. These reports cover 
+a wide range of things, such as, Campaign Delivery, Account Revenue, and many more. 
+You _must_ specify the `report_type`, `report_name`, and a date range. You can view 
+all the different report types and names by running `data(available_reports)`. Simply 
+pick an item from the list and plug its type and name into the `oas_report()` function.
+
+``` r
+data(available_reports)
+
+# List out all the Campaign Delivery reports
+available_reports[available_reports$report_type == 'Campaign Delivery', ]
+
+# Retrieve a template executive summary report on campaign delivery
+campaign_delivery <- oas_report(credentials = my_credentials, 
+                                report_type = 'Campaign Delivery',
+                                report_name = 'Executive Summary',
+                                start_date = '2016-01-01', 
+                                end_date = '2016-12-31')
+```
+
+### Getting Inventory Forecasts
+
+The OAS API supports inventory checking on various levels: Basic, Search, Geography. 
+For example, if you need to see the available inventory for a particular search keyword, then 
+you can do that by using the function `oas_search_inventory()`. If you need to see 
+the available inventory for a particular geography, then use `oas_geo_inventory()`. Note, 
+these functions may take awhile to run and may only support simplistic pulls that may need 
+to be combined or averaged to come up with a reasonable estimate of available inventory. These 
+issues are related to how the OAS API functions and not how this package operates. This package 
+is only a wrapper to more easily retrieve the data from OAS. This is _no_ intermediate logic.
+
+``` r
+# Retrieve an inventory forecast for all sites
+# Note that start and end dates must be greater than or equal to 
+# Sys.Date() otherwise forecast reports will return a 0 row data.frame
+overview <- oas_basic_inventory(credentials = my_credentials, 
+                                report_type = 'Overview', 
+                                report_name = 'All Sites Forecast',
+                                start_date = '2020-01-01', 
+                                end_date = '2020-12-31')
+
+# Retrieve booked inventory based on two keywords (Kw1, Kw2) 
+# for a particular campaign on a site
+booked <- oas_search_inventory(credentials = my_credentials, 
+                               report_type = 'KeywordBooked', 
+                               report_name = 'Campaign Targets',
+                               keywords = 'Kw1,Kw2',
+                               campaign_id = 'Test_Campaign',
+                               site_domain = 'www.mysite.com',
+                               start_date = '2020-01-01', 
+                               end_date = '2020-12-31')
+```                                   
+
+## Questions
+
+If you have further questions please submit them via email or issue on GitHub at 
+<a target="_blank" href="https://github.com/ReportMort/roas/issues">https://github.com/ReportMort/roas/issues</a>. 
+I'm happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!
+
+## Support
+
+This project was made with love and coffee. Studies show that I write R code 3x faster 
+after drinking one cup coffee and that productivity scales linearly. Imagine what 
+I could accomplish if you bought me 10 cups of coffee...
+
+Thank you for your support!
+
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<div  style="text-align: center;">
+  <script type='text/javascript'>
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+  </script>
+</div>
+<br>

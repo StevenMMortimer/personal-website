@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Google Sites on Home</title>
+    <link>/tags/google-sites/</link>
+    <description>Recent content in Google Sites on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 02 Jun 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/google-sites/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Google Sites for Documentation</title>
+      <link>/blog/google-sites-for-documentation/</link>
+      <pubDate>Fri, 02 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/google-sites-for-documentation/</guid>
+      <description>The WYSIWYG Access Control Permissions Embedded Google Docs, Sheets, etc. Built In Google Search and Analytics Final Thoughts   The title of this post is probably off-putting to a large number of people. Why on earth would I use Google Sites for blogging, wiki, and technical documentation? Isn’t that old, outdated tech even though Google did release a newer version? To be honest, I agree with those objections. This blog isn’t written with Google Sites.</description>
+    </item>
+    
+    <item>
+      <title>googlesites</title>
+      <link>/projects/googlesites/</link>
+      <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/googlesites/</guid>
+      <description>Overview How to Get Started Add a page from HTML Find your Content Upload an Attachment to your Page Delete your Page  Additional Features Questions Support   Overview The googlesites package is the R implementation of the Google Sites API. Using this package assumes you’ve used the Web UI to create your site. Once you’ve got a site (and maybe some templates), you can use this package to add more content, add attachments, find content, and delete content.</description>
+    </item>
+    
+  </channel>
+</rss>

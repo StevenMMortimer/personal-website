@@ -1,0 +1,164 @@
+---
+title: "PFA with the R Package aurelius"
+author: ~
+date: '2017-02-13'
+description: ''
+slug: pfa-with-the-r-package-aurelius
+tags:
+- r-code
+- PFA
+- machine-learning
+categories: []
+output:
+  blogdown::html_page
+---
+
+```{r setup, include = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = TRUE,
+  fig.align = "center"
+)
+```
+
+I first heard about the Portable Format for Analytics (PFA) through KDnuggets in 
+2016. There was a <a href="http://www.kdnuggets.com/2016/01/portable-format-analytics-models-production.html" target="_blank">post</a> that in vague way talked about the virtues and benefits of PFA, but not to completely 
+supplant PMML, which I was already familiar with. PMML was pretty cool, but I 
+couldn't find good support and felt that the XML-based approach was clumsy and 
+outdated so when I heard about PFA, I was pretty excited. A new JSON-based standard 
+for encoding any type of analytics, not just certain supported models like PMML. 
+I mainly work in the R programming language, so I was disappointed to find resources 
+lacking that would convert models made in R into the PFA standard. The great 
+folks at the <a href="http://dmg.org" target="_blank">Data Mining Group</a> (DMG) had started on an R package 
+called `aurelius` that contained the bare bones functions to construct the syntax. 
+After reading through the Project pages on GitHub, I saw everything was there, 
+but it wasn't as convenient as I would like so I started writing "model producers". 
+Model producers are functions that convert model objects in R into their PFA 
+equivalent to be exported and used in other systems. In this process I learned 
+a great deal. I thought I knew how models worked, but actually reading through 
+the mechanics of scoring has made me appreciate them so much more. Below is an 
+outline of working with the `aurelius` package, but note that this work has yet 
+to be integrated into the project and exists on forked branch in my GitHub 
+(installation command shown below).
+
+```{r install-package, eval=FALSE}
+# you only need to run this once because it 
+# installs the package
+devtools::install_github('ReportMort/hadrian', 
+                         ref='feature/add-r-package-structure', 
+                         subdir='aurelius', 
+                         quick=T) 
+```
+
+In this example we'll load the randomForest package to demonstrate how to convert 
+randomForest models into PFA. Currently, the package converts models of many types: 
+`lm`, `glm`, `glmnet`, `gbm`, `randomForest`, `naivebayes`, `lda`, `kcca`, and `kmeans`.
+
+```{r load-packages, warning=FALSE, message=FALSE}
+options(stringsAsFactors = FALSE)
+library(aurelius)
+library(randomForest) 
+```
+
+## PFA Structure
+
+Before we get started it's helpful to understand the basic components of a valid 
+PFA document. Every PFA document has an input spec, output spec, and an action. 
+The reason for the specifications on the input and output is so that the machine 
+executing your PFA can safely and reliably excute. PFA relies on the 
+<a href="http://avro.apache.org/" target="_blank">Avro serialization format</a> 
+for its type system, whichsupports your typical primitive data types like
+boolean, integer, and string, but also, arrays, maps, and 
+<a href="http://dmg.org/pfa/docs/avro_types/" target="_blank">more</a>. You can 
+define these types in R by using any of the functions like `avro_*`.
+
+```{r avro-types}
+avro_double
+
+avro_enum(list("one", "two"))
+```
+
+After specifying inputs and outputs, you must specify an action. With `aurelius` 
+an action can be specified from an R expression. A simple example is `2+2`. This 
+can be expanded to manipulate the input and/or derivatives of it. Here is a 
+simple analytics spec that takes a double and adds 10 to it.
+
+```{r trivial-model}
+pfa_document(input = avro_double, 
+             output = avro_double, 
+             action = expression(input + 10))
+```
+
+You'll notice that the resulting output is a list. PFA is based on JSON, so it's 
+natural for the document, when it's in R, to be a list that can always later be 
+converted to JSON for export.
+
+## Converting a Tree Model
+
+Let's step through a more realistic example that predicts the species in the iris 
+dataset, based on the other variables using a random forest model. First, format 
+the columns to meet Avro guidelines: `[A-Za-z_][A-Za-z0-9_]*`. Having periods 
+in the variable names (e.g. `Sepal.Length`) is not encouraged.
+
+```{r format-cols}
+# make sure column names dont have periods in them
+iris2 <- iris
+colnames(iris2) <- gsub('\\.', '_', colnames(iris2)) 
+```
+
+Creating the PFA is very easy. Simply fit your model, then call `pfa()`.
+
+```{r fit-model}
+# fit a random forest model
+rf_model <- randomForest(Species ~ ., data=iris2) 
+ 
+# convert that model to PFA
+# pred_type='prob' means that the output is the 
+# probability of all classes. If you want 
+# the majority vote, then specify pred_type='response'
+# check all options by running ?pfa.randomForest
+rf_model_as_pfa <- pfa(rf_model, pred_type='prob') 
+```
+
+If you have the <a href="https://cran.r-project.org/web/packages/rPython/index.html" target="_blank">rPython</a> package
+installed and <a href="https://github.com/opendatagroup/hadrian/wiki/Installation#case-4-you-want-to-install-titus-in-python" target="_blank">Titus</a> (PFA for Python), then you can create an engine in R 
+and see how the PFA behaves. In this case it predicts the same as the `predict()` 
+function in R. This way we can test that the behavior of the PFA is what we expect.
+
+```{r check-model}
+# you can check the predictions from this model
+# by first converting to a pfa_engine
+pfa_model <- pfa_engine(rf_model_as_pfa) 
+ 
+# confirm that the pfa engine produces the 
+# same prediction as the "predict" method in R
+test_dat <- iris2[73,1:4]
+round(pfa_model$action(as.list(test_dat)), 6)
+round(unclass(predict(object=rf_model, newdata=test_dat, type='prob')), 6) 
+```
+
+Once you're happy with your model, just export to a flat file using `write_pfa()`.
+This format can be read and used by any PFA interpreter. With R you can read the 
+file back in using `read_pfa()`.
+
+```{r read-write-pfa}
+# you can export your model for use in other systems
+write_pfa(rf_model_as_pfa, file = '~/my_rf_model.pfa')
+
+my_model <- read_pfa(file("~/my_rf_model.pfa"))
+
+# see that all PFA components are there
+names(my_model)
+```
+
+## Final Thoughts 
+
+PFA is a measurable step in open, portable, and reprodcible analytics. I hope to 
+see the standard more widely adopted and tools developed to help others implement it. 
+One final thing: Check out the 
+<a href="https://github.com/ReportMort/hadrian/tree/feature/add-r-package-structure/aurelius/tests/testthat" target="_blank">unit tests</a>. 
+I've recently added quite a bit of unit test coverage and these tests are an 
+excellent source of examples because they cover most all cases of utilizing the 
+package functions.

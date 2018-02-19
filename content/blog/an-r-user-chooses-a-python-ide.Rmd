@@ -1,0 +1,105 @@
+---
+title: An R User Chooses a Python IDE
+author: ~
+date: '2017-04-07'
+slug: an-r-user-chooses-a-python-ide
+categories: []
+tags:
+  - tools
+description: "There are many options for Python IDEs, so which one is best for R users starting to use Python for the first time?"
+image: "blog/an-r-user-chooses-a-python-ide/choose-an-ide.png"
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+Yes, this is a post about IDEs. Let the name-calling begin! No, no, I don't intend 
+to insult or incite any ill-will towards any person or project. This purpose of this 
+post is to give other people who are familiar working with R, some insight into how a 
+fellow R user has evaluated and experienced picking an IDE for programming Python. 
+My criteria was to have an interactive experience, like RStudio, with support for 
+debugging, version control, and code completion. That's not too much to ask for, right?!
+
+## Jupyter Notebooks
+
+If you've been interested in data science and R and Python programming, then 
+you've probably seen IPython or the newer 
+<a href="http://jupyter.org" target="_blank">Jupyter</a> Notebooks. You might have also seen 
+something similar with Kaggle Kernels or Zeppelin Notebooks. I agree that the notebook 
+format is great for explaining and teaching, which is why so many tutorials display 
+their work in notebook format. The problem with Jupyter notebooks is that the format 
+is plain-text, but not easily readable when checking code diffs on a version control 
+system like GitHub. For example, a simple code change can make massive diffs: 
+
+![](/blog/an-r-user-chooses-a-python-ide/jupyter-commit-diff.png)
+
+Second, notebooks force you to work in chunks. Chunks are nice for helping you 
+separate and structure your workflow, but you can't run half a chunk. It's an 
+all-or-nothing game. The problems occur when you need to debug something in the middle 
+of a chunk. At that point you need to deconstruct the chunk, then test it, then put it back together. 
+It's a mess. Finally, when you move your code into production it likely won't be in a 
+notebook format. Why write code in a notebook when you know it will probably be 
+rewritten again in another format? This is inviting silly errors and wasted time.
+
+## Rodeo
+
+If you've used any other tools created by <a href="https://www.yhat.com" target="_blank">YHat</a> 
+or just want the RStudio exprience with Python, then you might be tempted to use 
+<a href="https://www.yhat.com/products/rodeo" target="_blank">Rodeo</a>. Rodeo 
+does a fantastic job at replicating the look and feel of RStudio, but if you take a 
+closer look it is missing a lot of features you use in RStudio, which is frustrating. 
+You can tell even from screenshots that it's seriously lagging RStudio in features.
+
+![](/blog/an-r-user-chooses-a-python-ide/rodeo-ide-screenshot.png)
+
+Rodeo is open-source, but development is mainly driven by the folks at YHat, so 
+support and longevitiy is a concern. Finally, it does not have native integration with 
+Git, which is a deal-breaker. If you can't version control your code easily, then you're 
+more likely to make mistakes.
+
+## Spyder
+
+I can't comment much on my experience with 
+<a href="https://pythonhosted.org/spyder/" target="_blank">Spyder</a>. 
+I had an issue with converting a notebook to a script, which was a feature I 
+hoped would work effortlessly. Also, it doesn't support Git, which as mentioned with 
+Rodeo, is an immediate deal-breaker. Spyder seems good for a specific data science 
+niche, but it's not quite there, and with so many other full-fledged, battle-tested 
+Python IDEs, why not expand your horizons to have an IDE that will allow you to 
+utilize the entire spectrum of general purpose programming that Python is?
+
+## Text Editor (e.g. Sublime)
+
+If you ask a hardcore programmer about picking an IDE, they might tell you that 
+you don't need one at all. It's true that you can effectively and efficiently write 
+Python code from a text editor; however, I wouldn't recommend an R user take this 
+approach. First, you'll probably be frustrated with the lack of transparency for 
+defined variables, folder structure, etc. that RStudio neatly provides in its 
+"Environment" and "Files" panes. Second, if you're just starting to learn Python 
+after learning R, you'll want some more guardrails to prevent against syntax errors, 
+code completion, formatting, etc. This isn't to say that text editors don't provide it, 
+because they do, but you'll spend time configuring these features inside of getting them 
+out of the box from an IDE.
+
+## PyCharm
+
+PyCharm definitely has the feel of a heavier IDE. There are alot of settings 
+and features that would be intimidating at first, but it's got everything right 
+there. A console, version control support, debugging, code completion and more. The 
+one thing I did change was the keyboard shortcuts to executing code interactively 
+especially when highlighting code sections to get that same feeling as you get in 
+RStudio where you can select pretty much anything and get it to run down in the 
+console interactively. After tweaking the keyboard shortcuts, it was pretty much the same 
+flow as using RStudio and I felt good about using a full-featured and well supported 
+project. Ultimately, PyCharm is what I'm sticking with to continue writing Python code.
+
+## Final Thoughts
+
+I read quite a bit online about the IDEs mentioned above, but other peoples' 
+opinions didn't do much for me. I literally downloaded each IDE and spent a couple 
+hours trying to work on a project. If it was easy to get going I kept trying more 
+things until I was able to test out my desired features. You can take my word 
+for going with PyCharm to continue your Pythonic data science, but I'd recommend 
+to anyone to try things out, see what you like, and go with it. In the end, you're 
+writing the code, not the IDE, so make the choice that makes you most happy and 
+productive.

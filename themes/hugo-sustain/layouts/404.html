@@ -1,0 +1,13 @@
+{{ partial "head" . }}
+  <body>
+    <div id="wrap">
+      {{ partial "header" . }}
+      <div class="container">
+        <div class="page-not-found">
+          <h3 class="error">This page does not exist. You can head back to <a href="{{ .Site.BaseURL }}">homepage</a>.</h3>
+        </div>
+      </div>
+    </div>
+    {{ partial "footer" . }}
+  </body>
+</html>

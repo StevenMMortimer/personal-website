@@ -1,0 +1,81 @@
+---
+title: The Unfinished duplicated Function
+author: ~
+date: '2016-11-20'
+slug: the-unfinished-duplicated-function
+categories: []
+tags:
+  - r-code
+description: "It was impossible to find duplicates in R across multiple columns while considering certain values incomparable. Now the impossible is possible."
+image: "blog/the-unfinished-duplicated-function/under-construction.jpg"
+output:
+  blogdown::html_page
+---
+
+
+
+<p>If you’re a regular R user, then you’ve probably used or have seen the function <code>duplicated()</code>. If you’ve only grown up in the world of <code>dplyr</code> and other <code>tidyverse</code> packages with its cool function <code>distinct()</code>, then I highly envy you. In any case, you might find yourself using the <code>duplicated()</code> function when you need some more control. The function has a handy argument <code>incomparables</code> that allows you to ignore certain values when doing the comparison for duplicates. One day I wanted to use this to remove duplicate customer entries from our CRM system based on name and phone number. I went through the typical pre-processing stages of removing unnecessary punctionation, converting to lowercase, removing spaces, etc. After I got familiar with the data I realized that some of the data points were missing or not complete enough to make any meaningful determination of a duplicate. I needed a solution to ignore certain missing patterns, but it needed to encompass two or more columns of data. One hack would be to <code>paste0()</code> the columns together and work on a single pasted column, but this doesn’t handle multiple incomparable values. As I found out, the duplicated function can handle multiple columns, but the <code>incomparables</code> argument does not work for multiple columns, let alone different incomparable values for each column. Here is the error I get:</p>
+<pre class="r"><code>duplicated(mtcars[,c(&#39;am&#39;, &#39;gear&#39;, &#39;cyl&#39;)], incomparables=6)</code></pre>
+<pre><code>## Error: argument &#39;incomparables != FALSE&#39; is not used (yet)</code></pre>
+<p>This is really a bummer because it is nice to have this explicit functionality of what should really be considered when evaluating for duplicates. The error message sure is hopeful at the end there: “is not used (yet)”! After some digging I concluded that the function existed, as-is, at least since R version 1.4, which was released in 2001! I wouldn’t hold my breath for anyone to actually fix this issue. Contributing changes to base R has become much for difficult. I submitted a patch to R core to fix this very issue, but they weren’t too responsive. I guess it will stay as a hidden gem in base R, waiting for the next data miner to unearth. If you run across this issue and really want a fix, then feel free to use the code below. I’ve implemented a function to support incomparables across multiple columns where a list of vectors will specify the incomparable values for each column. The list elements are recycled if it is shorter than the columns being compared.</p>
+<pre class="r"><code>new_duplicated &lt;- function(x, incomparables = FALSE, fromLast = FALSE, ...) {
+  
+ if(!identical(incomparables, FALSE)) {
+    n &lt;- ncol(x)
+    nmx &lt;- names(x)
+    nmincomparables &lt;- names(incomparables)
+    lincomparables &lt;- length(incomparables)
+    if(is.null(nmincomparables)) {
+      if(lincomparables &lt; n) {
+        # pad any incomparables lists with the default value if list is shorter than the number columns in the supplied data.frame
+        tmp &lt;- c(incomparables, as.list(rep_len(FALSE, n - lincomparables)))
+        names(tmp) &lt;- nmx
+        incomparables &lt;- tmp 
+      }
+      if(lincomparables &gt; n) {
+        # if the list is unnamed and there are more elements in the list than there are columns, then only first n elements
+        warning(paste(&quot;more columns in &#39;incomparables&#39; than x, only using the first&quot;, n, &quot;elements&quot;))
+        incomparables &lt;- incomparables[1:n]
+      }
+    } else {
+      # for named lists, find match, else default value
+      tmp &lt;- as.list(rep_len(FALSE, n))
+      names(tmp) &lt;- nmx
+      i &lt;- match(nmincomparables, nmx, 0L)
+      if(any(i &lt;= 0L))
+        warning(&quot;not all columns named in &#39;incomparables&#39; exist&quot;)
+      tmp[ i[i &gt; 0L] ] &lt;- incomparables[i &gt; 0L]
+      incomparables &lt;- tmp[nmx]
+    }
+    
+    # first determine duplicates, then override when an incomparable value is found in a row since the existence of even 1 incomparable value in a row means it cannot be a duplicate
+    res &lt;- duplicated(do.call(&quot;paste&quot;, c(x, sep=&quot;\r&quot;)), fromLast = fromLast)
+    
+    #for better performance only bother with the columns that have incomparable values not set to the default: !identical(x, FALSE)
+    run_incomp_check &lt;- sapply(incomparables, FUN=function(x){!identical(x, FALSE)})
+    if (sum(run_incomp_check) &gt; 0L){
+      incomp_check &lt;- mapply(FUN=function(column,incomparables){match(column, incomparables)}, x[run_incomp_check], incomparables[run_incomp_check])
+      # any rows with an incomparable match means, TRUE, it can override the duplicated result
+      overwrite &lt;- apply(data.frame(incomp_check), 1, function(x){any(!is.na(x))})
+      res[overwrite] &lt;- FALSE
+    }
+    
+    return(res)
+  } else if(length(x) != 1L) {
+    duplicated(do.call(&quot;paste&quot;, c(x, sep=&quot;\r&quot;)), fromLast = fromLast)
+  } else {
+    duplicated(x[[1L]], fromLast = fromLast, ...)
+  }
+}</code></pre>
+<p>Here is the function in action:</p>
+<pre class="r"><code>mtcars2 &lt;- head(mtcars[,c(&#39;am&#39;, &#39;gear&#39;, &#39;cyl&#39;)])
+mtcars2$dup &lt;- new_duplicated(mtcars2, incomparables=1)
+mtcars2</code></pre>
+<pre><code>##                   am gear cyl   dup
+## Mazda RX4          1    4   6 FALSE
+## Mazda RX4 Wag      1    4   6 FALSE
+## Datsun 710         1    4   4 FALSE
+## Hornet 4 Drive     0    3   6 FALSE
+## Hornet Sportabout  0    3   8 FALSE
+## Valiant            0    3   6  TRUE</code></pre>
+<p>Typically, the second row would be considered a duplicate of the first row, but since 1 is an incomparable value it is not considered a duplicate, in fact, any row containing a 1 in the column will be labeled as false since it renders the row incomparable.</p>

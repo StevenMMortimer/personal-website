@@ -1,0 +1,73 @@
+---
+title: Google Sites for Documentation
+author: ~
+date: '2017-06-02'
+slug: google-sites-for-documentation
+categories: []
+tags:
+  - r-code
+  - google-sites
+description: "Creating documentation is key to the longevity and progress of any project. Here we'll discuss some merits of using Google Sites for documentation."
+image: "blog/google-sites-for-documentation/google-sites-for-documentation.png"
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+The title of this post is probably off-putting to a large number of people. Why
+on earth would I use Google Sites for blogging, wiki, and technical
+documentation? Isn't that old, outdated tech even though Google did release a
+newer version? To be honest, I agree with those objections. This blog isn't
+written with Google Sites. It's written using the R package `blogdown` and Hugo
+and they are fantastic. However, there are some features of Google Sites that
+might make it a nice tool for you and your work colleagues. 
+
+## The WYSIWYG
+
+Never underestimate the power of the WYSIWYG editor. This magical tool allows
+anybody, at any technical skill level, to contribute content. Creating and
+maintaing a good website requires constant updates and tinkering that a single
+person might not be able to keep up with. The graphical interface allows you to
+share work with non-technical contributors as they shore up and support your
+efforts. 
+
+## Access Control Permissions
+
+Static website generators are nice, but lack some more robust and intutive tools
+for granting permissions and access to your site. With Google Sites this comes
+standard. If your orgnization uses the Google Suite, this is one of the main
+reasons for sticking to Google Sites. You can contol view and edit permissions
+to any level of detail for individuals inside and outside of your organization.
+Again, this can all be with the click of a button or API calls, just take your
+pick. 
+
+## Embedded Google Docs, Sheets, etc.
+
+Not sure if this needs to be said, but adding it here for completeness. Google
+Sites plays well with embedding Docs, Sheets, Slides, and other Google products.
+If you already have a significant amount of content in these formats, you'll
+find it easy to integrate into a single source.
+
+## Built In Google Search and Analytics
+
+Your Google Site automatically comes with the powerful and handy Google Search
+technology. A good turn-key search solution on your website is critical,
+especially for wikis and technical documents. Users typically won't frequent
+your site unless they are looking for something. The search bar is their window
+into the trove of information you've got. The search makes finding the content
+they need easy and encourages them to come back for their next quesion. User
+engagement fosters the virtuous circle where the contributors add more content
+and users consume more and more of it. And, of course, Google Sites makes it
+easy to plug in your Google Analytics code and track that user engagement.
+
+## Final Thoughts
+
+Google Sites are alright in my book. I've used them and it's worked out well,
+but each time I had a strong reason for wanting to use it and was committed from
+the beginning. Given my experience with R and willingness to use the Sites API I
+went ahead and created a collection of functions that make it easier to create,
+update, and delete content on your Google Site without ever leaving R. I've
+started bundling together the functions into an R packge called `googlesites`
+that's currently on my GitHub. Please take a look to see the sorts of things you
+can do with the package at 
+<a href="https://github.com/ReportMort/googlesites" target="_blank">https://github.com/ReportMort/googlesites</a>

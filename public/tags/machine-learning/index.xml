@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Machine Learning on Home</title>
+    <link>/tags/machine-learning/</link>
+    <description>Recent content in Machine Learning on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 28 Jul 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A Scalable Predictive API with PFA and AWS Lambda</title>
+      <link>/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/</link>
+      <pubDate>Fri, 28 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/</guid>
+      <description>A Scalable Infrastructure Model Building and Execution using PFA Actually Doing This Step 1 - Creating the Lambda Function Step 2 - Build Your Model Step 3 - Upload Your Model to S3 Step 4 - Test Your Lambda Makes Predictions Step 5 - Hook Lambda Up to API Gateway  Load Testing Load Testing Results Load Testing Config    Building machine learning models is fun and challenging, but there are a whole other set of challenges when figuring out how to deploy your models in a production environment.</description>
+    </item>
+    
+    <item>
+      <title>PFA with the R Package aurelius</title>
+      <link>/blog/pfa-with-the-r-package-aurelius/</link>
+      <pubDate>Mon, 13 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/pfa-with-the-r-package-aurelius/</guid>
+      <description>I first heard about the Portable Format for Analytics (PFA) through KDnuggets in 2016. There was a post that in vague way talked about the virtues and benefits of PFA, but not to completely supplant PMML, which I was already familiar with. PMML was pretty cool, but I couldn’t find good support and felt that the XML-based approach was clumsy and outdated so when I heard about PFA, I was pretty excited.</description>
+    </item>
+    
+  </channel>
+</rss>
