@@ -23,8 +23,8 @@ Hello, I'm Steven M. Mortimer. I enjoy helping others make better decisions and 
 *Senior Manager of Data Science*</br>
 Led analytics team in efforts to improve customer prospecting, forecasting & 
 inventory management, and customer churn through actionable reporting, workflow 
-tools, and alerts.
-
+tools, and alerts.  
+</br>
 **The Advisory Board Company** (2011-2015)</br>
 *Analyst* &#x2192; *Data Scientist*</br>
 Created suite of predictive tools and analyses to support Higher Education 
