@@ -33,9 +33,9 @@ institutions in enhancing student advising and improving graduation outcomes.
 ### Internships
 
  - Pricewaterhouse Coopers (2018)
- - Institute for Defense Analyses (2010)
  - Florida Fish and Wildlife Conservation Commission (2010)
- - UVA Health System, Dept. of Psychiatry and Neurobehavioral Sciences (2008, 2009)
+ - Institute for Defense Analyses (2010)
+ - UVA Health System, Dept. of Psychiatry and Neurobehavioral Sciences (2008-2009)
 
 ### Technical Skills
 
