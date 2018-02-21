@@ -7,6 +7,8 @@ googleAnalytics = "UA-98603021-1"
 # disqusShortname = "iamwhatir"
 canonifyURLs = true
 pluralizelisttitles = false
+paginate = 5
+paginatePath = ""
 
 [blackfriday] 
     hrefTargetBlank = true

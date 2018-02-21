@@ -6,7 +6,7 @@ description = ""
 +++
 
 <img src="/img/headshot.jpg" style="float:right;margin-top:10px;margin-bottom:0px;margin-left:20px;margin-right:0px;border-radius:0px;" /> 
-Hello, I'm Steven M. Mortimer. I enjoy helping others make better decisions and enjoy better outcomes by leveraging technology and data.
+I'm Steve Mortimer and I enjoy helping others make better decisions and enjoy better outcomes by leveraging technology and data.
  
 ### Education
 

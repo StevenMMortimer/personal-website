@@ -7,8 +7,9 @@
         <h3>{{ humanize .Title }}</h3>
           <div class="panel panel-default">
             <div class="panel-body">
-            {{ range .Data.Pages.ByDate.Reverse }}
-            {{ if .Title }}
+              {{ $pag := .Paginate .Data.Pages }}
+              {{ range $pag.Pages }}
+              {{ if .Title }}
             <ol class="post-list">
               <li class="post-stub">
                   <a href="{{ .Permalink }}">
@@ -33,6 +34,9 @@
             -->
             </div>
           </div>
+        <div class="post-navigation">
+        {{ partial "pagination.html" . }}
+         </div>
       </div>
     </div>
     {{ partial "social" . }}

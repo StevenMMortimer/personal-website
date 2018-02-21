@@ -16,6 +16,27 @@ div.footer{
 .post-stub-description { display: block; margin: 0; text-transform: none; white-space: nowrap;}
 .post-stub-date { display: inline-block; }
 .post-stub-date:before { content: "/ "; }
+.post-navigation {
+    display: table;
+    margin: 0px auto 0px;
+}
+.newer-posts,
+.older-posts {
+    float: left;
+    background: $primary;
+    color: #FEFEFE;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 5px;
+    padding: 5px 15px 6px;
+    text-transform: uppercase;
+
+    &:hover {
+        background: $secondary;
+    }
+}
+.page-number { display: none; }
+.pagination { margin: 0px; }
 /* Add padding to create space for footer */
 body {
   padding-bottom: 125px;
@@ -147,6 +168,7 @@ body {
 }
 .panel-body {
   padding-top: -10px;
+  padding: 0px;
   text-align: left;
 }
 .social-links {
