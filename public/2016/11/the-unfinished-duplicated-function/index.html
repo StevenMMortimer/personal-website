@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>The Unfinished duplicated Function | Steven M. Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="It was impossible to find duplicates in R across multiple columns while considering certain values incomparable. Now the impossible is possible.">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="The Unfinished duplicated Function" />
+<meta property="og:description" content="It was impossible to find duplicates in R across multiple columns while considering certain values incomparable. Now the impossible is possible." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2016/11/the-unfinished-duplicated-function/" />
+<meta property="og:image" content="/blog/the-unfinished-duplicated-function/under-construction.jpg" />
+    <meta name="twitter:site" content="@StevenMMortimer" />
+<meta name="twitter:creator" content="@StevenMMortimer" />
+<meta name="twitter:title" content="The Unfinished duplicated Function" />
+<meta name="twitter:description" content="It was impossible to find duplicates in R across multiple columns while considering certain values incomparable. Now the impossible is possible." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/blog/the-unfinished-duplicated-function/under-construction.jpg" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="https://linkedin.com/in/StevenMMortimer">LINKEDIN</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/2016/11/the-unfinished-duplicated-function/">The Unfinished duplicated Function</a></strong>
+          </h3>
+        </div>
+        
+        
+        <div class="blog-title">
+          <span class="icon">
+           <i class="fa fa-pencil" aria-hidden="false"></i>
+          </span>
+          <span>Published 
+            <time datetime="2016-11-20" itemprop="datePublished">
+              November 20, 2016
+            </time>
+          </span>
+          <div style="margin-top:5px;">
+            <span class="icon">
+              <i class="fa fa-clock-o" aria-hidden="false"></i>
+            </span>
+            <span>
+                4 minute read
+            </span>
+          </div>
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <p>If you’re a regular R user, then you’ve probably used or have seen the function <code>duplicated()</code>. If you’ve only grown up in the world of <code>dplyr</code> and other <code>tidyverse</code> packages with its cool function <code>distinct()</code>, then I highly envy you. In any case, you might find yourself using the <code>duplicated()</code> function when you need some more control. The function has a handy argument <code>incomparables</code> that allows you to ignore certain values when doing the comparison for duplicates. One day I wanted to use this to remove duplicate customer entries from our CRM system based on name and phone number. I went through the typical pre-processing stages of removing unnecessary punctionation, converting to lowercase, removing spaces, etc. After I got familiar with the data I realized that some of the data points were missing or not complete enough to make any meaningful determination of a duplicate. I needed a solution to ignore certain missing patterns, but it needed to encompass two or more columns of data. One hack would be to <code>paste0()</code> the columns together and work on a single pasted column, but this doesn’t handle multiple incomparable values. As I found out, the duplicated function can handle multiple columns, but the <code>incomparables</code> argument does not work for multiple columns, let alone different incomparable values for each column. Here is the error I get:</p>
+<pre class="r"><code>duplicated(mtcars[,c(&#39;am&#39;, &#39;gear&#39;, &#39;cyl&#39;)], incomparables=6)</code></pre>
+<pre><code>## Error: argument &#39;incomparables != FALSE&#39; is not used (yet)</code></pre>
+<p>This is really a bummer because it is nice to have this explicit functionality of what should really be considered when evaluating for duplicates. The error message sure is hopeful at the end there: “is not used (yet)”! After some digging I concluded that the function existed, as-is, at least since R version 1.4, which was released in 2001! I wouldn’t hold my breath for anyone to actually fix this issue. Contributing changes to base R has become much for difficult. I submitted a patch to R core to fix this very issue, but they weren’t too responsive. I guess it will stay as a hidden gem in base R, waiting for the next data miner to unearth. If you run across this issue and really want a fix, then feel free to use the code below. I’ve implemented a function to support incomparables across multiple columns where a list of vectors will specify the incomparable values for each column. The list elements are recycled if it is shorter than the columns being compared.</p>
+<pre class="r"><code>new_duplicated &lt;- function(x, incomparables = FALSE, fromLast = FALSE, ...) {
+  
+ if(!identical(incomparables, FALSE)) {
+    n &lt;- ncol(x)
+    nmx &lt;- names(x)
+    nmincomparables &lt;- names(incomparables)
+    lincomparables &lt;- length(incomparables)
+    if(is.null(nmincomparables)) {
+      if(lincomparables &lt; n) {
+        # pad any incomparables lists with the default value if list is shorter than the number columns in the supplied data.frame
+        tmp &lt;- c(incomparables, as.list(rep_len(FALSE, n - lincomparables)))
+        names(tmp) &lt;- nmx
+        incomparables &lt;- tmp 
+      }
+      if(lincomparables &gt; n) {
+        # if the list is unnamed and there are more elements in the list than there are columns, then only first n elements
+        warning(paste(&quot;more columns in &#39;incomparables&#39; than x, only using the first&quot;, n, &quot;elements&quot;))
+        incomparables &lt;- incomparables[1:n]
+      }
+    } else {
+      # for named lists, find match, else default value
+      tmp &lt;- as.list(rep_len(FALSE, n))
+      names(tmp) &lt;- nmx
+      i &lt;- match(nmincomparables, nmx, 0L)
+      if(any(i &lt;= 0L))
+        warning(&quot;not all columns named in &#39;incomparables&#39; exist&quot;)
+      tmp[ i[i &gt; 0L] ] &lt;- incomparables[i &gt; 0L]
+      incomparables &lt;- tmp[nmx]
+    }
+    
+    # first determine duplicates, then override when an incomparable value is found in a row since the existence of even 1 incomparable value in a row means it cannot be a duplicate
+    res &lt;- duplicated(do.call(&quot;paste&quot;, c(x, sep=&quot;\r&quot;)), fromLast = fromLast)
+    
+    #for better performance only bother with the columns that have incomparable values not set to the default: !identical(x, FALSE)
+    run_incomp_check &lt;- sapply(incomparables, FUN=function(x){!identical(x, FALSE)})
+    if (sum(run_incomp_check) &gt; 0L){
+      incomp_check &lt;- mapply(FUN=function(column,incomparables){match(column, incomparables)}, x[run_incomp_check], incomparables[run_incomp_check])
+      # any rows with an incomparable match means, TRUE, it can override the duplicated result
+      overwrite &lt;- apply(data.frame(incomp_check), 1, function(x){any(!is.na(x))})
+      res[overwrite] &lt;- FALSE
+    }
+    
+    return(res)
+  } else if(length(x) != 1L) {
+    duplicated(do.call(&quot;paste&quot;, c(x, sep=&quot;\r&quot;)), fromLast = fromLast)
+  } else {
+    duplicated(x[[1L]], fromLast = fromLast, ...)
+  }
+}</code></pre>
+<p>Here is the function in action:</p>
+<pre class="r"><code>mtcars2 &lt;- head(mtcars[,c(&#39;am&#39;, &#39;gear&#39;, &#39;cyl&#39;)])
+mtcars2$dup &lt;- new_duplicated(mtcars2, incomparables=1)
+mtcars2</code></pre>
+<pre><code>##                   am gear cyl   dup
+## Mazda RX4          1    4   6 FALSE
+## Mazda RX4 Wag      1    4   6 FALSE
+## Datsun 710         1    4   4 FALSE
+## Hornet 4 Drive     0    3   6 FALSE
+## Hornet Sportabout  0    3   8 FALSE
+## Valiant            0    3   6  TRUE</code></pre>
+<p>Typically, the second row would be considered a duplicate of the first row, but since 1 is an incomparable value it is not considered a duplicate, in fact, any row containing a 1 in the column will be labeled as false since it renders the row incomparable.</p>
+
+              
+              
+              
+                
+              
+              
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        July 28, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/">A Scalable Predictive API with PFA and AWS Lambda</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 2, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/2017/06/google-sites-for-documentation/">Google Sites for Documentation</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 1, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/projects/googlesites/">googlesites</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+    </div>
+
+    
+    <hr style="margin-bottom:5px;"><footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2017  / Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

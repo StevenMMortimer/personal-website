@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>A Scalable Predictive API with PFA and AWS Lambda | Steven M. Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="You can build scalable predictive APIs using the Portable Format for Analytics, AWS Lambda, and AWS API Gateway.">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="A Scalable Predictive API with PFA and AWS Lambda" />
+<meta property="og:description" content="You can build scalable predictive APIs using the Portable Format for Analytics, AWS Lambda, and AWS API Gateway." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/" />
+<meta property="og:image" content="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/pfa-plus-lambda.png" />
+    <meta name="twitter:site" content="@StevenMMortimer" />
+<meta name="twitter:creator" content="@StevenMMortimer" />
+<meta name="twitter:title" content="A Scalable Predictive API with PFA and AWS Lambda" />
+<meta name="twitter:description" content="You can build scalable predictive APIs using the Portable Format for Analytics, AWS Lambda, and AWS API Gateway." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/pfa-plus-lambda.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="https://linkedin.com/in/StevenMMortimer">LINKEDIN</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/">A Scalable Predictive API with PFA and AWS Lambda</a></strong>
+          </h3>
+        </div>
+        
+        
+        <div class="blog-title">
+          <span class="icon">
+           <i class="fa fa-pencil" aria-hidden="false"></i>
+          </span>
+          <span>Published 
+            <time datetime="2017-07-28" itemprop="datePublished">
+              July 28, 2017
+            </time>
+          </span>
+          <div style="margin-top:5px;">
+            <span class="icon">
+              <i class="fa fa-clock-o" aria-hidden="false"></i>
+            </span>
+            <span>
+                8 minute read
+            </span>
+          </div>
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div id="TOC">
+<ul>
+<li><a href="#a-scalable-infrastructure">A Scalable Infrastructure</a></li>
+<li><a href="#model-building-and-execution-using-pfa">Model Building and Execution using PFA</a></li>
+<li><a href="#actually-doing-this">Actually Doing This</a><ul>
+<li><a href="#step-1---creating-the-lambda-function">Step 1 - Creating the Lambda Function</a></li>
+<li><a href="#step-2---build-your-model">Step 2 - Build Your Model</a></li>
+<li><a href="#step-3---upload-your-model-to-s3">Step 3 - Upload Your Model to S3</a></li>
+<li><a href="#step-4---test-your-lambda-makes-predictions">Step 4 - Test Your Lambda Makes Predictions</a></li>
+<li><a href="#step-5---hook-lambda-up-to-api-gateway">Step 5 - Hook Lambda Up to API Gateway</a></li>
+</ul></li>
+<li><a href="#load-testing">Load Testing</a><ul>
+<li><a href="#load-testing-results">Load Testing Results</a></li>
+<li><a href="#load-testing-config">Load Testing Config</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>Building machine learning models is fun and challenging, but there are a whole other set of challenges when figuring out how to deploy your models in a production environment. This includes answering questions like: Does the model need to be translated to another programming language? Will it scale? Does it need to be dumbed down? Usually, the person who built the model is not an expert on how to deploy the model in infrastructure, which has led to a proliferation of turn-key solutions for converting machine learning models into web APIs: <a href="https://azure.microsoft.com/en-us/services/machine-learning/">Azure ML</a>, <a href="https://www.yhat.com/products/scienceops">YHat ScienceOps</a>, <a href="https://www.dominodatalab.com/solutions/">Domino Data Lab</a>, and many others. I’m not a big fan of spending money on these types of platforms or systems because they are usually costly and require learning quirks of a specific platform that has limited features and support, so I’ve tinkered with finding alternatives…</p>
+<div id="a-scalable-infrastructure" class="section level2">
+<h2>A Scalable Infrastructure</h2>
+<p><a href="https://aws.amazon.com/lambda/" target="_blank">AWS Lambda</a> is serverless computing, in other words, you only pay for the computation of a function you’ve uploaded to AWS and AWS will manage the orchestration of servers to handle requests. Lambda functions can easily be turned into a webservice using AWS API Gateway, so this accomplishes your accessibility and scalability requirements. AWS will scale to however many requests come in and you only pay for what you use. The question is: How to execute machine learning models from a Lambda function?</p>
+</div>
+<div id="model-building-and-execution-using-pfa" class="section level2">
+<h2>Model Building and Execution using PFA</h2>
+<p>Models can be built in many languages like, Python, R, or Java and if you work on a large, cross-functional team it is likely that not everyone will agree to using just one language. The Portable Format for Analytics (PFA) is an interesting solution because it is a language-agnostic, plain-text standard for representing analytical workflows. PFA can be executed from within a Lambda function in either a Java or Python runtime using Hadrian or Titus libraries, respectively (an example is provided below). At a high-level data will be sent via HTTP to API Gateway, which provides scaffolding to route the request to your Lambda function. Once the data reaches the function, the PFA logic will be applied and the result passed back to complete the roundtrip API call. All of this is completely scalable, can be run at low cost, and automatically gives you infrastructure for tracking response times, assigning per-user access keys, creating API documentation, applying request validation and much more. As a bonus, using AWS is also more likely to get love and support from your IT staff should you need it.</p>
+</div>
+<div id="actually-doing-this" class="section level2">
+<h2>Actually Doing This</h2>
+<div id="step-1---creating-the-lambda-function" class="section level3">
+<h3>Step 1 - Creating the Lambda Function</h3>
+<p>The absolute simplest test would be to clone the <a href="https://github.com:ReportMort/pfa-lambda" target="_blank">repository</a> where I’ve created a Lambda deploy package for running Titus (Python runtime), then zip up that package and upload to the AWS Lambda console.</p>
+<pre><code>git clone git@github.com:ReportMort/pfa-lambda.git
+zip -r my-lambda-deploy.zip .</code></pre>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/upload-deploy-package.png" />
+
+</div>
+<p>Note, you’ll want to select the Runtime for your lambda as Python 2.7 since that is the Python version that this lambda deploy package was created. Also, the deploy package has a function file named <code>lambda_function.py</code> so that it matches the handler specification in the AWS console by default (i.e. The filename.handler-method value in your function.). You could rename your <code>.py</code> file as anything, but remember to update the handler specification to match.</p>
+<p>Finally, the Lambda function runs under an IAM service role. If you’d like the Lambda function to access other AWS resources, like reading your model file from S3, then you’ll want to make sure that the service role as permissions to access S3. For example, the image below shows the service role has access to write to CloudFront logs, but also full access to S3.</p>
+<p><img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/service-role-permissions1.png" /> <img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/service-role-permissions2.png" /></p>
+<p>Proceed through the create Lambda function dialog to create your function, then give it a test. The function <code>lambda_function.py</code> has hand-coded PFA logic to take 3.14 and add 100 to it, which returns 103.14. In the test summary, you can see the output as 103.14, but you can also see that the function executed in .25 milliseconds. A machine learning model executing in .25 milliseconds is pretty darn fast and exciting to see, but this is just a toy example.</p>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/simple-lambda-test-result.png" />
+
+</div>
+</div>
+<div id="step-2---build-your-model" class="section level3">
+<h3>Step 2 - Build Your Model</h3>
+<p>A more realistic example, might be building a Naive Bayes classifier on a dataset of with many predictors. The <code>mlbench</code> package has a dataset called “Sonar” that consists of 208 data points collected on 60 predictors. Our goal will be to predict two classes (M for metal cylinder or R for rock). In the code below, I create a model and export it to PFA using the <code>aurelius</code> package.</p>
+<pre class="r"><code>library(mlbench)
+library(e1071)
+data(Sonar)
+set.seed(1)
+sonar_model &lt;- naiveBayes(Class ~ ., data=Sonar)
+
+library(aurelius) # library for converting to PFA
+sonar_model_as_pfa &lt;- pfa(sonar_model)
+write_pfa(sonar_model_as_pfa, &#39;~/model.pfa&#39;)</code></pre>
+<p>Note that the model could be created in <a href="http://scikit-learn.org/stable/">scikit-learn</a>, <a href="%22https://spark.apache.org/mllib/%22">MLlib</a> or any number of <a href="http://www.kdnuggets.com/2015/06/top-20-r-machine-learning-packages.html">R packages for maching learning</a> and translated using a PFA converter library. Support exists for the JVM, Python, and R, just check <a href="https://github.com/opendatagroup/hadrian" target="_blank">here</a>.</p>
+</div>
+<div id="step-3---upload-your-model-to-s3" class="section level3">
+<h3>Step 3 - Upload Your Model to S3</h3>
+<p>After you’ve created a PFA model upload it to an S3 bucket. In the Lambda deploy package there is a Lambda function called <code>model-from-s3.py</code> that has logic to read a PFA model from an S3 bucket and use it for scoring.</p>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/upload-model-to-s3.png" />
+
+</div>
+<p>Note, you may have to adjust the bucket name and model file name in the Python script to read the file you’ve uploaded. These parameters are specified in <a href="https://github.com/ReportMort/pfa-lambda/blob/master/model-from-s3.py#L10-L11">Lines 10 and 11</a> in the script.</p>
+</div>
+<div id="step-4---test-your-lambda-makes-predictions" class="section level3">
+<h3>Step 4 - Test Your Lambda Makes Predictions</h3>
+<p>After configuring the script <code>model-from-s3.py</code> and re-uploading your Lambda deploy package, you will need to update the handler specification in the AWS console. Change the value to be <code>model-from-s3.lambda_handler</code>. This model requires the data to be provided via the event JSON for the function. You can use the AWS Hello World testing template which provides 3 dummy key-value pairs. Our model had 60 variables as inputs so instead of writing those out by hand, it’s easiest to pull out one record from the sample data and copy/paste into the testing template.</p>
+<pre class="r"><code>jsonlite::toJSON(jsonlite::unbox(Sonar[1,grepl(&#39;V[0-9]+&#39;, names(Sonar))]))</code></pre>
+<pre><code>## {&quot;V1&quot;:0.02,&quot;V2&quot;:0.0371,&quot;V3&quot;:0.0428,&quot;V4&quot;:0.0207,&quot;V5&quot;:0.0954,&quot;V6&quot;:0.0986,&quot;V7&quot;:0.1539,&quot;V8&quot;:0.1601,&quot;V9&quot;:0.3109,&quot;V10&quot;:0.2111,&quot;V11&quot;:0.1609,&quot;V12&quot;:0.1582,&quot;V13&quot;:0.2238,&quot;V14&quot;:0.0645,&quot;V15&quot;:0.066,&quot;V16&quot;:0.2273,&quot;V17&quot;:0.31,&quot;V18&quot;:0.2999,&quot;V19&quot;:0.5078,&quot;V20&quot;:0.4797,&quot;V21&quot;:0.5783,&quot;V22&quot;:0.5071,&quot;V23&quot;:0.4328,&quot;V24&quot;:0.555,&quot;V25&quot;:0.6711,&quot;V26&quot;:0.6415,&quot;V27&quot;:0.7104,&quot;V28&quot;:0.808,&quot;V29&quot;:0.6791,&quot;V30&quot;:0.3857,&quot;V31&quot;:0.1307,&quot;V32&quot;:0.2604,&quot;V33&quot;:0.5121,&quot;V34&quot;:0.7547,&quot;V35&quot;:0.8537,&quot;V36&quot;:0.8507,&quot;V37&quot;:0.6692,&quot;V38&quot;:0.6097,&quot;V39&quot;:0.4943,&quot;V40&quot;:0.2744,&quot;V41&quot;:0.051,&quot;V42&quot;:0.2834,&quot;V43&quot;:0.2825,&quot;V44&quot;:0.4256,&quot;V45&quot;:0.2641,&quot;V46&quot;:0.1386,&quot;V47&quot;:0.1051,&quot;V48&quot;:0.1343,&quot;V49&quot;:0.0383,&quot;V50&quot;:0.0324,&quot;V51&quot;:0.0232,&quot;V52&quot;:0.0027,&quot;V53&quot;:0.0065,&quot;V54&quot;:0.0159,&quot;V55&quot;:0.0072,&quot;V56&quot;:0.0167,&quot;V57&quot;:0.018,&quot;V58&quot;:0.0084,&quot;V59&quot;:0.009,&quot;V60&quot;:0.0032}</code></pre>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/real-model-test-inputs.png" />
+
+</div>
+<p>The results of a test on the real model are also encouraging. The prediction was “R”, which matches the prediction of “R” using <code>predict(sonar_model, Sonar[1,])</code>. Also, it only took 52.46 milliseconds to execute against a Naive Bayes model model with 60 input variables. Note, different models will have different latencies, so your performance may vary.</p>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/real-model-results.png" />
+
+</div>
+</div>
+<div id="step-5---hook-lambda-up-to-api-gateway" class="section level3">
+<h3>Step 5 - Hook Lambda Up to API Gateway</h3>
+<p>The last step in making your prediction service is to open it up as a webservice so that other applications can take advantage of your hard work. I won’t go into detail about <a href="https://aws.amazon.com/api-gateway/" target="_blank">API Gateway</a>, but it’s very powerful in terms of supporting a full-fledged API (access keys, logging, documentation, etc.). I would encourage you to take advantage of these after getting the bare bones of your API working.</p>
+<p>First, create an API and add a POST method. You’ll want to use a POST method because new data for your prediction will be POSTed in the request body as JSON. While setting up the method you can associate it to your Lambda function. You’ll be able to test that your API works by supplying some sample JSON in a format that your model expects.</p>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/create-api-method.png" />
+
+</div>
+<p>Finally, API Gateway requires you to “Deploy” your API so you’ll need to do that step before being able to access it via the web. APIs are deployed in stages, so you can create a stage called “dev” and deploy to it.</p>
+<div class="figure">
+<img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/deploy-api.png" />
+
+</div>
+<p>Now that everything is setup you can test calls against the invoke url by submitting a <code>curl</code> command, like so:</p>
+<pre><code>curl -X POST -H &quot;Content-Type: application/json&quot; -d &#39;{&quot;V1&quot;:0.02,&quot;V2&quot;:0.0371,&quot;V3&quot;:0.0428,&quot;V4&quot;:0.0207,&quot;V5&quot;:0.0954,&quot;V6&quot;:0.0986,&quot;V7&quot;:0.1539,&quot;V8&quot;:0.1601,&quot;V9&quot;:0.3109,&quot;V10&quot;:0.2111,&quot;V11&quot;:0.1609,&quot;V12&quot;:0.1582,&quot;V13&quot;:0.2238,&quot;V14&quot;:0.0645,&quot;V15&quot;:0.066,&quot;V16&quot;:0.2273,&quot;V17&quot;:0.31,&quot;V18&quot;:0.2999,&quot;V19&quot;:0.5078,&quot;V20&quot;:0.4797,&quot;V21&quot;:0.5783,&quot;V22&quot;:0.5071,&quot;V23&quot;:0.4328,&quot;V24&quot;:0.555,&quot;V25&quot;:0.6711,&quot;V26&quot;:0.6415,&quot;V27&quot;:0.7104,&quot;V28&quot;:0.808,&quot;V29&quot;:0.6791,&quot;V30&quot;:0.3857,&quot;V31&quot;:0.1307,&quot;V32&quot;:0.2604,&quot;V33&quot;:0.5121,&quot;V34&quot;:0.7547,&quot;V35&quot;:0.8537,&quot;V36&quot;:0.8507,&quot;V37&quot;:0.6692,&quot;V38&quot;:0.6097,&quot;V39&quot;:0.4943,&quot;V40&quot;:0.2744,&quot;V41&quot;:0.051,&quot;V42&quot;:0.2834,&quot;V43&quot;:0.2825,&quot;V44&quot;:0.4256,&quot;V45&quot;:0.2641,&quot;V46&quot;:0.1386,&quot;V47&quot;:0.1051,&quot;V48&quot;:0.1343,&quot;V49&quot;:0.0383,&quot;V50&quot;:0.0324,&quot;V51&quot;:0.0232,&quot;V52&quot;:0.0027,&quot;V53&quot;:0.0065,&quot;V54&quot;:0.0159,&quot;V55&quot;:0.0072,&quot;V56&quot;:0.0167,&quot;V57&quot;:0.018,&quot;V58&quot;:0.0084,&quot;V59&quot;:0.009,&quot;V60&quot;:0.0032}&#39; https://7uc1muh9pd.execute-api.us-east-1.amazonaws.com/dev</code></pre>
+</div>
+</div>
+<div id="load-testing" class="section level2">
+<h2>Load Testing</h2>
+<p>For those of you who are interested in the scalability. I used <a href="https://artillery.io" target="_blank">artillery.io</a> to load test and got the following results for our classifier. I created a test where the load simulated 10 requests per second over 60 seconds. The 99th percentile latency was 0.30 seconds and the median was 0.15 seconds. The complete results were:</p>
+<div id="load-testing-results" class="section level3">
+<h3>Load Testing Results</h3>
+<pre><code>all scenarios completed
+Complete report @ 2017-07-28T16:53:05.387Z
+  Scenarios launched:  600
+  Scenarios completed: 600
+  Requests completed:  600
+  RPS sent: 9.93
+  Request latency:
+    min: 115.6
+    max: 806.8
+    median: 149.1
+    p95: 217.3
+    p99: 300.1
+  Scenario duration:
+    min: 116.6
+    max: 807.8
+    median: 150.5
+    p95: 219.6
+    p99: 301
+  Scenario counts:
+    0: 600 (100%)
+  Codes:
+    200: 600</code></pre>
+</div>
+<div id="load-testing-config" class="section level3">
+<h3>Load Testing Config</h3>
+<p>Here is my testing config as artillery YAML file:</p>
+<pre><code>config:
+  target: &#39;https://7uc1muh9pd.execute-api.us-east-1.amazonaws.com&#39;
+  phases:
+    - duration: 60
+      arrivalRate: 10
+  defaults:
+    headers:
+      Content-Type: &#39;application/json&#39;
+  payload:
+    path: &quot;./test-data.csv&quot;
+    fields:
+      - &quot;V1&quot;
+      - &quot;V2&quot;
+      - &quot;V3&quot;
+      - &quot;V4&quot;
+      - &quot;V5&quot;
+      - &quot;V6&quot;
+      - &quot;V7&quot;
+      - &quot;V8&quot;
+      - &quot;V9&quot;
+      - &quot;V10&quot;
+      - &quot;V11&quot;
+      - &quot;V12&quot;
+      - &quot;V13&quot;
+      - &quot;V14&quot;
+      - &quot;V15&quot;
+      - &quot;V16&quot;
+      - &quot;V17&quot;
+      - &quot;V18&quot;
+      - &quot;V19&quot;
+      - &quot;V20&quot;
+      - &quot;V21&quot;
+      - &quot;V22&quot;
+      - &quot;V23&quot;
+      - &quot;V24&quot;
+      - &quot;V25&quot;
+      - &quot;V26&quot;
+      - &quot;V27&quot;
+      - &quot;V28&quot;
+      - &quot;V29&quot;
+      - &quot;V30&quot;
+      - &quot;V31&quot;
+      - &quot;V32&quot;
+      - &quot;V33&quot;
+      - &quot;V34&quot;
+      - &quot;V35&quot;
+      - &quot;V36&quot;
+      - &quot;V37&quot;
+      - &quot;V38&quot;
+      - &quot;V39&quot;
+      - &quot;V40&quot;
+      - &quot;V41&quot;
+      - &quot;V42&quot;
+      - &quot;V43&quot;
+      - &quot;V44&quot;
+      - &quot;V45&quot;
+      - &quot;V46&quot;
+      - &quot;V47&quot;
+      - &quot;V48&quot;
+      - &quot;V49&quot;
+      - &quot;V50&quot;
+      - &quot;V51&quot;
+      - &quot;V52&quot;
+      - &quot;V53&quot;
+      - &quot;V54&quot;
+      - &quot;V55&quot;
+      - &quot;V56&quot;
+      - &quot;V57&quot;
+      - &quot;V58&quot;
+      - &quot;V59&quot;
+      - &quot;V60&quot;     
+
+scenarios:
+  - flow:
+    - post:
+        url: &quot;/dev&quot;</code></pre>
+</div>
+</div>
+
+              
+              
+              
+                
+              
+              
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 2, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/2017/06/google-sites-for-documentation/">Google Sites for Documentation</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        June 1, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/projects/googlesites/">googlesites</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        May 22, 2017
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/projects/rdfp/">rdfp</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+    </div>
+
+    
+    <hr style="margin-bottom:5px;"><footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2017  / Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

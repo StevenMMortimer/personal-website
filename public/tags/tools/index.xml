@@ -13,10 +13,10 @@
     
     <item>
       <title>An R User Chooses a Python IDE</title>
-      <link>/blog/an-r-user-chooses-a-python-ide/</link>
+      <link>/2017/04/an-r-user-chooses-a-python-ide/</link>
       <pubDate>Fri, 07 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>/blog/an-r-user-chooses-a-python-ide/</guid>
+      <guid>/2017/04/an-r-user-chooses-a-python-ide/</guid>
       <description>Jupyter Notebooks Rodeo Spyder Text Editor (e.g. Sublime) PyCharm Final Thoughts   Yes, this is a post about IDEs. Let the name-calling begin! No, no, I don’t intend to insult or incite any ill-will towards any person or project. This purpose of this post is to give other people who are familiar working with R, some insight into how a fellow R user has evaluated and experienced picking an IDE for programming Python.</description>
     </item>
     

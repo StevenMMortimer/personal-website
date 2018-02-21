@@ -13,10 +13,10 @@
     
     <item>
       <title>Cleaning Contact Info</title>
-      <link>/blog/cleaning-contact-info/</link>
+      <link>/2016/11/cleaning-contact-info/</link>
       <pubDate>Wed, 02 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>/blog/cleaning-contact-info/</guid>
+      <guid>/2016/11/cleaning-contact-info/</guid>
       <description>Where are the Examples? Cleaning Functions Framework The Functions Cleaning Phone Numbers Cleaning URLs Cleaning Zip Codes Cleaning Email Addresses    Where are the Examples? R is great for cleaning data and that’s why I was surprised that I couldn’t find very many examples or even a full-fledged package for cleaning contact information (phone numbers, addresses, etc.). Instead I decided to write a few functions of my own to get the job done.</description>
     </item>
     

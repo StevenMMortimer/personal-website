@@ -13,75 +13,75 @@
     
     <item>
       <title>A Scalable Predictive API with PFA and AWS Lambda</title>
-      <link>/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/</link>
+      <link>/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/</link>
       <pubDate>Fri, 28 Jul 2017 00:00:00 +0000</pubDate>
       
-      <guid>/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/</guid>
+      <guid>/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/</guid>
       <description>A Scalable Infrastructure Model Building and Execution using PFA Actually Doing This Step 1 - Creating the Lambda Function Step 2 - Build Your Model Step 3 - Upload Your Model to S3 Step 4 - Test Your Lambda Makes Predictions Step 5 - Hook Lambda Up to API Gateway  Load Testing Load Testing Results Load Testing Config    Building machine learning models is fun and challenging, but there are a whole other set of challenges when figuring out how to deploy your models in a production environment.</description>
     </item>
     
     <item>
       <title>Google Sites for Documentation</title>
-      <link>/blog/google-sites-for-documentation/</link>
+      <link>/2017/06/google-sites-for-documentation/</link>
       <pubDate>Fri, 02 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>/blog/google-sites-for-documentation/</guid>
+      <guid>/2017/06/google-sites-for-documentation/</guid>
       <description>The WYSIWYG Access Control Permissions Embedded Google Docs, Sheets, etc. Built In Google Search and Analytics Final Thoughts   The title of this post is probably off-putting to a large number of people. Why on earth would I use Google Sites for blogging, wiki, and technical documentation? Isn’t that old, outdated tech even though Google did release a newer version? To be honest, I agree with those objections. This blog isn’t written with Google Sites.</description>
     </item>
     
     <item>
       <title>An R User Chooses a Python IDE</title>
-      <link>/blog/an-r-user-chooses-a-python-ide/</link>
+      <link>/2017/04/an-r-user-chooses-a-python-ide/</link>
       <pubDate>Fri, 07 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>/blog/an-r-user-chooses-a-python-ide/</guid>
+      <guid>/2017/04/an-r-user-chooses-a-python-ide/</guid>
       <description>Jupyter Notebooks Rodeo Spyder Text Editor (e.g. Sublime) PyCharm Final Thoughts   Yes, this is a post about IDEs. Let the name-calling begin! No, no, I don’t intend to insult or incite any ill-will towards any person or project. This purpose of this post is to give other people who are familiar working with R, some insight into how a fellow R user has evaluated and experienced picking an IDE for programming Python.</description>
     </item>
     
     <item>
       <title>PFA with the R Package aurelius</title>
-      <link>/blog/pfa-with-the-r-package-aurelius/</link>
+      <link>/2017/02/pfa-with-the-r-package-aurelius/</link>
       <pubDate>Mon, 13 Feb 2017 00:00:00 +0000</pubDate>
       
-      <guid>/blog/pfa-with-the-r-package-aurelius/</guid>
+      <guid>/2017/02/pfa-with-the-r-package-aurelius/</guid>
       <description>I first heard about the Portable Format for Analytics (PFA) through KDnuggets in 2016. There was a post that in vague way talked about the virtues and benefits of PFA, but not to completely supplant PMML, which I was already familiar with. PMML was pretty cool, but I couldn’t find good support and felt that the XML-based approach was clumsy and outdated so when I heard about PFA, I was pretty excited.</description>
     </item>
     
     <item>
       <title>Creating an RStudio Addin</title>
-      <link>/blog/creating-an-rstudio-addin/</link>
+      <link>/2016/12/creating-an-rstudio-addin/</link>
       <pubDate>Sat, 10 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>/blog/creating-an-rstudio-addin/</guid>
+      <guid>/2016/12/creating-an-rstudio-addin/</guid>
       <description>I never thought too much about RStudio addins, but I saw a few cool examples ( jadd, colorpicker, and addinslist) and decided to take a closer look. After a little research, it seemed easier than I thought. It was easier because RStudio provided some excellent documentation on addins and it turns out that if you can write R code, then you can write an RStudio addin.
 My Idea Around the time I was looking at addins, I started taking advantage of a little RStudio trick to navigate long scripts.</description>
     </item>
     
     <item>
       <title>Deduping Records</title>
-      <link>/blog/deduping-records/</link>
+      <link>/2016/12/deduping-records/</link>
       <pubDate>Thu, 01 Dec 2016 00:00:00 +0000</pubDate>
       
-      <guid>/blog/deduping-records/</guid>
+      <guid>/2016/12/deduping-records/</guid>
       <description>Common Data Deduping Logic
 A while ago I was working on migration of 4 separate legacy Salesforce systems into a single org. Naturally, the lack of consistency and controls led to each of those systems containing slighly different versions of the same data. A requirement for the migration was to remove any duplicate records and preserve the best version of the truth for a single entity. This concept is known as master data management.</description>
     </item>
     
     <item>
       <title>The Unfinished duplicated Function</title>
-      <link>/blog/the-unfinished-duplicated-function/</link>
+      <link>/2016/11/the-unfinished-duplicated-function/</link>
       <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>/blog/the-unfinished-duplicated-function/</guid>
+      <guid>/2016/11/the-unfinished-duplicated-function/</guid>
       <description>If you’re a regular R user, then you’ve probably used or have seen the function duplicated(). If you’ve only grown up in the world of dplyr and other tidyverse packages with its cool function distinct(), then I highly envy you. In any case, you might find yourself using the duplicated() function when you need some more control. The function has a handy argument incomparables that allows you to ignore certain values when doing the comparison for duplicates.</description>
     </item>
     
     <item>
       <title>Cleaning Contact Info</title>
-      <link>/blog/cleaning-contact-info/</link>
+      <link>/2016/11/cleaning-contact-info/</link>
       <pubDate>Wed, 02 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>/blog/cleaning-contact-info/</guid>
+      <guid>/2016/11/cleaning-contact-info/</guid>
       <description>Where are the Examples? Cleaning Functions Framework The Functions Cleaning Phone Numbers Cleaning URLs Cleaning Zip Codes Cleaning Email Addresses    Where are the Examples? R is great for cleaning data and that’s why I was surprised that I couldn’t find very many examples or even a full-fledged package for cleaning contact information (phone numbers, addresses, etc.). Instead I decided to write a few functions of my own to get the job done.</description>
     </item>
     

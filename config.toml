@@ -49,7 +49,7 @@ pluralizelisttitles = false
 	highlight_version = "9.11.0"
 
 [Permalinks]
-    post = "/:year/:month/:day/:filename/"
+    blog = "/:year/:month/:filename"
     
 [[menu.main]]
     name = "Projects"

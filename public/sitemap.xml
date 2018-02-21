@@ -8,12 +8,12 @@
   </url>
   
   <url>
-    <loc>/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/</loc>
+    <loc>/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/</loc>
     <lastmod>2017-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/google-sites-for-documentation/</loc>
+    <loc>/2017/06/google-sites-for-documentation/</loc>
     <lastmod>2017-06-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -38,37 +38,32 @@
   </url>
   
   <url>
-    <loc>/page/contact/</loc>
-    <lastmod>2017-05-09T17:37:50+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/an-r-user-chooses-a-python-ide/</loc>
+    <loc>/2017/04/an-r-user-chooses-a-python-ide/</loc>
     <lastmod>2017-04-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/pfa-with-the-r-package-aurelius/</loc>
+    <loc>/2017/02/pfa-with-the-r-package-aurelius/</loc>
     <lastmod>2017-02-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/creating-an-rstudio-addin/</loc>
+    <loc>/2016/12/creating-an-rstudio-addin/</loc>
     <lastmod>2016-12-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/deduping-records/</loc>
+    <loc>/2016/12/deduping-records/</loc>
     <lastmod>2016-12-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/the-unfinished-duplicated-function/</loc>
+    <loc>/2016/11/the-unfinished-duplicated-function/</loc>
     <lastmod>2016-11-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blog/cleaning-contact-info/</loc>
+    <loc>/2016/11/cleaning-contact-info/</loc>
     <lastmod>2016-11-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -130,12 +125,6 @@
   <url>
     <loc>/tags/machine-learning/</loc>
     <lastmod>2017-07-28T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/page/</loc>
-    <lastmod>2017-05-09T17:37:50+00:00</lastmod>
     <priority>0</priority>
   </url>
   
