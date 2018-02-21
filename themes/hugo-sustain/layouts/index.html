@@ -15,10 +15,10 @@
           <a href="{{ .Site.BaseURL }}blog/"> blog</a>.
         </h3>
         <h3>Feel free to contact me on <a href="https://linkedin.com/in/{{ .Site.Params.linkedin }}">LinkedIn</a> or by <a href="mailto:{{ .Site.Params.email }}">email</a>.</h3>
-        {{ partial "social.html" . }}
         </div>
       </section>
     </div>
+    {{ partial "social.html" . }}
     {{ partial "footer" . }}
   </body>
 </html>
