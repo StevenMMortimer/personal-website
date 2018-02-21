@@ -11,10 +11,14 @@
             {{ if .Title }}
             <ol class="post-list">
               <li class="post-stub">
-                  <a href="{{ .Permalink }}">
-                    <h5 class="post-stub-title">{{ .Title }}</h5>
-                  </a>
                   <p class="post-stub-description">{{ .Date.Format "January 2, 2006" }}</p>
+                  <a href="{{ .Permalink }}">
+                    {{ if eq .Section "projects" }}
+                    <h5 class="post-stub-title">{{ .Title }} - {{ .Description }}</h5>
+                    {{ else }}
+                    <h5 class="post-stub-title">{{ .Title }}</h5>
+                    {{ end }}
+                  </a>
               </li>
             </ol>
             {{ end }}

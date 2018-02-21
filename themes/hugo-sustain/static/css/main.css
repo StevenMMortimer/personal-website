@@ -12,13 +12,13 @@ div.footer{
 .post-list { list-style: none; padding: 0; margin:0 auto; max-width: 500px; min-width: 100px;}
 .post-stub { margin: 20px 0; position: relative; }
 .post-stub:first-child { padding-top: 0; }
-.post-stub-title { display: inline-block; margin: 0; text-transform: none; width: 59%; text-align: left;}
-.post-stub-description { display: inline-block; margin: 0; text-transform: none; width: 40%; text-align: right;}
+.post-stub-title { display: inline-block; margin: 0; text-transform: none; }
+.post-stub-description { display: block; margin: 0; text-transform: none; white-space: nowrap;}
 .post-stub-date { display: inline-block; }
 .post-stub-date:before { content: "/ "; }
 /* Add padding to create space for footer */
 body {
-  padding-bottom: 105px;
+  padding-bottom: 125px;
 }
 /* Wrapper for page content to push down footer */
 #wrap {
