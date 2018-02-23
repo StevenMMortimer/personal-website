@@ -1,0 +1,72 @@
+---
+title: Building a Corporate R Package
+author: ~
+date: '2017-11-03'
+slug: building-a-corporate-r-package
+categories: []
+tags:
+  - r-code
+  - tools
+  - enterprise-r
+description: "Always wanted to write an R package for your team? This article gives tips for what to include in your team's R package. Get started today!"
+image: "blog/building-a-corporate-r-package/r-and-your-company.jpg"
+draft: true
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+If you don't feel comfortable centralizing credentials for security reasons or 
+your team doesn't have shared credentials, then have those stored locally in a 
+profile and called by the package in a standardized way.
+
+### Analytical Functions
+Creating functions is a programming best practice. They are easier to monitor, 
+test, and teach to others. If your team performs routine calculations, establish 
+a standard  by adding functions to the shared library and encourage everyone to 
+use those functions. For example: 
+
+[ some r code here? ]
+
+I strongly encourage using the R style guide [link] formats of Google and Hadley. 
+Much of the styling can be boiled down into two rules: 
+
+ 1. Name your functions with verbs and objects with nouns
+ 2. Use snake case
+ 
+### Company Constants
+Again, if you're looking to enforce standards, it's a great practice to include 
+well-known constants in your R package. For example: 
+
+[ some r code here? ]
+
+### Templating/Formatting
+A little bit of formatting goes a long way if your team routinely presents figures 
+internally and/or externally. Consider adapting a ggplot2 theme to your company's 
+colors, fonts, and other styling. Here are two links to get you started in making 
+custom theme:
+
+ 1. Roger Peng's Mastering Software Development in R 
+ https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html
+
+ 2. Joey Stanley's Blog - Custom Themes in ggplot2 
+ http://joeystanley.com/blog/custom-themes-in-ggplot2
+ 
+ Also, you might find that a majority of stakeholder in your company prefer receiving 
+ data in Excel. You can export data from R to Excel with bolded, proper case column 
+ names, format columns as percentages and dollar signs so that your stakeholders are 
+ happy getting data from you. I highly recommend working with the [openxlsx package](), 
+ which does not require Java. Below is a snippet of code that will transform column 
+ names, set column widths based on the data, and format them based on some key words in 
+ the column names like formatting columns ending in "pct" as a percentage.
+ 
+ ```{r openxlsx-example, eval=FALSE}
+ 
+ ```
+
+### Tutorials
+Finally, but maybe most importantly, R packages help teammembers grow and on-board faster. 
+You can include sample datasets and plenty of examples within the R package so that 
+new members of your team don't have to ask around how to do certain things. They can 
+read the documentation and try the examples for themselves. Consider the R package a legacy 
+asset of your team that will stand the test of time well after you've left the company.

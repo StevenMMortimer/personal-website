@@ -9,6 +9,7 @@ canonifyURLs = true
 pluralizelisttitles = false
 paginate = 5
 paginatePath = ""
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [blackfriday] 
     hrefTargetBlank = true
@@ -51,7 +52,7 @@ paginatePath = ""
 	highlight_version = "9.11.0"
 
 [Permalinks]
-    blog = "/:year/:month/:filename"
+    blog = "/:filename"
     
 [[menu.main]]
     name = "Projects"

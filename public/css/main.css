@@ -12,18 +12,39 @@ div.footer{
 .post-list { list-style: none; padding: 0; margin:0 auto; max-width: 500px; min-width: 100px;}
 .post-stub { margin: 20px 0; position: relative; }
 .post-stub:first-child { padding-top: 0; }
-.post-stub-title { display: inline-block; margin: 0; text-transform: none; width: 59%; text-align: left;}
-.post-stub-description { display: inline-block; margin: 0; text-transform: none; width: 40%; text-align: right;}
+.post-stub-title { display: inline-block; margin: 0; text-transform: none; }
+.post-stub-description { display: block; margin: 0; text-transform: none; white-space: nowrap;}
 .post-stub-date { display: inline-block; }
 .post-stub-date:before { content: "/ "; }
+.post-navigation {
+    display: table;
+    margin: 0px auto 0px;
+}
+.newer-posts,
+.older-posts {
+    float: left;
+    background: $primary;
+    color: #FEFEFE;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 5px;
+    padding: 5px 15px 6px;
+    text-transform: uppercase;
+
+    &:hover {
+        background: $secondary;
+    }
+}
+.page-number { display: none; }
+.pagination { margin: 0px; }
+/* Add padding to create space for footer */
 body {
-  padding-bottom: 105px;
+  padding-bottom: 125px;
 }
 /* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
   height: auto;
-  /* Negative indent footer by its height */
   margin: 0 auto;
 }
 /* Navbar */
@@ -147,6 +168,7 @@ body {
 }
 .panel-body {
   padding-top: -10px;
+  padding: 0px;
   text-align: left;
 }
 .social-links {

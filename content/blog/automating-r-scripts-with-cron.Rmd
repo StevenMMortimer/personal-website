@@ -1,0 +1,38 @@
+---
+title: Automating R Scripts with Cron
+author: ~
+date: '2017-08-15'
+slug: automating-r-scripts-with-cron
+categories: []
+tags:
+  - tools
+  - enterprise-r
+description: "Get started automating routine R scripts today. This article explains how to enable logging and receive error emails using the cron scheduler."
+image: "blog/automating-r-scripts-with-cron/chalkboard-timer.jpg"
+draft: true
+output:
+  blogdown::html_page
+---
+
+If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Here is a simple example for getting your script running. 
+
+[Create a script. Add to cron. Wait for it to run] + screenshots
+
+It is exciting to have a routine part of your work automated, but you probably want to monitor your script and the results its creating. Cron has a built-in feature that can send an email whenever an scheduled script errors out. You may be tempted to simply add your email address and call it a day, but you might notice that R starts flooding your inbox with cron emails even for successful runs of your script. If you prefer to only receive emails when your script errors out, then you have to short circuit how cron identifies R script errors. Below I’ll outline how to setup cron to only email on real R script errors.
+
+Cron determines whether to send an email based on the “exit code” of the script that runs. An exit code is a number emitted at the end of the script indicating a status of whether not an error occurred during the execution of the script. However, R emits exit codes a little differently than most scripting languages. In R any messages are converted to an exit code 1 (signaling an error), so it is possible to have a script that ran successfully, but signals an error occurred in running the script. There’s not a great reason for this behavior (see link). Upon realizing that messages are errors in disguise, it makes more sense to me why they’re displayed in red in the R console. [add picture]. Fortunately, a clever use of I/O redirection (similar to dplyr piping), can roll message-induced error codes into less benign forms so that an email is not triggered when messages were printed, but your script really didn’t error out. The way to do this is modify the command listed in your crontab file. Instead of just including `Rscript myrscript.R`, you should include 
+
+```
+Rscript myrscript.R > temp.log 2>&1 || cat temp.log
+```
+
+The `>` command will redirect the error feed (captured by “2”) and roll it into the standard output (stdout) feed (captured by “1”) and push them into temp.log. The `||` command checks whether the script had a non-zero exit status. If so, then it will run the `cat` command and print everything to the console and trigger an error email from cron.
+
+Also, you might want to log the script execution, so how do you do that as well? You just need to continue redirecting output as you desire. One way is having a crontab entry like this:
+
+```
+Rscript myrscript.R > temp.log 2>&1 || cat temp.log && cat temp.log >> persistent.log && rm temp.log
+```
+
+This method will still roll error messages into the standard feed and only trigger the email if the script didn’t finish, but then it will push everything into a persistent log that will keep a record of every run that you scripts do. This way you can get the error emails and keep a complete log of everything you script did if you’re looking to do a more complete review or post-mortem. I’ve outlined this logic in a Stack Overflow response at https://stackoverflow.com/a/34442846/5258043.
+

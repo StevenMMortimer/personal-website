@@ -3,17 +3,32 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/tips-for-making-professional-shiny-apps-with-r/</loc>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/building-a-corporate-r-package/</loc>
+    <lastmod>2017-11-03T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/presentations/land-a-job-writing-r-code/</loc>
     <lastmod>2017-09-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2017/07/a-scalable-predictive-api-with-pfa-and-aws-lambda/</loc>
+    <loc>/automating-r-scripts-with-cron/</loc>
+    <lastmod>2017-08-15T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/a-scalable-predictive-api-with-pfa-and-aws-lambda/</loc>
     <lastmod>2017-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2017/06/google-sites-for-documentation/</loc>
+    <loc>/google-sites-for-documentation/</loc>
     <lastmod>2017-06-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -38,32 +53,32 @@
   </url>
   
   <url>
-    <loc>/2017/04/an-r-user-chooses-a-python-ide/</loc>
+    <loc>/an-r-user-chooses-a-python-ide/</loc>
     <lastmod>2017-04-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2017/02/pfa-with-the-r-package-aurelius/</loc>
+    <loc>/pfa-with-the-r-package-aurelius/</loc>
     <lastmod>2017-02-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2016/12/creating-an-rstudio-addin/</loc>
+    <loc>/creating-an-rstudio-addin/</loc>
     <lastmod>2016-12-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2016/12/deduping-records/</loc>
+    <loc>/deduping-records/</loc>
     <lastmod>2016-12-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2016/11/the-unfinished-duplicated-function/</loc>
+    <loc>/the-unfinished-duplicated-function/</loc>
     <lastmod>2016-11-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/2016/11/cleaning-contact-info/</loc>
+    <loc>/cleaning-contact-info/</loc>
     <lastmod>2016-11-02T00:00:00+00:00</lastmod>
   </url>
   
@@ -88,7 +103,7 @@
   
   <url>
     <loc>/blog/</loc>
-    <lastmod>2017-07-28T00:00:00+00:00</lastmod>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -111,6 +126,12 @@
   </url>
   
   <url>
+    <loc>/tags/enterprise-r/</loc>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/google-sites/</loc>
     <lastmod>2017-06-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -118,7 +139,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2017-09-13T00:00:00+00:00</lastmod>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -148,7 +169,7 @@
   
   <url>
     <loc>/tags/r-code/</loc>
-    <lastmod>2017-07-28T00:00:00+00:00</lastmod>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -166,7 +187,7 @@
   
   <url>
     <loc>/tags/tools/</loc>
-    <lastmod>2017-04-07T00:00:00+00:00</lastmod>
+    <lastmod>2018-01-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

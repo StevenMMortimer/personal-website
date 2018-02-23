@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Enterprise R on Home</title>
+    <link>/tags/enterprise-r/</link>
+    <description>Recent content in Enterprise R on Home</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 09 Jan 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/enterprise-r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Tips for Making Professional Shiny Apps with R</title>
+      <link>/tips-for-making-professional-shiny-apps-with-r/</link>
+      <pubDate>Tue, 09 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tips-for-making-professional-shiny-apps-with-r/</guid>
+      <description>If you’ve built a Shiny app with R you’ll know how exciting it feels to get your first app up and running. Shiny is an amazing tool for R users, but how do you take it to the next level? This post with outline five easy ways to make Shiny apps more professional.
+Add a Progress Wheel I’ll start with the progress wheel because it is the easiest and most impactful change to make.</description>
+    </item>
+    
+    <item>
+      <title>Building a Corporate R Package</title>
+      <link>/building-a-corporate-r-package/</link>
+      <pubDate>Fri, 03 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/building-a-corporate-r-package/</guid>
+      <description>Analytical Functions Company Constants Templating/Formatting Tutorials   If you don’t feel comfortable centralizing credentials for security reasons or your team doesn’t have shared credentials, then have those stored locally in a profile and called by the package in a standardized way.
+Analytical Functions Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions.</description>
+    </item>
+    
+    <item>
+      <title>Automating R Scripts with Cron</title>
+      <link>/automating-r-scripts-with-cron/</link>
+      <pubDate>Tue, 15 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/automating-r-scripts-with-cron/</guid>
+      <description>If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Here is a simple example for getting your script running.
+[Create a script. Add to cron. Wait for it to run] + screenshots
+It is exciting to have a routine part of your work automated, but you probably want to monitor your script and the results its creating. Cron has a built-in feature that can send an email whenever an scheduled script errors out.</description>
+    </item>
+    
+  </channel>
+</rss>

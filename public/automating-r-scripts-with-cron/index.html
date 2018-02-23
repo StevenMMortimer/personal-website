@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Automating R Scripts with Cron | Steven M. Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="Get started automating routine R scripts today. This article explains how to enable logging and receive error emails using the cron scheduler.">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Automating R Scripts with Cron" />
+<meta property="og:description" content="Get started automating routine R scripts today. This article explains how to enable logging and receive error emails using the cron scheduler." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/automating-r-scripts-with-cron/" />
+<meta property="og:image" content="/blog/automating-r-scripts-with-cron/chalkboard-timer.jpg" />
+    <meta name="twitter:site" content="@StevenMMortimer" />
+<meta name="twitter:creator" content="@StevenMMortimer" />
+<meta name="twitter:title" content="Automating R Scripts with Cron" />
+<meta name="twitter:description" content="Get started automating routine R scripts today. This article explains how to enable logging and receive error emails using the cron scheduler." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/blog/automating-r-scripts-with-cron/chalkboard-timer.jpg" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="https://linkedin.com/in/StevenMMortimer">LINKEDIN</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/automating-r-scripts-with-cron/">Automating R Scripts with Cron</a></strong>
+          </h3>
+        </div>
+        
+        
+        <div class="blog-title">
+          <span class="icon">
+           <i class="fa fa-pencil" aria-hidden="false"></i>
+          </span>
+          <span>Published 
+            <time datetime="2017-08-15" itemprop="datePublished">
+              August 15, 2017
+            </time>
+          </span>
+          <div style="margin-top:5px;">
+            <span class="icon">
+              <i class="fa fa-clock-o" aria-hidden="false"></i>
+            </span>
+            <span>
+                3 minute read
+            </span>
+          </div>
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <p>If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Here is a simple example for getting your script running.</p>
+<p>[Create a script. Add to cron. Wait for it to run] + screenshots</p>
+<p>It is exciting to have a routine part of your work automated, but you probably want to monitor your script and the results its creating. Cron has a built-in feature that can send an email whenever an scheduled script errors out. You may be tempted to simply add your email address and call it a day, but you might notice that R starts flooding your inbox with cron emails even for successful runs of your script. If you prefer to only receive emails when your script errors out, then you have to short circuit how cron identifies R script errors. Below I’ll outline how to setup cron to only email on real R script errors.</p>
+<p>Cron determines whether to send an email based on the “exit code” of the script that runs. An exit code is a number emitted at the end of the script indicating a status of whether not an error occurred during the execution of the script. However, R emits exit codes a little differently than most scripting languages. In R any messages are converted to an exit code 1 (signaling an error), so it is possible to have a script that ran successfully, but signals an error occurred in running the script. There’s not a great reason for this behavior (see link). Upon realizing that messages are errors in disguise, it makes more sense to me why they’re displayed in red in the R console. [add picture]. Fortunately, a clever use of I/O redirection (similar to dplyr piping), can roll message-induced error codes into less benign forms so that an email is not triggered when messages were printed, but your script really didn’t error out. The way to do this is modify the command listed in your crontab file. Instead of just including <code>Rscript myrscript.R</code>, you should include</p>
+<pre><code>Rscript myrscript.R &gt; temp.log 2&gt;&amp;1 || cat temp.log</code></pre>
+<p>The <code>&gt;</code> command will redirect the error feed (captured by “2”) and roll it into the standard output (stdout) feed (captured by “1”) and push them into temp.log. The <code>||</code> command checks whether the script had a non-zero exit status. If so, then it will run the <code>cat</code> command and print everything to the console and trigger an error email from cron.</p>
+<p>Also, you might want to log the script execution, so how do you do that as well? You just need to continue redirecting output as you desire. One way is having a crontab entry like this:</p>
+<pre><code>Rscript myrscript.R &gt; temp.log 2&gt;&amp;1 || cat temp.log &amp;&amp; cat temp.log &gt;&gt; persistent.log &amp;&amp; rm temp.log</code></pre>
+<p>This method will still roll error messages into the standard feed and only trigger the email if the script didn’t finish, but then it will push everything into a persistent log that will keep a record of every run that you scripts do. This way you can get the error emails and keep a complete log of everything you script did if you’re looking to do a more complete review or post-mortem. I’ve outlined this logic in a Stack Overflow response at <a href="https://stackoverflow.com/a/34442846/5258043" class="uri">https://stackoverflow.com/a/34442846/5258043</a>.</p>
+
+              
+              
+              
+                
+              
+              
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/tips-for-making-professional-shiny-apps-with-r/">
+                          <h5 class="post-stub-title">Tips for Making Professional Shiny Apps with R</h5>
+                        </a>
+                        <p class="post-stub-description">January 9, 2018</p>
+                    </li>
+                  </ol>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/building-a-corporate-r-package/">
+                          <h5 class="post-stub-title">Building a Corporate R Package</h5>
+                        </a>
+                        <p class="post-stub-description">November 3, 2017</p>
+                    </li>
+                  </ol>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/an-r-user-chooses-a-python-ide/">
+                          <h5 class="post-stub-title">An R User Chooses a Python IDE</h5>
+                        </a>
+                        <p class="post-stub-description">April 7, 2017</p>
+                    </li>
+                  </ol>
+                
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+    </div>
+    <div class="social">
+  <ul class="social-links">
+
+    
+      <li><a href="mailto:reportmort@gmail.com"><i class="fa fa-envelope"></i></a></li>
+    
+
+    
+      <li><a href="https://linkedin.com/in/StevenMMortimer" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+    
+    
+    
+      <li><a href="https://github.com/StevenMMortimer" target="_blank"><i class="fa fa-github"></i></a></li>
+    
+    
+    
+      <li><a href="https://twitter.com/StevenMMortimer" target="_blank"><i class="fa fa-twitter"></i></a></li>
+    
+
+    
+      <li><a href="https://stackoverflow.com/users/5258043/steven-m-mortimer" target="_blank"><i class="fa fa-stack-overflow"></i></a></li>
+    
+    
+    
+      <li><a href="https://ko-fi.com/StevenMMortimer" target="_blank"><i class="fa fa-coffee"></i></a></li>
+        
+    
+  </ul>
+</div>
+
+    
+    <hr style="margin-bottom:5px;margin-top:5px;"><footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2018 Steven M. Mortimer<br>Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-us"  prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Deduping Records | Steven M. Mortimer</title>
+    
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="description" content="">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="generator" content="Hugo 0.36.1" />
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Deduping Records" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/deduping-records/" />
+<meta property="og:image" content="/img/headshot.png" />
+    <meta name="twitter:site" content="@StevenMMortimer" />
+<meta name="twitter:creator" content="@StevenMMortimer" />
+<meta name="twitter:title" content="Deduping Records" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="/img/headshot.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-98603021-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/presentations/">PRESENTATIONS</a></li>
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/about">ABOUT</a></li>
+        
+        <li><a href="https://linkedin.com/in/StevenMMortimer">LINKEDIN</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      
+      
+      <div class="container">
+        
+        
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/deduping-records/">Deduping Records</a></strong>
+          </h3>
+        </div>
+        
+        
+        <div class="blog-title">
+          <span class="icon">
+           <i class="fa fa-pencil" aria-hidden="false"></i>
+          </span>
+          <span>Published 
+            <time datetime="2016-12-01" itemprop="datePublished">
+              December 1, 2016
+            </time>
+          </span>
+          <div style="margin-top:5px;">
+            <span class="icon">
+              <i class="fa fa-clock-o" aria-hidden="false"></i>
+            </span>
+            <span>
+                1 minute read
+            </span>
+          </div>
+        </div>
+        
+        
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <p>Common Data Deduping Logic</p>
+<p>A while ago I was working on migration of 4 separate legacy Salesforce systems into a single org. Naturally, the lack of consistency and controls led to each of those systems containing slighly different versions of the same data. A requirement for the migration was to remove any duplicate records and preserve the best version of the truth for a single entity. This concept is known as master data management. After reading up on it, I thought MDM was easy, but it’s never easy. I could spend my entire working life defining logic and criteria for creating a master set of records on a moderately small dataset (1 million). In this post I’ll outline some ways I’ve removed duplicates using R.</p>
+<div id="a-single-column-e.g.same-email-address" class="section level2">
+<h2>A Single Column (e.g. Same Email Address)</h2>
+<p>This is an obvious one and you’ve got two ways to execute, one with base R and one with the <code>distinct()</code> function from the <code>dplyr</code> package.</p>
+</div>
+<div id="two-or-more-columns-e.g.name-and-email" class="section level2">
+<h2>Two or More Columns (e.g. Name and Email)</h2>
+</div>
+<div id="fuzzy-address-and-something-else-e.g.name-and-fuzzy-address" class="section level2">
+<h2>Fuzzy Address and Something Else (e.g. Name and Fuzzy Address)</h2>
+</div>
+
+              
+              
+              
+                
+              
+              
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/tips-for-making-professional-shiny-apps-with-r/">
+                          <h5 class="post-stub-title">Tips for Making Professional Shiny Apps with R</h5>
+                        </a>
+                        <p class="post-stub-description">January 9, 2018</p>
+                    </li>
+                  </ol>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/building-a-corporate-r-package/">
+                          <h5 class="post-stub-title">Building a Corporate R Package</h5>
+                        </a>
+                        <p class="post-stub-description">November 3, 2017</p>
+                    </li>
+                  </ol>
+                
+                  <ol class="post-list">
+                    <li class="post-stub">
+                        <a href="/a-scalable-predictive-api-with-pfa-and-aws-lambda/">
+                          <h5 class="post-stub-title">A Scalable Predictive API with PFA and AWS Lambda</h5>
+                        </a>
+                        <p class="post-stub-description">July 28, 2017</p>
+                    </li>
+                  </ol>
+                
+              </div>
+              
+              
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+    </div>
+    <div class="social">
+  <ul class="social-links">
+
+    
+      <li><a href="mailto:reportmort@gmail.com"><i class="fa fa-envelope"></i></a></li>
+    
+
+    
+      <li><a href="https://linkedin.com/in/StevenMMortimer" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+    
+    
+    
+      <li><a href="https://github.com/StevenMMortimer" target="_blank"><i class="fa fa-github"></i></a></li>
+    
+    
+    
+      <li><a href="https://twitter.com/StevenMMortimer" target="_blank"><i class="fa fa-twitter"></i></a></li>
+    
+
+    
+      <li><a href="https://stackoverflow.com/users/5258043/steven-m-mortimer" target="_blank"><i class="fa fa-stack-overflow"></i></a></li>
+    
+    
+    
+      <li><a href="https://ko-fi.com/StevenMMortimer" target="_blank"><i class="fa fa-coffee"></i></a></li>
+        
+    
+  </ul>
+</div>
+
+    
+    <hr style="margin-bottom:5px;margin-top:5px;"><footer>
+  <div id="footer">
+    <div class="container">
+      <p>&copy; 2018 Steven M. Mortimer<br>Built with <a href="https://github.com/rstudio/blogdown" target="_blank">blogdown</a> and <a href="https://gohugo.io/" target="_blank">Hugo</a>.<br>Theme <a href="https://github.com/nurlansu/hugo-sustain" target="_blank">Sustain</a>. Free HTTPS by <a href="https://www.netlify.com" target="_blank">Netlify.</a></p>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+  </body>
+</html>
