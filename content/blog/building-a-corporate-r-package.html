@@ -22,34 +22,326 @@ output:
 <li><a href="#analytical-functions">Analytical Functions</a></li>
 <li><a href="#company-constants">Company Constants</a></li>
 <li><a href="#templatingformatting">Templating/Formatting</a></li>
+<li><a href="#data-source-connections">Data Source Connections</a></li>
 <li><a href="#tutorials">Tutorials</a></li>
 </ul>
 </div>
 
-<p>If you don’t feel comfortable centralizing credentials for security reasons or your team doesn’t have shared credentials, then have those stored locally in a profile and called by the package in a standardized way.</p>
 <div id="analytical-functions" class="section level3">
 <h3>Analytical Functions</h3>
-<p>Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions. For example:</p>
-<p>[ some r code here? ]</p>
-<p>I strongly encourage using the R style guide [link] formats of Google and Hadley. Much of the styling can be boiled down into two rules:</p>
+<p>Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions. If your company works a lot with customer phone numbers, then write a function to standardize the formatting. See the example below for how to create and document these functions.</p>
+<pre class="r"><code>#&#39; Format A Column of Phone Numbers
+#&#39; 
+#&#39; This function takes a dataframe and formats a column
+#&#39; to match a 10-digit phone number (XXX) XXX-XXXX
+#&#39;
+#&#39; @usage cleanPhoneNumbers(dat, phoneColumnName, returnExtColumn=FALSE)
+#&#39; @keywords cleaning transformation etl salesforce
+#&#39; @param dat a data.frame containing a column for formatting
+#&#39; @param phoneColumnName a character string defining the target data.frame column to
+#&#39; format as (XXX) XXX-XXXX
+#&#39; @param returnExtColumn a logical specifying whether to return digits seemingly formatted as
+#&#39; an extension to the main phone number
+#&#39; @return A \code{data.frame} with a clean phone number column in the format (XXX) XXX-XXXX
+#&#39; @examples
+#&#39; \dontrun{
+#&#39; my_data &lt;- data.frame(Phone=c(&#39;2349325339 x7779&#39;, &#39;8888-888-888&#39;, 
+#&#39;                               &#39;2343-234-2341&#39;, &#39;(832) 234-3494&#39;))
+#&#39; my_data %&gt;% cleanPhoneNumbers(&#39;Phone&#39;)
+#&#39; }
+#&#39; @export
+cleanPhoneNumbers &lt;- function(dat, phoneColumnName, returnExtColumn=FALSE){
+  
+  if(!(phoneColumnName %in% names(dat))){
+    
+    message(paste(phoneColumnName, &#39;was not in the dataset, no cleaning performed.&#39;))
+    return(dat)
+    
+  } else {
+    
+    original_values &lt;- dat[,phoneColumnName]
+    
+    ext_part &lt;- gsub(&#39;(.*)(extension|ext|ex|x)(.*)&#39;, &#39;\\3&#39;, dat[,phoneColumnName])
+    ext_part &lt;- ifelse(ext_part == dat[,phoneColumnName], &#39;&#39;, ext_part)
+    ext_part &lt;- ifelse(((is.na(ext_part)) | 
+                          (ext_part == &#39;&#39;)), &#39;&#39;, 
+                       gsub(&quot;[^\\d]+&quot;, &quot;&quot;, ext_part, perl=TRUE))
+    
+    dat[,phoneColumnName] &lt;- gsub(&#39;(.*)(extension|ext|ex|x)(.*)&#39;, &#39;\\1&#39;, 
+                                  dat[,phoneColumnName])
+    
+    dat[,phoneColumnName] &lt;- ifelse(((is.na(dat[,phoneColumnName])) | 
+                                        (dat[,phoneColumnName] == &#39;&#39;)), &#39;&#39;, 
+                                     gsub(&quot;[^\\d]+&quot;, &quot;&quot;, dat[,phoneColumnName], perl=TRUE))
+    
+    # convert 11 digit numbers starting with 1 to 10 because we assume US country code
+    dat[,phoneColumnName] &lt;- ifelse(((nchar(dat[,phoneColumnName]) == 11) &amp; 
+                                       (grepl(&#39;^1&#39;, dat[,phoneColumnName]))), 
+                                     substring(dat[,phoneColumnName], 2), 
+                                    dat[,phoneColumnName])
+    
+    # if not 10 digits, then set to &#39;&#39;
+    dat[,phoneColumnName] &lt;- ifelse((nchar(dat[,phoneColumnName]) == 10), 
+                                    dat[,phoneColumnName], &#39;&#39;)
+    
+    # if weird then set to &#39;&#39;
+    wierd_vals &lt;- c(&#39;0000000000&#39;, &#39;1111111111&#39;, &#39;1234567789&#39;, &#39;1231231234&#39;, 
+                    &#39;1234567890&#39;, &#39;8888888888&#39;, &#39;9999999999&#39;)
+    
+    dat[,phoneColumnName] &lt;- ifelse((dat[,phoneColumnName] %in% wierd_vals), &#39;&#39;, 
+                                    dat[,phoneColumnName])
+    
+    dat[,phoneColumnName] &lt;- gsub(&#39;([0-9]{3})([0-9]{3})([0-9]{4})&#39;, &#39;(\\1) \\2-\\3&#39;, 
+                                  dat[,phoneColumnName])
+    
+    if(returnExtColumn){
+      dat[,&#39;phone_ext_parsed_out&#39;] &lt;- ext_part
+      
+      dat[,&#39;phone_ext_parsed_out&#39;] &lt;- ifelse(dat[,phoneColumnName] == &#39;&#39;, &#39;&#39;, 
+                                             dat[,&#39;phone_ext_parsed_out&#39;])
+      
+      dat[,&#39;phone_ext_parsed_out&#39;] &lt;- strtrim(dat[,&#39;phone_ext_parsed_out&#39;], 5)
+      
+      pos &lt;- which(names(dat) == phoneColumnName)
+      pos2 &lt;- which(names(dat) == &#39;phone_ext_parsed_out&#39;)
+      rest &lt;- seq(pos+1, ncol(dat))
+      rest &lt;- rest[rest!=pos2]
+      
+      dat &lt;- dat[,c(1:pos, pos2, rest)]
+    }
+    
+    return(dat)
+  }
+}</code></pre>
+<p>I strongly encourage using the <a href="https://google.github.io/styleguide/Rguide.xml" target="_blank">Google Style Guide</a> or <a href="http://adv-r.had.co.nz/Style.html" target="_blank">Hadley’s Style Guide</a>. Between the two of these guides I believe the two most important rules are:</p>
 <ol style="list-style-type: decimal">
-<li>Name your functions with verbs and objects with nouns</li>
 <li>Use snake case</li>
+<li>Name your functions with verbs and variables with nouns</li>
 </ol>
 </div>
 <div id="company-constants" class="section level3">
 <h3>Company Constants</h3>
-<p>Again, if you’re looking to enforce standards, it’s a great practice to include well-known constants in your R package. For example:</p>
-<p>[ some r code here? ]</p>
+<p>Again, if you’re looking to enforce standards, it is a great practice to include company-wide constants in your R package. Create an R file called <code>constants.R</code> and define these constants as follows:</p>
+<pre class="r"><code>#&#39; @export
+default_price &lt;- 9.99 # code that defines a default price constant value
+lockBinding(&quot;default_price&quot;, environment())
+
+#&#39; @export
+min_price &lt;- 4.50 # also define a minimum price of item
+lockBinding(&quot;min_price&quot;, environment())
+
+#&#39; @export
+price_cutoffs &lt;- c(0, 5, 10, 15, Inf) # define a vector to consistently bin data
+lockBinding(&quot;price_cutoffs&quot;, environment())</code></pre>
 </div>
 <div id="templatingformatting" class="section level3">
 <h3>Templating/Formatting</h3>
 <p>A little bit of formatting goes a long way if your team routinely presents figures internally and/or externally. Consider adapting a ggplot2 theme to your company’s colors, fonts, and other styling. Here are two links to get you started in making custom theme:</p>
 <ol style="list-style-type: decimal">
-<li><p>Roger Peng’s Mastering Software Development in R <a href="https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html" class="uri">https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html</a></p></li>
-<li><p>Joey Stanley’s Blog - Custom Themes in ggplot2 <a href="http://joeystanley.com/blog/custom-themes-in-ggplot2" class="uri">http://joeystanley.com/blog/custom-themes-in-ggplot2</a></p></li>
+<li><p>Roger Peng’s Mastering Software Development in R<br />
+<a href="https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html" class="uri">https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html</a></p></li>
+<li><p>Joey Stanley’s Blog - Custom Themes in ggplot2<br />
+<a href="http://joeystanley.com/blog/custom-themes-in-ggplot2" class="uri">http://joeystanley.com/blog/custom-themes-in-ggplot2</a></p></li>
 </ol>
-<p>Also, you might find that a majority of stakeholder in your company prefer receiving data in Excel. You can export data from R to Excel with bolded, proper case column names, format columns as percentages and dollar signs so that your stakeholders are happy getting data from you. I highly recommend working with the <a href="">openxlsx package</a>, which does not require Java. Below is a snippet of code that will transform column names, set column widths based on the data, and format them based on some key words in the column names like formatting columns ending in “pct” as a percentage.</p>
+<p>Also, you might find that a majority of stakeholders in your company prefer receiving data in Excel. You can export data from R to Excel with bolded, proper case column names, format columns as percentages and dollar signs so that your stakeholders are happy getting data from you. I highly recommend working with the <a href="https://github.com/awalker89/openxlsx" target="_blank">openxlsx package</a>, which does not require Java. Below is a snippet of code that will transform column names, set column widths based on the data, and format them based on some key words in the column names like formatting columns ending in “pct” as a percentage. All of this before exporting to an Excel file so that your stakeholders are happy.</p>
+<pre class="r"><code>#&#39; Add Data and Format it in an Excel Workbook
+#&#39;
+#&#39; This function is a convenience function for standardizing one-off reports
+#&#39; in a certain Excel format that is pretty and well-organized for consumers
+#&#39;
+#&#39; @usage add_data_to_excel(wb, sheet, dat, startRow=1, startCol=1)
+#&#39; @concept writes data to Excel workbook in a pretty format
+#&#39; @keywords excel microsoft data export formatting
+#&#39; @seealso \code{\link[openxlsx]{createWorkbook}}
+#&#39; @param wb a Workbook object containing a worksheet. 
+#&#39; See \code{\link[openxlsx]{createWorkbook}}.
+#&#39; @param sheet the worksheet to write to. Can be the worksheet index or name.
+#&#39; @param dat data.frame to be written in the sheet
+#&#39; @param startRow a vector specifiying the starting column to write to
+#&#39; @param startCol a vector specifiying the starting row to write to
+#&#39; @return a logical indicating the success of adding the data to 
+#&#39; the workbook and formatting
+#&#39; @examples 
+#&#39; \dontrun{
+#&#39; my_wb &lt;- createWorkbook()
+#&#39; addWorksheet(my_wb, &quot;Iris&quot;)
+#&#39; # returns invisble TRUE
+#&#39; add_data_to_excel(my_wb, &quot;Iris&quot;, iris)
+#&#39; saveWorkbook(my_wb, file=&#39;~/iris.xlsx&#39;, overwrite = TRUE)
+#&#39; }
+#&#39; @export
+add_data_to_excel &lt;- function(wb, sheet, dat, startCol=1, startRow=1){
+  
+  # convert column names to more human readable format (with spaces and proper case)
+  names(dat) &lt;- gsub(&quot;_&quot;, &quot; &quot;, tolower(names(dat)))
+  names(dat) &lt;- str_to_title(names(dat))
+  
+  writeData(wb=wb, sheet=sheet, x=dat, startCol=startCol, startRow=startRow, 
+            headerStyle=createStyle(textDecoration=&#39;bold&#39;, 
+                                    wrapText=TRUE, 
+                                    halign=&#39;center&#39;, 
+                                    valign=&#39;center&#39;))
+  for(i in 1:ncol(dat)){
+    
+    setColWidths(wb, 
+                 sheet, 
+                 cols = i + (startCol - 1), 
+                 widths = pmax(12, 
+                               pmin(
+                                 max(nchar(sapply(dat[,i], 
+                                                  as.character)), na.rm=TRUE), 
+                                 40)))
+    
+    if(grepl(&#39;Percent|Pct|%&#39;, names(dat)[i])){
+      
+      addStyle(wb,
+               sheet, 
+               style = createStyle(numFmt=&#39;0.0%&#39;), 
+               rows = (startRow + 1):(nrow(dat) + 100), 
+               cols = i + (startCol - 1), 
+               gridExpand = TRUE)
+      
+    } else if(grepl(&#39;Dollars&#39;, names(dat)[i])){
+      
+      addStyle(wb,
+               sheet, 
+               style = createStyle(numFmt=&#39;$#,##0&#39;),
+               rows = (startRow + 1):(nrow(dat) + 100), 
+               cols = i + (startCol - 1), 
+               gridExpand = TRUE)
+      
+    } else {
+      # dont add any formatting
+    }
+  }
+  invisible(return(TRUE))
+}</code></pre>
+</div>
+<div id="data-source-connections" class="section level3">
+<h3>Data Source Connections</h3>
+<p>On the job you’re probably accessing the same data sources over and over. Help out yourself and fellow teammates by standardizing how to connect and pull data. This could be database connections, API connections, or other server connections. Below are two examples, one for connecting to MS SQL Server database and one for connecting to the Salesforce API.</p>
+<div id="db-connection" class="section level4">
+<h4>DB Connection</h4>
+<pre class="r"><code>#&#39; Establish a connection to Our DB and execute a query
+#&#39; 
+#&#39; This function connects to the DBMS using the shared_user, executes query, 
+#&#39; closes the connection, and returns the recordset if possible.
+#&#39;
+#&#39; @usage queryOurDB(query, db_environment=c(&#39;prod&#39;,&#39;dev&#39;), username=NULL, password=NULL)
+#&#39; @importFrom RODBC odbcDriverConnect odbcConnect sqlQuery odbcClose
+#&#39; @param query a character string defining a query to be executed against the DB
+#&#39; @param db_environment a character string either &#39;prod&#39; or &#39;dev&#39; upon 
+#&#39; which environment to execute against
+#&#39; @param username a character string defining your database username credential
+#&#39; @param password a character string defining your database password credential
+#&#39; @return A \code{data.frame} object of the query&#39;s resultset
+#&#39; @seealso
+#&#39;  \code{\link[RODBC]{odbcConnect}},
+#&#39;  \code{\link[DBI]{sqlQuery}}
+#&#39; @examples
+#&#39; \dontrun{
+#&#39; # This query pulls the top 10 records from CustomerTable
+#&#39; my_query &lt;- &quot;SELECT TOP 10 * FROM DB.dbo.CustomerTable&quot;
+#&#39; query_result &lt;- queryOurDB(my_query)
+#&#39; }
+#&#39; @export
+queryOurDB &lt;- function(query, db_environment=c(&#39;prod&#39;, &#39;dev&#39;), 
+                      username=NULL, password=NULL){
+  
+  # try to prevent anything really bad resulting from dropping tables by accident
+  stopifnot(!grepl(&quot;drop table&quot;, query, ignore.case=TRUE))
+  
+  # set the username and password
+  if(is.null(username) | is.null(password)){
+    username &lt;- &quot;shared_user&quot;
+    password &lt;- &quot;shared_password&quot;
+  }
+  
+  # determine which database to query
+  which_db &lt;- match.arg(db_environment)
+  if(which_db==&#39;prod&#39;){
+    host &lt;- &quot;10.245.96.30&quot; #Production DB
+  } else {
+    host &lt;- &quot;10.245.96.40&quot; #Development DB 
+  }
+  
+  # run query
+  query_result &lt;- tryCatch({
+    con &lt;- odbcDriverConnect(
+      sprintf(&#39;driver={SQL Server};server=%s,1433;database=DUMMY;uid=%s;pwd=%s&#39;,
+              host, username, password)
+      )
+    
+    message(&quot;running query&quot;)
+    sqlQuery(con, query)
+  }, error = function(e){
+    message(&quot;There was an error with your query. See details below.&quot;)
+    message(e)
+  }, finally = {
+    tryCatch({
+      if(exists(&quot;con&quot;)){
+        odbcClose(con)
+        message(&quot;closed database connection&quot;)
+      }
+    })
+  })
+  
+  return(query_result)
+}</code></pre>
+</div>
+<div id="api-connection" class="section level4">
+<h4>API Connection</h4>
+<pre class="r"><code>#&#39; Establish a session with the Salesforce API
+#&#39; 
+#&#39; This function connects to a Salesforce instance via the API
+#&#39;
+#&#39; @usage createSFAPISession(environment=c(&#39;prod&#39;, &#39;qa&#39;), 
+#&#39;                           user=NULL, password=NULL, apiVersion=&quot;38.0&quot;)
+#&#39; @importFrom RForcecom rforcecom.login
+#&#39; @param username a character string defining the Salesforce API username credential
+#&#39; @param password a character string defining the Salesforce API password credential.
+#&#39; Note: that this should be the concatenation of your password and security token. See the
+#&#39; instructions in \code{\link[RForcecom]{rforcecom.login}} for an example format.
+#&#39; @param apiVersion (optional) Version of the REST API and SOAP API that you want to use. 
+#&#39; (e.g. &quot;38.0&quot;). Supported versions from v20.0 and up.
+#&#39; @return A session object as returned by \code{\link[RForcecom]{rforcecom.login}}
+#&#39; that can be used for subsequent calls to the Salesforce API.
+#&#39; @seealso
+#&#39;  \code{\link[RForcecom]{rforcecom.login}},
+#&#39; @examples
+#&#39; \dontrun{
+#&#39; # establish a connection
+#&#39; sf_session &lt;- createSFAPISession()
+#&#39; 
+#&#39; # logout of that session
+#&#39; rforcecom.logout(sf_session)
+#&#39; }
+#&#39; @export
+createSFAPISession &lt;- function(environment=c(&#39;prod&#39;, &#39;qa&#39;), 
+                              user=NULL, password=NULL, apiVersion=&quot;38.0&quot;){
+  
+  which_env &lt;- match.arg(environment)
+ 
+  if(is.null(user) | is.null(password)){
+    if(which_env == &#39;qa&#39;){
+      username &lt;- &quot;shared_user@gmail.com&quot;
+      password &lt;- &quot;shared_password&quot;
+      url &lt;- &#39;https://test.salesforce.com/&#39;
+    } else if(which_env == &#39;prod&#39;){
+      username &lt;- &quot;shared_user@gmail.com&quot;
+      password &lt;- &quot;shared_password&quot;
+      url &lt;- &#39;https://login.salesforce.com/&#39;
+    } else {
+      stop(paste(&quot;Cannot find the specified environment:&quot;, which_env))
+    }
+  }
+
+  sf_session &lt;- rforcecom.login(username=username, password=password, 
+                                loginURL=url, apiVersion=apiVersion)
+  return(sf_session)
+}</code></pre>
+<p>Note: If you do not feel comfortable centralizing credentials for security reasons or your team does not have shared credentials, then have those stored locally in a profile and called by the package in a standardized way.</p>
+</div>
 </div>
 <div id="tutorials" class="section level3">
 <h3>Tutorials</h3>

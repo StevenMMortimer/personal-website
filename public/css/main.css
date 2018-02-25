@@ -132,9 +132,10 @@ body {
  margin-top: 10px;
  margin-bottom: 20px;
 }
-.figure img {
+img {
  display: block;
  height: auto;
+ margin: 0 auto;
  max-width: 100%;
  margin-top: 10px;
  margin-bottom: 20px;

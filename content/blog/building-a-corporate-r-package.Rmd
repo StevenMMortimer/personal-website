@@ -16,29 +16,126 @@ output:
     toc: true
 ---
 
-If you don't feel comfortable centralizing credentials for security reasons or 
-your team doesn't have shared credentials, then have those stored locally in a 
-profile and called by the package in a standardized way.
-
 ### Analytical Functions
 Creating functions is a programming best practice. They are easier to monitor, 
 test, and teach to others. If your team performs routine calculations, establish 
 a standard  by adding functions to the shared library and encourage everyone to 
-use those functions. For example: 
+use those functions. If your company works a lot with customer phone 
+numbers, then write a function to standardize the formatting. See the example 
+below for how to create and document these functions.
 
-[ some r code here? ]
+```{r functions-example, eval=FALSE}
+#' Format A Column of Phone Numbers
+#' 
+#' This function takes a dataframe and formats a column
+#' to match a 10-digit phone number (XXX) XXX-XXXX
+#'
+#' @usage cleanPhoneNumbers(dat, phoneColumnName, returnExtColumn=FALSE)
+#' @keywords cleaning transformation etl salesforce
+#' @param dat a data.frame containing a column for formatting
+#' @param phoneColumnName a character string defining the target data.frame column to
+#' format as (XXX) XXX-XXXX
+#' @param returnExtColumn a logical specifying whether to return digits seemingly formatted as
+#' an extension to the main phone number
+#' @return A \code{data.frame} with a clean phone number column in the format (XXX) XXX-XXXX
+#' @examples
+#' \dontrun{
+#' my_data <- data.frame(Phone=c('2349325339 x7779', '8888-888-888', 
+#'                               '2343-234-2341', '(832) 234-3494'))
+#' my_data %>% cleanPhoneNumbers('Phone')
+#' }
+#' @export
+cleanPhoneNumbers <- function(dat, phoneColumnName, returnExtColumn=FALSE){
+  
+  if(!(phoneColumnName %in% names(dat))){
+    
+    message(paste(phoneColumnName, 'was not in the dataset, no cleaning performed.'))
+    return(dat)
+    
+  } else {
+    
+    original_values <- dat[,phoneColumnName]
+    
+    ext_part <- gsub('(.*)(extension|ext|ex|x)(.*)', '\\3', dat[,phoneColumnName])
+    ext_part <- ifelse(ext_part == dat[,phoneColumnName], '', ext_part)
+    ext_part <- ifelse(((is.na(ext_part)) | 
+                          (ext_part == '')), '', 
+                       gsub("[^\\d]+", "", ext_part, perl=TRUE))
+    
+    dat[,phoneColumnName] <- gsub('(.*)(extension|ext|ex|x)(.*)', '\\1', 
+                                  dat[,phoneColumnName])
+    
+    dat[,phoneColumnName] <- ifelse(((is.na(dat[,phoneColumnName])) | 
+                                        (dat[,phoneColumnName] == '')), '', 
+                                     gsub("[^\\d]+", "", dat[,phoneColumnName], perl=TRUE))
+    
+    # convert 11 digit numbers starting with 1 to 10 because we assume US country code
+    dat[,phoneColumnName] <- ifelse(((nchar(dat[,phoneColumnName]) == 11) & 
+                                       (grepl('^1', dat[,phoneColumnName]))), 
+                                     substring(dat[,phoneColumnName], 2), 
+                                    dat[,phoneColumnName])
+    
+    # if not 10 digits, then set to ''
+    dat[,phoneColumnName] <- ifelse((nchar(dat[,phoneColumnName]) == 10), 
+                                    dat[,phoneColumnName], '')
+    
+    # if weird then set to ''
+    wierd_vals <- c('0000000000', '1111111111', '1234567789', '1231231234', 
+                    '1234567890', '8888888888', '9999999999')
+    
+    dat[,phoneColumnName] <- ifelse((dat[,phoneColumnName] %in% wierd_vals), '', 
+                                    dat[,phoneColumnName])
+    
+    dat[,phoneColumnName] <- gsub('([0-9]{3})([0-9]{3})([0-9]{4})', '(\\1) \\2-\\3', 
+                                  dat[,phoneColumnName])
+    
+    if(returnExtColumn){
+      dat[,'phone_ext_parsed_out'] <- ext_part
+      
+      dat[,'phone_ext_parsed_out'] <- ifelse(dat[,phoneColumnName] == '', '', 
+                                             dat[,'phone_ext_parsed_out'])
+      
+      dat[,'phone_ext_parsed_out'] <- strtrim(dat[,'phone_ext_parsed_out'], 5)
+      
+      pos <- which(names(dat) == phoneColumnName)
+      pos2 <- which(names(dat) == 'phone_ext_parsed_out')
+      rest <- seq(pos+1, ncol(dat))
+      rest <- rest[rest!=pos2]
+      
+      dat <- dat[,c(1:pos, pos2, rest)]
+    }
+    
+    return(dat)
+  }
+}
+```
 
-I strongly encourage using the R style guide [link] formats of Google and Hadley. 
-Much of the styling can be boiled down into two rules: 
+I strongly encourage using the 
+<a href="https://google.github.io/styleguide/Rguide.xml" target="_blank">Google Style Guide</a> or 
+<a href="http://adv-r.had.co.nz/Style.html" target="_blank">Hadley's Style Guide</a>. 
+Between the two of these guides I believe the two most important rules are: 
 
- 1. Name your functions with verbs and objects with nouns
- 2. Use snake case
+ 1. Use snake case
+ 2. Name your functions with verbs and variables with nouns
  
 ### Company Constants
-Again, if you're looking to enforce standards, it's a great practice to include 
-well-known constants in your R package. For example: 
+Again, if you're looking to enforce standards, it is a great practice to include 
+company-wide constants in your R package. Create an R file called `constants.R` and 
+define these constants as follows:
 
-[ some r code here? ]
+```{r constants-example, eval=FALSE}
+#' @export
+default_price <- 9.99 # code that defines a default price constant value
+lockBinding("default_price", environment())
+
+#' @export
+min_price <- 4.50 # also define a minimum price of item
+lockBinding("min_price", environment())
+
+#' @export
+price_cutoffs <- c(0, 5, 10, 15, Inf) # define a vector to consistently bin data
+lockBinding("price_cutoffs", environment())
+```
 
 ### Templating/Formatting
 A little bit of formatting goes a long way if your team routinely presents figures 
@@ -46,23 +143,232 @@ internally and/or externally. Consider adapting a ggplot2 theme to your company'
 colors, fonts, and other styling. Here are two links to get you started in making 
 custom theme:
 
- 1. Roger Peng's Mastering Software Development in R 
+ 1. Roger Peng's Mastering Software Development in R  
  https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html
 
- 2. Joey Stanley's Blog - Custom Themes in ggplot2 
+ 2. Joey Stanley's Blog - Custom Themes in ggplot2  
  http://joeystanley.com/blog/custom-themes-in-ggplot2
  
- Also, you might find that a majority of stakeholder in your company prefer receiving 
- data in Excel. You can export data from R to Excel with bolded, proper case column 
- names, format columns as percentages and dollar signs so that your stakeholders are 
- happy getting data from you. I highly recommend working with the [openxlsx package](), 
- which does not require Java. Below is a snippet of code that will transform column 
- names, set column widths based on the data, and format them based on some key words in 
- the column names like formatting columns ending in "pct" as a percentage.
+Also, you might find that a majority of stakeholders in your company prefer receiving 
+data in Excel. You can export data from R to Excel with bolded, proper case column 
+names, format columns as percentages and dollar signs so that your stakeholders are 
+happy getting data from you. I highly recommend working with the 
+<a href="https://github.com/awalker89/openxlsx" target="_blank">openxlsx package</a>, 
+which does not require Java. Below is a snippet of code that will transform column 
+names, set column widths based on the data, and format them based on some key 
+words in the column names like formatting columns ending in "pct" as a percentage. 
+All of this before exporting to an Excel file so that your stakeholders are happy. 
+
+```{r openxlsx-example, eval=FALSE}
+#' Add Data and Format it in an Excel Workbook
+#'
+#' This function is a convenience function for standardizing one-off reports
+#' in a certain Excel format that is pretty and well-organized for consumers
+#'
+#' @usage add_data_to_excel(wb, sheet, dat, startRow=1, startCol=1)
+#' @concept writes data to Excel workbook in a pretty format
+#' @keywords excel microsoft data export formatting
+#' @seealso \code{\link[openxlsx]{createWorkbook}}
+#' @param wb a Workbook object containing a worksheet. 
+#' See \code{\link[openxlsx]{createWorkbook}}.
+#' @param sheet the worksheet to write to. Can be the worksheet index or name.
+#' @param dat data.frame to be written in the sheet
+#' @param startRow a vector specifiying the starting column to write to
+#' @param startCol a vector specifiying the starting row to write to
+#' @return a logical indicating the success of adding the data to 
+#' the workbook and formatting
+#' @examples 
+#' \dontrun{
+#' my_wb <- createWorkbook()
+#' addWorksheet(my_wb, "Iris")
+#' # returns invisble TRUE
+#' add_data_to_excel(my_wb, "Iris", iris)
+#' saveWorkbook(my_wb, file='~/iris.xlsx', overwrite = TRUE)
+#' }
+#' @export
+add_data_to_excel <- function(wb, sheet, dat, startCol=1, startRow=1){
+  
+  # convert column names to more human readable format (with spaces and proper case)
+  names(dat) <- gsub("_", " ", tolower(names(dat)))
+  names(dat) <- str_to_title(names(dat))
+  
+  writeData(wb=wb, sheet=sheet, x=dat, startCol=startCol, startRow=startRow, 
+            headerStyle=createStyle(textDecoration='bold', 
+                                    wrapText=TRUE, 
+                                    halign='center', 
+                                    valign='center'))
+  for(i in 1:ncol(dat)){
+    
+    setColWidths(wb, 
+                 sheet, 
+                 cols = i + (startCol - 1), 
+                 widths = pmax(12, 
+                               pmin(
+                                 max(nchar(sapply(dat[,i], 
+                                                  as.character)), na.rm=TRUE), 
+                                 40)))
+    
+    if(grepl('Percent|Pct|%', names(dat)[i])){
+      
+      addStyle(wb,
+               sheet, 
+               style = createStyle(numFmt='0.0%'), 
+               rows = (startRow + 1):(nrow(dat) + 100), 
+               cols = i + (startCol - 1), 
+               gridExpand = TRUE)
+      
+    } else if(grepl('Dollars', names(dat)[i])){
+      
+      addStyle(wb,
+               sheet, 
+               style = createStyle(numFmt='$#,##0'),
+               rows = (startRow + 1):(nrow(dat) + 100), 
+               cols = i + (startCol - 1), 
+               gridExpand = TRUE)
+      
+    } else {
+      # dont add any formatting
+    }
+  }
+  invisible(return(TRUE))
+}
+```
+
+### Data Source Connections
+On the job you're probably accessing the same data sources over and over. Help out 
+yourself and fellow teammates by standardizing how to connect and pull data. This 
+could be database connections, API connections, or other server connections. Below 
+are two examples, one for connecting to MS SQL Server database and one for connecting 
+to the Salesforce API.
+
+#### DB Connection
+
+```{r db-example, eval=FALSE}
+#' Establish a connection to Our DB and execute a query
+#' 
+#' This function connects to the DBMS using the shared_user, executes query, 
+#' closes the connection, and returns the recordset if possible.
+#'
+#' @usage queryOurDB(query, db_environment=c('prod','dev'), username=NULL, password=NULL)
+#' @importFrom RODBC odbcDriverConnect odbcConnect sqlQuery odbcClose
+#' @param query a character string defining a query to be executed against the DB
+#' @param db_environment a character string either 'prod' or 'dev' upon 
+#' which environment to execute against
+#' @param username a character string defining your database username credential
+#' @param password a character string defining your database password credential
+#' @return A \code{data.frame} object of the query's resultset
+#' @seealso
+#'  \code{\link[RODBC]{odbcConnect}},
+#'  \code{\link[DBI]{sqlQuery}}
+#' @examples
+#' \dontrun{
+#' # This query pulls the top 10 records from CustomerTable
+#' my_query <- "SELECT TOP 10 * FROM DB.dbo.CustomerTable"
+#' query_result <- queryOurDB(my_query)
+#' }
+#' @export
+queryOurDB <- function(query, db_environment=c('prod', 'dev'), 
+                      username=NULL, password=NULL){
+  
+  # try to prevent anything really bad resulting from dropping tables by accident
+  stopifnot(!grepl("drop table", query, ignore.case=TRUE))
+  
+  # set the username and password
+  if(is.null(username) | is.null(password)){
+    username <- "shared_user"
+    password <- "shared_password"
+  }
+  
+  # determine which database to query
+  which_db <- match.arg(db_environment)
+  if(which_db=='prod'){
+    host <- "10.245.96.30" #Production DB
+  } else {
+    host <- "10.245.96.40" #Development DB 
+  }
+  
+  # run query
+  query_result <- tryCatch({
+    con <- odbcDriverConnect(
+      sprintf('driver={SQL Server};server=%s,1433;database=DUMMY;uid=%s;pwd=%s',
+              host, username, password)
+      )
+    
+    message("running query")
+    sqlQuery(con, query)
+  }, error = function(e){
+    message("There was an error with your query. See details below.")
+    message(e)
+  }, finally = {
+    tryCatch({
+      if(exists("con")){
+        odbcClose(con)
+        message("closed database connection")
+      }
+    })
+  })
+  
+  return(query_result)
+}
+```
+
+#### API Connection
+
+```{r api-example, eval=FALSE}
+#' Establish a session with the Salesforce API
+#' 
+#' This function connects to a Salesforce instance via the API
+#'
+#' @usage createSFAPISession(environment=c('prod', 'qa'), 
+#'                           user=NULL, password=NULL, apiVersion="38.0")
+#' @importFrom RForcecom rforcecom.login
+#' @param username a character string defining the Salesforce API username credential
+#' @param password a character string defining the Salesforce API password credential.
+#' Note: that this should be the concatenation of your password and security token. See the
+#' instructions in \code{\link[RForcecom]{rforcecom.login}} for an example format.
+#' @param apiVersion (optional) Version of the REST API and SOAP API that you want to use. 
+#' (e.g. "38.0"). Supported versions from v20.0 and up.
+#' @return A session object as returned by \code{\link[RForcecom]{rforcecom.login}}
+#' that can be used for subsequent calls to the Salesforce API.
+#' @seealso
+#'  \code{\link[RForcecom]{rforcecom.login}},
+#' @examples
+#' \dontrun{
+#' # establish a connection
+#' sf_session <- createSFAPISession()
+#' 
+#' # logout of that session
+#' rforcecom.logout(sf_session)
+#' }
+#' @export
+createSFAPISession <- function(environment=c('prod', 'qa'), 
+                              user=NULL, password=NULL, apiVersion="38.0"){
+  
+  which_env <- match.arg(environment)
  
- ```{r openxlsx-example, eval=FALSE}
- 
- ```
+  if(is.null(user) | is.null(password)){
+    if(which_env == 'qa'){
+      username <- "shared_user@gmail.com"
+      password <- "shared_password"
+      url <- 'https://test.salesforce.com/'
+    } else if(which_env == 'prod'){
+      username <- "shared_user@gmail.com"
+      password <- "shared_password"
+      url <- 'https://login.salesforce.com/'
+    } else {
+      stop(paste("Cannot find the specified environment:", which_env))
+    }
+  }
+
+  sf_session <- rforcecom.login(username=username, password=password, 
+                                loginURL=url, apiVersion=apiVersion)
+  return(sf_session)
+}
+```
+
+Note: If you do not feel comfortable centralizing credentials for security reasons or 
+your team does not have shared credentials, then have those stored locally in a 
+profile and called by the package in a standardized way.
 
 ### Tutorials
 Finally, but maybe most importantly, R packages help teammembers grow and on-board faster. 

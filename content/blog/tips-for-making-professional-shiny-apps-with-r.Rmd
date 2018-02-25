@@ -12,7 +12,8 @@ description: "R's 'Shiny' makes building web apps easy. Take your apps to the ne
 image: "blog/tips-for-making-professional-shiny-apps-with-r/shiny-hex.png"
 draft: true
 output:
-  blogdown::html_page
+  blogdown::html_page:
+    toc: true
 ---
 
 If you've built a Shiny app with R you'll know how exciting it feels to get your 
@@ -28,13 +29,15 @@ with an application and wait without knowing what is happening. Is the applicati
 busy doing some calculation? Did the user select the correct button? Is the server 
 down? You have likely been in this situation yourself as a user of the web. There 
 are a few different ways to implement a progress indicator, but I have found the 
-simplest and most effective solution already in the `shinysky` package [LINK????] 
+simplest and most effective solution already in the [`shinysky` package](https://github.com/AnalytixWare/ShinySky). 
 The `busyIndicator()` function allows you to specify a custom message and wait 
 time before the progress wheel appears.
 
 ```{r example-progress-wheel, eval=FALSE}
 busyIndicator(text = "Calculation in progress ... ", wait = 0)
 ```
+
+<img style="width:300px;" src="/blog/tips-for-making-professional-shiny-apps-with-r/busy-indicator.png" />
 
 ### Create a www Folder
 Most web applications contain extra resources or libraries to enhance their 
@@ -43,21 +46,23 @@ include images, styling, or even JavaScript, then all of these files should be
 contained inside a single folder entitled `www` that is located in the same directory 
 as the `ui.R` and `server.R` files. The `www` folder is the main location for all 
 web resources in your application. If you would like to enforce a global standard 
-of styling, then create a `.css` file containing a style sheet language for formatting 
-(styling for css is our next tip). If you would like to add images or GIFs to your 
-Shiny app, then place them in the www folder as well. Shiny supports most image 
-file formats such as `.jpg`, `.png`, and `.gif`. If you would like to add JavaScript 
-logic, then create a `.js` file containing any functions or variables that you would 
+of styling, then create a `.css` file containing the CSS stylesheet language for 
+formatting. If you would like to add images or GIFs to your Shiny app, then place 
+them in the www folder as well. Shiny supports most image file formats such as 
+`.jpg`, `.png`, and `.gif`. If you would like to add JavaScript logic, then 
+create a `.js` file containing any functions or variables that you would 
 like to execute. Again, place this file inside the `www` folder. Note that you must 
-explicitly reference these files in the `<head>` tag of your app. The best way to 
+explicitly reference these files inside the `<head>` tag of your app. The best way to 
 add to your app is by using `tags$head()` and `tags$link()` like this: 
 
 ```{r css-link, eval=FALSE}
-tags$link(rel = "stylesheet", type = "text/css", 
-          href = "style.css")
+tags$head(
+  tags$link(rel = "stylesheet", type = "text/css", 
+            href = "style.css")
+)
 ```
 
-You can even add web bookmark icons in the head tag!
+You can even give your app a bookmark icon using the link tag instead of the head tag!
 
 ```{r icon-link, eval=FALSE}
 tags$link(rel = "shortcut icon", type = "image/x-icon", 
@@ -65,46 +70,46 @@ tags$link(rel = "shortcut icon", type = "image/x-icon",
 ```
 
 ### Style with CSS
-If you are deploying your Shiny apps in a professional setting, it is best practice 
+If you are deploying your Shiny apps in a professional setting, it is a best practice 
 to format and style your apps using rules defined by the CSS stylesheet language. 
-This will reduce the amount of work to style new applications and provide a clean 
+This will reduce the amount of time and effort to style new applications and provide a clean 
 and consistent experience so that users quickly become familiar with how elements 
-of your app function based on their consistent appearance and functionality in 
-other apps. Using CSS in Shiny apps is no different from styling a traditional 
-web page, so any resource teaching CSS will help, such as, the W3Schools CSS 
-Tutorial available at http://www.w3schools.com/css/. A Shiny CSS guide is also 
-available at http://shiny.rstudio.com/articles/css.html.
+of your apps function based on a consistent appearance. Using CSS in Shiny apps 
+is no different from styling a traditional web page, so any resource teaching CSS 
+will help, such as, the W3Schools CSS Tutorial available at <a href="http://www.w3schools.com/css/" target="_blank">http://www.w3schools.com/css/</a>. 
+A Shiny CSS guide is also available at <a href="http://shiny.rstudio.com/articles/css.html" target="_blank">http://shiny.rstudio.com/articles/css.html</a>
 
 ### Use a global.R file
 It is good practice when coding software to place commonly used pieces of logic 
 in a central location. You can put this concept into practice by creating a `global.R`
-file for each of your Shiny apps. The `global.R` file is not a requirement for a 
-Shiny app, but it will reduce redundant code and increase the speed by re-using 
-logic and variables from a global scope among concurrent app users. 
+file for your Shiny app. The `global.R` file is not a requirement for a 
+Shiny app, but it will reduce redundant code and increase the app's speed by re-using 
+logic and variables from a global scope among concurrent app users. The `global.R` 
+file should be located in the same directory as the `ui.R` and `server.R` files. 
+Whenever a Shiny app is first used, the `global.R` file makes its logic available 
+to the `ui.R` and `server.R` files. This speeds up your app because it is only 
+runs once (when the app is first launched). Typically, `global.R` is a good place 
+for loading libraries, sourcing R functions or variables needed by your app, and 
+setting options like `stringsAsFactors = FALSE`.
 
-The `global.R` file should be located in the same directory as the `ui.R` and 
-`server.R` files. Whenever a Shiny app is first used, the `global.R` file makes 
-its logic available to the `ui.R` and `server.R` files. This speeds up your app 
-because it is only runs once. Typically, `global.R` is a good place for loading 
-libraries, sourcing R functions or variables needed by your app, and setting 
-options like `stringsAsFactors = FALSE`.
-
-### Encourage Downloading Data
-A big part of Shiny's value proposition in the enterprise is data democracy or freely 
-sharing information for use to further benefit the company. Typically, Shiny app users 
-will prefer other tools, such as Excel or Tableau or Python. Empower your users and allow 
+### Encourage Data Downloading
+A big part of Shiny's value proposition in the enterprise is promoting data democracy and the 
+free sharing of information for use to further benefit the company. Shiny app users may 
+prefer other tools, such as Excel or Tableau or Python. Empower your users and allow 
 them the flexibility to intergrate into their preferred tool. The best way to facilitate that 
 is to allow downloads of the data. The best package by far for displaying data and allowing for 
 downloads is the `datatable` package. The following code snippet creates a row for your 
 download button and then the datatable. I recommend pulling the button to the right of the 
 screen using `float: right;` in your CSS so the button is naturally placed at the top 
-right ready for the user to click.
+right of your table and ready for the user to click.
 
 ```{r datatable-snippet, eval=FALSE}
 fluidRow(
-  column(12, downloadButton("downloadDataFromTable","Download Table Data"))
+  column(12, downloadButton("downloadDataFromTable", "Download Table Data"))
 )
 fluidRow(
   column(12, DT::dataTableOutput("campaign_table", width = "100%"))
 )
 ```
+
+![](/blog/tips-for-making-professional-shiny-apps-with-r/datatable.png)

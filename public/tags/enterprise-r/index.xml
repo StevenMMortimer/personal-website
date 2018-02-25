@@ -17,8 +17,7 @@
       <pubDate>Tue, 09 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>/tips-for-making-professional-shiny-apps-with-r/</guid>
-      <description>If you’ve built a Shiny app with R you’ll know how exciting it feels to get your first app up and running. Shiny is an amazing tool for R users, but how do you take it to the next level? This post with outline five easy ways to make Shiny apps more professional.
-Add a Progress Wheel I’ll start with the progress wheel because it is the easiest and most impactful change to make.</description>
+      <description>Add a Progress Wheel Create a www Folder Style with CSS Use a global.R file Encourage Data Downloading   If you’ve built a Shiny app with R you’ll know how exciting it feels to get your first app up and running. Shiny is an amazing tool for R users, but how do you take it to the next level? This post with outline five easy ways to make Shiny apps more professional.</description>
     </item>
     
     <item>
@@ -27,8 +26,7 @@ Add a Progress Wheel I’ll start with the progress wheel because it is the easi
       <pubDate>Fri, 03 Nov 2017 00:00:00 +0000</pubDate>
       
       <guid>/building-a-corporate-r-package/</guid>
-      <description>Analytical Functions Company Constants Templating/Formatting Tutorials   If you don’t feel comfortable centralizing credentials for security reasons or your team doesn’t have shared credentials, then have those stored locally in a profile and called by the package in a standardized way.
-Analytical Functions Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions.</description>
+      <description>Analytical Functions Company Constants Templating/Formatting Data Source Connections Tutorials   Analytical Functions Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions. If your company works a lot with customer phone numbers, then write a function to standardize the formatting.</description>
     </item>
     
     <item>
