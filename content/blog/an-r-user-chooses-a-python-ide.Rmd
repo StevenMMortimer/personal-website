@@ -13,16 +13,16 @@ output:
     toc: true
 ---
 
-Yes, this is a post about IDEs. Let the name-calling begin! No, no, I don't intend 
-to insult or incite any ill-will towards any person or project. This purpose of this 
-post is to give other people who are familiar working with R, some insight into how a 
-fellow R user has evaluated and experienced picking an IDE for programming Python. 
-My criteria was to have an interactive experience, like RStudio, with support for 
-debugging, version control, and code completion. That's not too much to ask for, right?!
+Yes, this is a post about IDEs. I don't intend to insult or incite any ill-will 
+towards any person or project. The purpose of this post is to give other people 
+who are familiar working with R, some insight into how a fellow R user has evaluated 
+and experienced picking an IDE for programming Python. My criteria was to have an 
+interactive experience, like RStudio, with support for debugging, version control, 
+and code completion. That's not too much to ask for, right?!
 
 ## Jupyter Notebooks
 
-If you've been interested in data science and R and Python programming, then 
+If you have been interested in data science, and R and Python programming, then 
 you've probably seen IPython or the newer 
 <a href="http://jupyter.org" target="_blank">Jupyter</a> Notebooks. You might have also seen 
 something similar with Kaggle Kernels or Zeppelin Notebooks. I agree that the notebook 
@@ -95,11 +95,11 @@ project. Ultimately, PyCharm is what I'm sticking with to continue writing Pytho
 
 ## Final Thoughts
 
-I read quite a bit online about the IDEs mentioned above, but other peoples' 
+I have read quite a bit online about the IDEs mentioned above, but other peoples' 
 opinions didn't do much for me. I literally downloaded each IDE and spent a couple 
 hours trying to work on a project. If it was easy to get going I kept trying more 
 things until I was able to test out my desired features. You can take my word 
 for going with PyCharm to continue your Pythonic data science, but I'd recommend 
-to anyone to try things out, see what you like, and go with it. In the end, you're 
-writing the code, not the IDE, so make the choice that makes you most happy and 
-productive.
+to anyone to try things out, see what you like, and go with it. In the end, you should 
+be spending the majority of your efforts writing code, not fiddling with the IDE, 
+so make the choice that makes you most happy and productive.
