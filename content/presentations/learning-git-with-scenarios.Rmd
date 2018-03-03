@@ -4,7 +4,7 @@ description: "A Presentation on Learning Git that uses Scenarios"
 image: "presentations/learning-git-with-scenarios/img/learn-git.png"
 author: ~
 tags:
- - slide-deck
+ - presentations
 date: 2015-08-11
 output:
   blogdown::html_page

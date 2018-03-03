@@ -1,0 +1,53 @@
+---
+title: "Building Your Personal Portfolio"
+description: "A Presentation on Building Your Personal Portfolio"
+image: "presentations/building-personal-portfolio/img/portfolio-tools.png"
+author: ~
+tags:
+ - presentations
+date: 2018-03-01
+output:
+  blogdown::html_page
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+<style>
+object {
+    background-color: transparent;
+    border: #555555 1px solid;
+    margin: 10px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    display: block;
+    height: 40vw;
+    width: 80vw;
+    max-width: 780px;
+}
+</style>
+
+## Summary
+
+For new data scientists there is a lot to consider when building a digital portfolio of work. 
+This presentation is a collection of best practices and tips on which modes to use and 
+how to use them for maximum effect. Here is a list of topics covered in the presentation: 
+
+1. Why would you build a portfolio?
+3. Leveraging GitHub effectively
+4. Considerations for maintaining a blog
+4. Using Twitter, StackOverflow, and LinkedIn
+
+<object style="text-align:center;margin-top:30px;" data="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf" type="application/pdf">
+  <embed src="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf" type="application/pdf" />
+</object>
+<a target="_blank" href="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf">
+  Click Here to View in New Tab
+</a>
