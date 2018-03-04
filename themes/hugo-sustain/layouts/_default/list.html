@@ -7,7 +7,7 @@
         <h3>{{ humanize .Title }}</h3>
           <div class="panel panel-default">
             <div class="panel-body">
-            {{ $pag := (.Paginate (where .Data.Pages "Title" "not in" (slice ""))).Pages}}
+            {{ $pag := (.Paginate (where .Data.Pages "Title" "!=" "")).Pages}}
             {{ range $pag }}
             <ol class="post-list">
               <li class="post-stub">
