@@ -31,17 +31,17 @@ add attachments, find content, and delete content. This package allows you to st
 HTML pages and other static content locally and under version control and push 
 it to your site programmatically whenever you feel like it.
 
-See my blog post on why Google Sites aren't such a bad thing: [Google Sites for Documentation](https://reportmort.netlify.com/2017/06/01/google-sites-for-documentation/)
+See my blog post on why Google Sites aren't such a bad thing: [Google Sites for Documentation](https://stevenmortimer.com/google-sites-for-documentation/)
 
 <img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
-View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/googlesites">https://github.com/ReportMort/googlesites</a>.
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/googlesites">https://github.com/StevenMMortimer/googlesites</a>.
 
 ## How to Get Started
 
 First, you'll need to install this package from GitHub.
 
 ``` r
-devtools::install_github("ReportMort/googlesites")
+devtools::install_github("StevenMMortimer/googlesites")
 ```
 
 Second, you'll need to go through a process of authenticating with Google and 
@@ -108,7 +108,7 @@ and added to this package in the future to expand its capabilities. Thank you fo
 ## Questions
 
 If you have further questions please submit them via email or issue on GitHub at 
-<a target="_blank" href="https://github.com/ReportMort/googlesites/issues">https://github.com/ReportMort/googlesites/issues</a>. 
+<a target="_blank" href="https://github.com/StevenMMortimer/googlesites/issues">https://github.com/StevenMMortimer/googlesites/issues</a>. 
 I'm happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!
 
 ## Support
@@ -122,7 +122,7 @@ Thank you for your support!
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div  style="text-align: center;">
   <script type='text/javascript'>
-      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
   </script>
 </div>
 <br>

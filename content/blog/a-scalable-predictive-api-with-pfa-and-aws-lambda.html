@@ -47,8 +47,8 @@ output:
 <h2>Actually Doing This</h2>
 <div id="step-1---creating-the-lambda-function" class="section level3">
 <h3>Step 1 - Creating the Lambda Function</h3>
-<p>The absolute simplest test would be to clone the <a href="https://github.com:ReportMort/pfa-lambda" target="_blank">repository</a> where I’ve created a Lambda deploy package for running Titus (Python runtime), then zip up that package and upload to the AWS Lambda console.</p>
-<pre><code>git clone git@github.com:ReportMort/pfa-lambda.git
+<p>The absolute simplest test would be to clone the <a href="https://github.com:StevenMMortimer/pfa-lambda" target="_blank">repository</a> where I’ve created a Lambda deploy package for running Titus (Python runtime), then zip up that package and upload to the AWS Lambda console.</p>
+<pre><code>git clone git@github.com:StevenMMortimer/pfa-lambda.git
 zip -r my-lambda-deploy.zip .</code></pre>
 <div class="figure">
 <img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/upload-deploy-package.png" />
@@ -84,7 +84,7 @@ write_pfa(sonar_model_as_pfa, &#39;~/model.pfa&#39;)</code></pre>
 <img src="/blog/a-scalable-predictive-api-with-pfa-and-aws-lambda/upload-model-to-s3.png" />
 
 </div>
-<p>Note, you may have to adjust the bucket name and model file name in the Python script to read the file you’ve uploaded. These parameters are specified in <a href="https://github.com/ReportMort/pfa-lambda/blob/master/model-from-s3.py#L10-L11">Lines 10 and 11</a> in the script.</p>
+<p>Note, you may have to adjust the bucket name and model file name in the Python script to read the file you’ve uploaded. These parameters are specified in <a href="https://github.com/StevenMMortimer/pfa-lambda/blob/master/model-from-s3.py#L10-L11">Lines 10 and 11</a> in the script.</p>
 </div>
 <div id="step-4---test-your-lambda-makes-predictions" class="section level3">
 <h3>Step 4 - Test Your Lambda Makes Predictions</h3>

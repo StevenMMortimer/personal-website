@@ -31,7 +31,7 @@ to support integration of R with the Doubleclick for Publishers platform and wan
 something on par with existing, supported client libraries.
 
 <img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
-View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/rdfp">https://github.com/ReportMort/rdfp</a>.
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a>.
 
 ## Features
 
@@ -46,7 +46,7 @@ Anything that the DFP API supports, you can do with this R package!
 ### Install rdfp Library
 
 ```{r eval=FALSE}
-devtools::install_github("ReportMort/rdfp")
+devtools::install_github("StevenMMortimer/rdfp")
 ```
 
 ### Setup and Authenticate
@@ -202,7 +202,7 @@ cases of utilizing the package functions.
 
 For example, if you're not sure on how to use custom date ranges when 
 requesting a report through the ReportService, just check out the tests at 
-<a target="_blank" href="https://github.com/ReportMort/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/ReportMort/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.
+<a target="_blank" href="https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.
 
 If you want to know how to create a user, just look at the test for `dfp_createUsers()`
 
@@ -231,7 +231,7 @@ The **rdfp** package is licensed under the MIT License
 ## Questions
 
 If you have further questions please submit them via email or issue on GitHub at 
-<a target="_blank" href="https://github.com/ReportMort/rdfp/issues">https://github.com/ReportMort/rdfp/issues</a>. 
+<a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. 
 I'm happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!
 
 ## Support
@@ -245,7 +245,7 @@ Thank you for your support!
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div  style="text-align: center;">
   <script type='text/javascript'>
-      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
   </script>
 </div>
 <br>

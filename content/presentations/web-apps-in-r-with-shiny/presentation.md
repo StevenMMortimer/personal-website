@@ -1,0 +1,355 @@
+Web Apps in R Using Shiny
+========================================
+author: Steven Mortimer
+date: March 21, 2017
+css: css-presentations.css
+width: 960
+height: 700
+
+
+
+What is Shiny?
+====================================
+
+* A web application framework for R
+* Written by Joe Cheng and RStudio
+* First CRAN package up in <a target="_blank" href="https://blog.rstudio.org/2012/11/08/introducing-shiny/">2012</a>
+* Delivers interactive experience over the web, all written in R!
+* Ready for the enterprise
+
+<img src="./img/customers-screenshot.png" />
+
+Show me Shiny!
+====================================
+
+<img src="./img/bus-shiny-screenshot.png" />
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;&nbsp;User Showcase: 
+    <a target="_blank" href="https://www.rstudio.com/products/shiny/shiny-user-showcase/">https://www.rstudio.com/products/shiny/shiny-user-showcase/</a><br>
+   &nbsp;&nbsp;Show Me Shiny: 
+    <a target="_blank" href="https://www.showmeshiny.com">https://www.showmeshiny.com</a>
+  </div>
+</div>
+
+Prerequisites
+====================================
+
+<ol style="padding-left:60px;padding-top:20px;padding-bottom:0px;">
+  <li>R and RStudio</li>
+  <li>Intermediate Understanding of R
+    <ul style="padding-left:40px;padding-top:10px;">
+      <li>Import/Export data, <span style="font-family: monospace;">dplyr</span>, 
+      <span style="font-family: monospace;">ggplot</span></li>
+    </ul>
+  </li>
+  <li>HTML, CSS, JavaScript not required, but helpful</li>
+  <li>Strategy for sharing (Markdown/Pres, Hosted/Private)</li>
+</ol>
+
+<br>
+<b>The <a target="_blank" href="https://cran.r-project.org/package=shiny">shiny</a> package!</b>
+<br>
+<img style="box-shadow: none; margin-left: 400px; margin-top: -30px; margin-bottom: 10px;" src="./img/shiny-hex.png" />
+
+
+Bare Minimum Project Structure
+====================================
+Create a folder for your app and put all related files inside that folder. 
+At minimum every Shiny app contains 2 parts: 
+
+<ol style="padding-left:60px;padding-top:10px;padding-bottom:0px;">
+  <li>A UI (client-side). Specified in a file called `ui.R`</li>
+  <li>Server Logic (server-side). Specified in a file called `server.R`</li>
+</ol>
+
+<img style="margin-left: 175px; margin-top: 30px; margin-bottom: 10px;" src="./img/project-structure.png" />
+
+<div class="reference">
+NOTE: You can create a "single-file" Shiny app that puts the UI and Server code in 
+the same file and runs, but this is typically for toy examples and <a target="_blank" href="http://jennybc.github.io/reprex/#what-is-a-reprex">reprex</a>. This is 
+not recommended in production. See this article for more detail: <a target="_blank" href="https://shiny.rstudio.com/articles/single-file.html">Single-file Shiny apps.</a>
+</div>
+
+Recommended Project Structure
+====================================
+Take the bare minimum and add the following three items to your folder:
+
+<ol style="padding-left:60px;padding-top:10px;padding-bottom:0px;">
+  <li>A file called <span style="font-family: monospace;font-weight: bold;">global.R</span> - Main 
+  location for loading packages, sharing data between ui and server sides, etc. 
+  <sup>1</sup></li>
+  <li>A folder called <span style="font-family: monospace;font-weight: bold;">www</span> - Main 
+  location for all web resources in your application. If you would like to 
+  enforce a global standard of styling, then create a 
+  <span style="font-family: monospace">.css</span> file containing a style sheet 
+  language for formatting.<sup>2</sup></li>
+  <li>A folder called <span style="font-family: monospace;font-weight: bold;">data</span> - Main 
+  location for all data that your app uses. Especially important if not connecting 
+  to a database.</li>
+</ol>
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;<sup>1</sup>&nbsp;Scoping rules for Shiny apps (`global.R`): 
+    <a target="_blank" href="https://shiny.rstudio.com/articles/scoping.html">https://shiny.rstudio.com/articles/scoping.html</a><br>
+   &nbsp;<sup>2</sup>&nbsp;Build a user-interface (`www` folder): 
+    <a target="_blank" href="http://shiny.rstudio.com/tutorial/lesson2/">http://shiny.rstudio.com/tutorial/lesson2/</a>
+  </div>
+</div>
+
+shinyUI()
+====================================
+
+A `ui.R` file - holds the client-side logic
+<div class="code-div">library(shiny)
+shinyUI(
+  fluidPage(
+    titlePanel(&#039;Revenue Prediction from Marketing Expenditures&#039;),
+    sidebarLayout(
+      sidebarPanel(
+        sliderInput(inputId = &#039;spend&#039;, 
+                    label = &#039;Expenditure Level in $K:&#039;,
+                    min = 54, max = 481, value = 250)
+      ),
+      mainPanel(
+        plotOutput(&#039;prediction_plot&#039;)
+      )
+    )
+  )
+)
+</div>
+
+shinyServer()
+====================================
+
+A `server.R` file - holds the server-side logic
+<div class="code-div">library(shiny)
+revenue <- read.csv(&#039;./data/marketing.csv&#039;)
+model <- lm(revenues ~ marketing_total, data = revenue)
+shinyServer(function(input, output) {
+  output$prediction_plot <- renderPlot({
+    newdata <- data.frame(marketing_total = input$spend)
+    pred <- predict(model, newdata, interval = &#039;predict&#039;)
+    
+    plot(revenue$marketing_total, revenue$revenues, 
+         xlab = &#039;Marketing Expenditures ($K)&#039;,
+         ylab = &#039;Revenues ($K)&#039;)
+    abline(model, col = &#039;blue&#039;)
+    points(input$spend, pred[1], pch = 19, col = &#039;blue&#039;, cex = 2)
+    points(c(rep(input$spend, 2)), c(pred[2], pred[3]),
+           pch = &#039;-&#039;, cex = 2, col = &#039;orange&#039;)
+    segments(input$spend, pred[2], input$spend, pred[3],
+             col = &#039;orange&#039;, lty = 2, lwd = 2)
+  })
+})
+</div>
+
+The Result?
+====================================
+
+<img style="margin-left: 10px; margin-top: 10px; margin-bottom: 0px;" src="./img/expenditures-app-screenshot.png" />
+
+
+```r
+shiny::runGitHub(repo = "com.packtpub.intro.r.bi",
+                 username = "StevenMMortimer",
+                 subdir = "Chapter8-ShinyDashboards/Ch8-BasicShinyApp")
+```
+
+<div class="attribution">
+  <div class="attribution-link">
+    Complete Code Available Here:<br> 
+    <a target="_blank" href="https://github.com/StevenMMortimer/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp"><span style="font-size:.85em;">https://github.com/StevenMMortimer/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp</span></a>
+  </div>
+</div>
+
+What's Really Happening
+====================================
+
+<div style="text-align: center; margin-top:-10px;">    
+    <div style="display: inline-block;">
+      <img style="box-shadow:none;" src="./img/unicorn.gif" />
+      <span style="font-family: monospace; font-weight: bold; font-size: 2em;">reactivity</span>
+      <img style="box-shadow:none;" src="./img/unicorn-flipped.gif" />
+    </div>
+</div>
+<br>
+In the `ui.R`:
+<div class="code-div">sliderInput(<span style="font-weight: bold; font-size: 1.2em;">inputId = &#039;spend&#039;</span>, 
+            label = &#039;Expenditure Level in $K:&#039;,
+            min = 54, max = 481, value = 250)
+)
+</div>
+
+In the `server.R`:
+<div class="code-div">shinyServer(function(<span style="font-weight: bold; font-size: 1.2em;">input, output</span>) {
+  <span style="font-weight: bold; font-size: 1.2em;">output$</span>prediction_plot <- renderPlot({
+    newdata <- data.frame(marketing_total = <span style="font-weight: bold; font-size: 1.2em;">input$spend</span>)
+    ...
+</div>
+
+Recap of the basics
+====================================
+
+<ol style="padding-left:60px;padding-top:20px;padding-bottom:20px;">
+  <li style="padding-top:10px">One folder with ui.R, server.R, and other files and folders
+    <ul style="padding-left:40px;padding-top:10px;padding-bottom:0px;">
+      <li>All client-side elements go in <span style="font-family: monospace;font-weight: bold;">ui.R</span></li>
+      <li>All server-side logic goes in <span style="font-family: monospace;font-weight: bold;">server.R</span></li>
+    </ul>
+  </li>
+  <li style="padding-top:10px">Inputs and Outputs passed between
+    <ul style="padding-left:40px;padding-top:10px;padding-bottom:0px;">
+      <li>ui.R provides <span style="font-family: monospace;font-weight: bold;">input&#36;</span> that server.R accesses</li>
+      <li>server.R provides <span style="font-family: monospace;font-weight: bold;">output&#36;</span> that ui.R displays</li>
+    </ul>
+  </li>
+  <li style="padding-top:10px"><span style="font-family: monospace;font-weight: bold;">reactivity</span> invalidates cached values on server when inputs change<sup>1</sup></li>
+</ol>
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;<sup>1</sup>&nbsp;Understanding Reactivity:
+    <a target="_blank" href="https://shiny.rstudio.com/articles/understanding-reactivity.html">https://shiny.rstudio.com/articles/understanding-reactivity.html</a>
+  </div>
+</div>
+
+Understanding the Grid Layout
+====================================
+
+Shiny includes a grid-based layout framework based on the <a target="_blank" href="http://getbootstrap.com/">Bootstrap project</a>.<sup>1</sup>
+
+<div style="text-align: center; margin-top:-10px;">    
+    <div style="display: inline-block;">
+      <img style="margin-left: 30px; margin-top: 0px; margin-bottom: 0px;" src="./img/grid-layout.png" />
+    </div>
+</div>
+
+<div class="code-div">shinyUI(fluidPage(
+  fluidRow(
+    column(12,
+      &#039;Fluid 12&#039;,
+      fluidRow(
+        column(6,
+          &#039;Fluid 6&#039;,
+          fluidRow(
+            column(6, 
+...
+</div>
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;<sup>1</sup>&nbsp;Learn more about layouts in Shiny here:
+    <a target="_blank" href="http://shiny.rstudio.com/articles/layout-guide.html">http://shiny.rstudio.com/articles/layout-guide.html</a>
+  </div>
+</div>
+
+Tips for the User Experience
+====================================
+
+The **head tag** - The head tag identifies a portion of the web page, usually not 
+visible to the user, which contains the application title, icon, metadata, and scripts.
+
+
+```r
+tags$head(
+  tags$link(rel = "stylesheet", type = "text/css", 
+            href = "app-styling.css")
+)
+```
+
+The **progress wheel** - Lets the user know that app is processing their input.
+
+
+```r
+shinysky::busyIndicator(text = "Calculation in progress ... ", wait = 0)
+```
+
+**Custom JavaScript**<sup>1</sup> & <span style="font-family: monospace;">shinyjs</span> - Extends interactivity and experience
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;<sup>1</sup>&nbsp;Shuttling vars using callbacks and CustomMessageHandlers:
+    <a target="_blank" href="https://ryouready.wordpress.com/2013/11/20/sending-data-from-client-to-server-and-back-using-shiny/">https://ryouready.wordpress.com/2013/11/20/sending-data-from-client-to-server-and-back-using-shiny/</a>
+  </div>
+</div>
+
+More Cool Stuff
+====================================
+
+**Google Analytics Tracking** - Setup an account and Google will give you Javascript 
+snippet to embed to track users.
+
+
+```r
+tags$script("
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-XXXXXXXX-1', 'auto');
+ga('send', 'pageview');
+")
+```
+
+**Connecting to a database** - Just like connecting to database from R or RStudio...
+
+
+```r
+library(RPostgreSQL)
+con <- dbConnect(dbDriver("PostgreSQL"), dbname = "postgres",
+                 host = "localhost", port = 5432,
+                 user = "user", password = 'password')
+app_dat <- dbGetQuery(conn=con, statement="SELECT * FROM app.dat")
+dbDisconnect(con)
+
+shinyServer(function(input, output) {
+...
+```
+
+And More Cool Stuff
+====================================
+
+The **DT** package - Highly interactive, functional tables based on 
+
+<img style="margin-left: 150px; margin-top: 10px; margin-bottom: 0px;" src="./img/DT-table.gif" />
+
+More examples available on https://rstudio.github.io/DT/
+
+Running Shiny Apps
+====================================
+
+-	Located on GitHub, in a Gist, or archived (e.g. .tar.gz)
+
+Those options explained in more detail <a target="_blank" href="http://shiny.rstudio.com/reference/shiny/latest/runUrl.html">here</a>
+
+
+```r
+shiny::runGitHub(repo = "com.packtpub.intro.r.bi",
+                 username = "StevenMMortimer",
+                 subdir = "Chapter8-ShinyDashboards/Ch8-CampaignCreatorApp")
+```
+
+-	Hosted For Free by <a target="_blank" href="https://www.shinyapps.io">Shinyapps.io</a>
+
+<img style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px;" src="./img/publish-app-on-shinyappsio.png" />
+<br>https://reportmort.shinyapps.io/campaign-creator-app/
+
+-	Hosted on a private server
+
+the-end
+====================================================
+title: false
+
+<h3>
+  <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;">
+    <span style="font-weight: 700; color:#25679E;">Happy App-ing with Shiny!</span>
+    <br>
+    <br>
+    <br>
+    <img style="box-shadow:none; margin-left:350px;" src="./img/happy-coding.jpg" />
+  </div>
+</h3>
+

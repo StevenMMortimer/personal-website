@@ -1,6 +1,6 @@
 Web Apps in R Using Shiny
 ========================================
-author: Steve Mortimer
+author: Steven Mortimer
 date: March 21, 2017
 css: css-presentations.css
 width: 960
@@ -158,14 +158,14 @@ The Result?
 
 ```{r eval=FALSE}
 shiny::runGitHub(repo = "com.packtpub.intro.r.bi",
-                 username = "ReportMort",
+                 username = "StevenMMortimer",
                  subdir = "Chapter8-ShinyDashboards/Ch8-BasicShinyApp")
 ```
 
 <div class="attribution">
   <div class="attribution-link">
     Complete Code Available Here:<br> 
-    <a target="_blank" href="https://github.com/ReportMort/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp"><span style="font-size:.85em;">https://github.com/ReportMort/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp</span></a>
+    <a target="_blank" href="https://github.com/StevenMMortimer/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp"><span style="font-size:.85em;">https://github.com/StevenMMortimer/com.packtpub.intro.r.bi/tree/master/Chapter8-ShinyDashboards/Ch8-BasicShinyApp</span></a>
   </div>
 </div>
 
@@ -302,12 +302,11 @@ library(RPostgreSQL)
 con <- dbConnect(dbDriver("PostgreSQL"), dbname = "postgres",
                  host = "localhost", port = 5432,
                  user = "user", password = 'password')
-app_dat <- dbGetQuery(conn=con, statement='SELECT * FROM app.dat")
+app_dat <- dbGetQuery(conn=con, statement="SELECT * FROM app.dat")
 dbDisconnect(con)
 
 shinyServer(function(input, output) {
 ...
-
 ```
 
 And More Cool Stuff
@@ -328,7 +327,7 @@ Those options explained in more detail <a target="_blank" href="http://shiny.rst
 
 ```{r eval=FALSE}
 shiny::runGitHub(repo = "com.packtpub.intro.r.bi",
-                 username = "ReportMort",
+                 username = "StevenMMortimer",
                  subdir = "Chapter8-ShinyDashboards/Ch8-CampaignCreatorApp")
 ```
 

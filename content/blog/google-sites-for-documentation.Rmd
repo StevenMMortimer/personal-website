@@ -70,4 +70,4 @@ update, and delete content on your Google Site without ever leaving R. I've
 started bundling together the functions into an R packge called `googlesites`
 that's currently on my GitHub. Please take a look to see the sorts of things you
 can do with the package at 
-<a href="https://github.com/ReportMort/googlesites" target="_blank">https://github.com/ReportMort/googlesites</a>
+<a href="https://github.com/StevenMMortimer/googlesites" target="_blank">https://github.com/StevenMMortimer/googlesites</a>

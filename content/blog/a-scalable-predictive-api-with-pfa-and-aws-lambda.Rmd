@@ -61,12 +61,12 @@ staff should you need it.
 ### Step 1 - Creating the Lambda Function
 
 The absolute simplest test would be to clone the 
-<a href="https://github.com:ReportMort/pfa-lambda" target="_blank">repository</a> where I’ve created a 
+<a href="https://github.com:StevenMMortimer/pfa-lambda" target="_blank">repository</a> where I’ve created a 
 Lambda deploy package for running Titus (Python runtime), then zip up that package 
 and upload to the AWS Lambda console.
 
 ```
-git clone git@github.com:ReportMort/pfa-lambda.git
+git clone git@github.com:StevenMMortimer/pfa-lambda.git
 zip -r my-lambda-deploy.zip .
 ```
 
@@ -133,7 +133,7 @@ from an S3 bucket and use it for scoring.
 
 Note, you may have to adjust the bucket name and model file name in the Python 
 script to read the file you've uploaded. These parameters are specified in [Lines 10 
-and 11](https://github.com/ReportMort/pfa-lambda/blob/master/model-from-s3.py#L10-L11) 
+and 11](https://github.com/StevenMMortimer/pfa-lambda/blob/master/model-from-s3.py#L10-L11) 
 in the script.
 
 ### Step 4 - Test Your Lambda Makes Predictions

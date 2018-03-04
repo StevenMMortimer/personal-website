@@ -27,7 +27,7 @@ The **roas** package is the R implementation of the Open Ad Stream (OAS) API.
 I created the package because very few tools and documentation exist for the OAS API.
 
 <img alt="GitHub - roas" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
-View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/roas">https://github.com/ReportMort/roas</a>.
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/roas">https://github.com/StevenMMortimer/roas</a>.
 
 ## Features
 
@@ -49,7 +49,7 @@ For example, running the 'List' action is done with the function oas_list().
 ### Install roas Library
 
 ```{r eval=FALSE}
-devtools::install_github("ReportMort/roas")
+devtools::install_github("StevenMMortimer/roas")
 ```
 
 ### Setup and Authenticate
@@ -204,7 +204,7 @@ booked <- oas_search_inventory(credentials = my_credentials,
 ## Questions
 
 If you have further questions please submit them via email or issue on GitHub at 
-<a target="_blank" href="https://github.com/ReportMort/roas/issues">https://github.com/ReportMort/roas/issues</a>. 
+<a target="_blank" href="https://github.com/StevenMMortimer/roas/issues">https://github.com/StevenMMortimer/roas/issues</a>. 
 I'm happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!
 
 ## Support
@@ -218,7 +218,7 @@ Thank you for your support!
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div  style="text-align: center;">
   <script type='text/javascript'>
-      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
   </script>
 </div>
 <br>

@@ -46,7 +46,7 @@ to be integrated into the project and exists on forked branch in my GitHub
 ```{r install-package, eval=FALSE}
 # you only need to run this once because it 
 # installs the package
-devtools::install_github('ReportMort/hadrian', 
+devtools::install_github('StevenMMortimer/hadrian', 
                          ref='feature/add-r-package-structure', 
                          subdir='aurelius', 
                          quick=T) 
@@ -158,7 +158,7 @@ names(my_model)
 PFA is a measurable step in open, portable, and reprodcible analytics. I hope to 
 see the standard more widely adopted and tools developed to help others implement it. 
 One final thing: Check out the 
-<a href="https://github.com/ReportMort/hadrian/tree/feature/add-r-package-structure/aurelius/tests/testthat" target="_blank">unit tests</a>. 
+<a href="https://github.com/StevenMMortimer/hadrian/tree/feature/add-r-package-structure/aurelius/tests/testthat" target="_blank">unit tests</a>. 
 I've recently added quite a bit of unit test coverage and these tests are an 
 excellent source of examples because they cover most all cases of utilizing the 
 package functions.

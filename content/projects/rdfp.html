@@ -38,7 +38,7 @@ output:
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <p>The <strong>rdfp</strong> package is the R implementation of the Double Click for Publishers (DFP) API and similar in comparison to the existing <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/clients">client libraries</a> supported by Google. I created the package because no other tools had been created to support integration of R with the Doubleclick for Publishers platform and wanted something on par with existing, supported client libraries.</p>
-<p><img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/rdfp">https://github.com/ReportMort/rdfp</a>.</p>
+<p><img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a>.</p>
 </div>
 <div id="features" class="section level2">
 <h2>Features</h2>
@@ -53,7 +53,7 @@ output:
 <h2>How to Get Started</h2>
 <div id="install-rdfp-library" class="section level3">
 <h3>Install rdfp Library</h3>
-<pre class="r"><code>devtools::install_github(&quot;ReportMort/rdfp&quot;)</code></pre>
+<pre class="r"><code>devtools::install_github(&quot;StevenMMortimer/rdfp&quot;)</code></pre>
 </div>
 <div id="setup-and-authenticate" class="section level3">
 <h3>Setup and Authenticate</h3>
@@ -171,7 +171,7 @@ head(report_data)</code></pre>
 <div id="check-out-the-tests" class="section level2">
 <h2>Check out the Tests</h2>
 <p>The <strong>rdfp</strong> package has quite a bit of unit test coverage to track any changes made between newly released versions of DFP (typically 3 each year). These tests are an excellent source of examples because they cover most all cases of utilizing the package functions.</p>
-<p>For example, if you’re not sure on how to use custom date ranges when requesting a report through the ReportService, just check out the tests at <a target="_blank" href="https://github.com/ReportMort/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/ReportMort/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.</p>
+<p>For example, if you’re not sure on how to use custom date ranges when requesting a report through the ReportService, just check out the tests at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.</p>
 <p>If you want to know how to create a user, just look at the test for <code>dfp_createUsers()</code></p>
 <pre class="r"><code>request_data &lt;- list(users=list(name=&quot;TestUser - 1&quot;,
                                 email=&quot;testuser123456789@gmail.com&quot;,
@@ -193,7 +193,7 @@ dfp_createUsers_result &lt;- dfp_createUsers(request_data)</code></pre>
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/ReportMort/rdfp/issues">https://github.com/ReportMort/rdfp/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>
@@ -202,7 +202,7 @@ dfp_createUsers_result &lt;- dfp_createUsers(request_data)</code></pre>
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div style="text-align: center;">
 <script type='text/javascript'>
-      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
   </script>
 </div>
 <p><br></p>

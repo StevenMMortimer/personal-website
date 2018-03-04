@@ -30,13 +30,13 @@ output:
 <div id="overview" class="section level2">
 <h2>Overview</h2>
 <p>The <strong>googlesites</strong> package is the R implementation of the Google Sites API. Using this package assumes you’ve used the Web UI to create your site. Once you’ve got a site (and maybe some templates), you can use this package to add more content, add attachments, find content, and delete content. This package allows you to store HTML pages and other static content locally and under version control and push it to your site programmatically whenever you feel like it.</p>
-<p>See my blog post on why Google Sites aren’t such a bad thing: <a href="https://reportmort.netlify.com/2017/06/01/google-sites-for-documentation/">Google Sites for Documentation</a></p>
-<p><img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/ReportMort/googlesites">https://github.com/ReportMort/googlesites</a>.</p>
+<p>See my blog post on why Google Sites aren’t such a bad thing: <a href="https://stevenmortimer.com/google-sites-for-documentation/">Google Sites for Documentation</a></p>
+<p><img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/googlesites">https://github.com/StevenMMortimer/googlesites</a>.</p>
 </div>
 <div id="how-to-get-started" class="section level2">
 <h2>How to Get Started</h2>
 <p>First, you’ll need to install this package from GitHub.</p>
-<pre class="r"><code>devtools::install_github(&quot;ReportMort/googlesites&quot;)</code></pre>
+<pre class="r"><code>devtools::install_github(&quot;StevenMMortimer/googlesites&quot;)</code></pre>
 <p>Second, you’ll need to go through a process of authenticating with Google and specifying the domain and site name so you don’t have to refer to it explicitly each time you call a function.</p>
 <pre class="r"><code>library(googlesites)
 options(googlesites.site_domain = &quot;site&quot;) # or your Apps domain
@@ -81,7 +81,7 @@ upload_file_to_site(local_file_path = &quot;rmarkdown-cheatsheet-2,0.pdf&quot;,
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/ReportMort/googlesites/issues">https://github.com/ReportMort/googlesites/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/googlesites/issues">https://github.com/StevenMMortimer/googlesites/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>
@@ -90,7 +90,7 @@ upload_file_to_site(local_file_path = &quot;rmarkdown-cheatsheet-2,0.pdf&quot;,
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div style="text-align: center;">
 <script type='text/javascript'>
-      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'reportmort');kofiwidget2.draw();
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
   </script>
 </div>
 <p><br></p>

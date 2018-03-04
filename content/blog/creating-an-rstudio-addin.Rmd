@@ -95,7 +95,7 @@ If you like the idea of my Addin you can install from RStudio with the following
 command: 
 
 ```{r install-my-addin, eval=FALSE}
-devtools::install_github("ReportMort/sectioncomment")
+devtools::install_github("StevenMMortimer/sectioncomment")
 ```
 
 After installing it should apper in your Addins dropdown and you can use it, like so:
