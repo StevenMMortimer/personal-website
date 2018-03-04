@@ -6,6 +6,7 @@ author: ~
 tags:
  - presentations
 date: 2016-11-15
+draft: true
 output:
   blogdown::html_page
 ---
