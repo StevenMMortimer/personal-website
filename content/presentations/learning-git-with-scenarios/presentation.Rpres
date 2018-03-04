@@ -3,6 +3,8 @@ Learning Git with Scenarios
 author: Steve Mortimer
 date: August 11, 2015
 css: css-presentations.css
+width: 960
+height: 700
 
 ```{r setup, include=FALSE}
   library(knitr)
