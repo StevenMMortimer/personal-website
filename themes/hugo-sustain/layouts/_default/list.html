@@ -7,9 +7,8 @@
         <h3>{{ humanize .Title }}</h3>
           <div class="panel panel-default">
             <div class="panel-body">
-              {{ $pag := .Paginate .Data.Pages }}
-              {{ range $pag.Pages }}
-              {{ if .Title }}
+            {{ $pag := (.Paginate (where .Data.Pages "Title" "not in" (slice ""))).Pages}}
+            {{ range $pag }}
             <ol class="post-list">
               <li class="post-stub">
                   <a href="{{ .Permalink }}">
@@ -22,7 +21,6 @@
                   <p class="post-stub-description">{{ .Date.Format "January 2, 2006" }}</p>
               </li>
             </ol>
-            {{ end }}
             {{ end }}
             <!-- 
             {{ if eq .Title "Projects" }}

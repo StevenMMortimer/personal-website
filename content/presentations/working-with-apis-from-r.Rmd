@@ -1,0 +1,36 @@
+---
+title: "Working with APIs from R"
+description: "An overview on interacting with APIs from R (including a deeper dive on authentication)"
+image: "presentations/working-with-apis-from-r/img/i-heart-apis.jpg"
+author: ~
+tags:
+ - presentations
+date: 2016-11-15
+output:
+  blogdown::html_page
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+## Summary
+
+Want to learn about using APIs from R? This presentation covers the basics on connecting to 
+different XML and JSON based data APIs along with how to wrangle the data once it's in R 
+using utilizing popular packages such as xml2, jsonlite, httr, and purrr. Topics include: 
+
+1. 
+
+<div style="text-align:center;margin-top:30px;">
+  <iframe class="presentation-iframe" src="/presentations/working-with-apis-from-r/presentation/index.html" seamless></iframe>
+</div>
+<a target="_blank" href="/presentations/working-with-apis-from-r/presentation/index.html">
+  Click Here to View in New Tab
+</a>

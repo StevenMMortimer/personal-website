@@ -1,0 +1,36 @@
+---
+title: "Web Apps in R with Shiny"
+description: "An introduction to building interactive web applications in R using the Shiny framework"
+image: "presentations/web-apps-in-r-with-shiny/img/shiny-hex.png"
+author: ~
+tags:
+ - presentations
+date: 2017-03-21
+output:
+  blogdown::html_page
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+## Summary
+
+The shift towards web-based technologies as a means to deliver information has 
+put increasing pressure on business analysts to communicate results via the web. 
+Shiny is a web application framework for R that harnesses the power of modern web 
+technologies. You can build sophisticated web applications using simple pieces of 
+R code that you already know well.
+
+<div style="text-align:center;margin-top:30px;">
+  <iframe class="presentation-iframe" src="/presentations/web-apps-in-r-with-shiny/presentation/index.html" seamless></iframe>
+</div>
+<a target="_blank" href="/presentations/web-apps-in-r-with-shiny/presentation/index.html">
+  Click Here to View in New Tab
+</a>

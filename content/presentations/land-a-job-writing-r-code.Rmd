@@ -20,20 +20,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-<style>
-iframe[seamless] {
-    background-color: transparent;
-    border: #555555 1px solid;
-    margin: 10px;
-    padding-bottom: 5px;
-    overflow: hidden;
-    display: block;
-    height: 40vw;
-    width: 80vw;
-    max-width: 780px;
-}
-</style>
-
 ## Summary
 
 I was inspired to create this presentation after hearing Ruby enthusiast Chris Mar 
@@ -52,7 +38,7 @@ your first job writing R Code here are the key takeaways from the presentation:
 8. When answering technical questions, ask for help and be yourself.
 
 <div style="text-align:center;margin-top:30px;">
-  <iframe src="/presentations/land-a-job-writing-r-code/presentation/index.html" seamless></iframe>
+  <iframe class="presentation-iframe" src="/presentations/land-a-job-writing-r-code/presentation/index.html" seamless></iframe>
 </div>
 <a target="_blank" href="/presentations/land-a-job-writing-r-code/presentation/index.html">
   Click Here to View in New Tab

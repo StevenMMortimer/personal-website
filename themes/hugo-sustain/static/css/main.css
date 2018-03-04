@@ -226,7 +226,18 @@ img {
 .text-muted {
 	color: #6b6b6b;
 }
-
+.presentation-iframe {
+    background-color: transparent;
+    border: #555555 1px solid;
+    margin: 10px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    display: block;
+    height: 40vw;
+    width: 80vw;
+    max-width: 780px;
+}
 /* Footer  */
 /* Set the fixed height of the footer here
 .footer {
