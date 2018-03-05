@@ -6,7 +6,6 @@ author: ~
 tags:
  - presentations
 date: 2016-11-15
-draft: true
 output:
   blogdown::html_page
 ---
@@ -25,9 +24,7 @@ knitr::opts_chunk$set(
 
 Want to learn about using APIs from R? This presentation covers the basics on connecting to 
 different XML and JSON based data APIs along with how to wrangle the data once it's in R 
-using utilizing popular packages such as xml2, jsonlite, httr, and purrr. Topics include: 
-
-1. 
+using utilizing popular packages such as xml2, jsonlite, httr, and purrr. 
 
 <div style="text-align:center;margin-top:30px;">
   <iframe class="presentation-iframe" src="/presentations/working-with-apis-from-r/presentation/index.html" seamless></iframe>

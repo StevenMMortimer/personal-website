@@ -1,6 +1,6 @@
 Working with APIs from R
 ========================================
-author: Steve Mortimer
+author: Steven Mortimer
 date: November 15, 2016
 css: css-presentations.css
 width: 960
@@ -106,8 +106,8 @@ HTTP
 
 Required Packages
 ====================================
-
-Before you get started Run the snippet of code below
+<br/>
+Before you get started Run the snippet of code below:
 
 ```{r load-packages, eval=TRUE, echo=TRUE, warning=FALSE, error=FALSE, message=FALSE}
 
@@ -145,35 +145,39 @@ parsed_xml
 
 Parsing Many Elements
 ====================================
+
 ```{r, echo=TRUE, eval=TRUE}
 resp <- GET(paste0('http://www.omdbapi.com/',
                    '?s=The+Godfather&plot=short&r=xml&apikey=4439909d'))
-resp
 parsed_xml <- read_xml(content(resp, as="raw"))
 parsed_xml
 ```
 
 Parsing Many Elements (cont.)
 ====================================
+<br/>
 ```{r, echo=TRUE, eval=TRUE}
-
 # the values of a single result are stored
 # as attributes inside the XML
-
 # always test your strategies on one record
 one_record <- parsed_xml %>% 
   xml_find_all('result') %>% 
   map(as_list) %>% .[[1]]
 
 as.data.frame(attributes(one_record))[c('title', 'year', 'imdbID', 'type')]
+```
 
+Parsing Many Elements (cont.)
+====================================
+<br/>
+```{r, echo=TRUE, eval=TRUE}
 # now work on them all
 search_results <- parsed_xml %>% 
   xml_find_all('result') %>% 
   map(as_list) %>%
   map_df(function(x) as.data.frame(attributes(x)))
-head(search_results[c('title', 'year', 'imdbID', 'type')])
 
+head(search_results[c('title', 'year', 'imdbID', 'type')])
 ```
 
 break-after-no-auth-GET
@@ -181,41 +185,33 @@ break-after-no-auth-GET
 title: false
 
 <h3>
-  <div class="midcenter" style="margin-left:-400px; margin-top:-200px;">
-    <span style="font-weight: 700; color:#25679E;">We just learned:</span>
+  <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;">
+    <span style="font-weight:700; color:#25679E;">We just learned:</span>
     </br></br>
-    <span style="line-height: 1.5em;">Grabbing Data from an API with No Authentication</span>
+    <span style="line-height:1.5em;">Grabbing Data from an API with<br/>No Authentication</span>
   </div>
 </h3>
 
 API with Basic Authentication
 ====================================
 
-* Basic Authentication just means that your
-method of accessing a username or password
-* The password may or may not be encrypted to
-prevent snatching as it goes across the web
+Basic Authentication just accessing via username and password. The password may 
+or may not be encrypted.
 
 ```{r, echo=TRUE, eval=TRUE}
-
-# There is an endpoint for testing that we 
-# can use instead of accessing a particular data API
-
 url <- 'http://httpbin.org/basic-auth/user/passwd'
 username <- "user"
 password <- "passwd"
-resp <- GET(url, config = authenticate("user", "passwd", "basic"))
+resp <- GET(url,config=authenticate("user","passwd","basic"))
 content(resp, as="parsed")
-
 ```
 
 API with Basic (Digest) Authentication
 ====================================
 
-* Digest Authentication means that the receiving
-server provides a special session key back that you
-can use when requesting information that is more secure
-than basic authentication
+Digest Authentication means that the receiving server provides a special session 
+key back that you can use when requesting information that is more secure than 
+basic authentication.
 
 ```{r, echo=TRUE, eval=TRUE}
 
@@ -236,48 +232,50 @@ break-after-basic-auth
 title: false
 
 <h3>
-  <div class="midcenter" style="margin-left:-400px; margin-top:-200px;">
+  <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;">
     <span style="font-weight: 700; color:#25679E;">We just learned:</span>
     </br></br>
-    <span style="line-height: 1.5em;">Grabbing Data from an API with Basic Authentication</span>
+    <span style="line-height: 1.5em;">Grabbing Data from an API with<br/>Basic Authentication</span>
   </div>
 </h3>
-
 
 API with Token/OAuth 2.0 Authentication
 ====================================
 
-* OAuth is application-specific (Google, Facebook, Twitter)
-* The user authorizes a "scope" (breadth of services) to get token
+OAuth is application-specific (Google, Facebook, Twitter). The user authorizes a 
+"scope" (breadth of services) to get token.
 
 ```{r, echo=TRUE, eval=TRUE}
-
-# This uses Norfolk Data Science's key and secret
-# If you want to create your own then you can register at:
-# https://cloud.google.com/console#/project
-key <- "414258752185-ln3is61lrs8r5jtq8695anopmplbjl4d.apps.googleusercontent.com"
-secret <- "hPMYGZWmvNN9iqIRxkCeCWGy"
+# Using personal key and secret.
+# Create your own at: https://console.developers.google.com/apis
+key <- "526767977974-i8pn4vvaga2utiqmeblfnpakflgq964n.apps.googleusercontent.com"
+secret <- "tNJixXCExE30f_ARBzb6e4hC"
 myapp <- oauth_app("google", key, secret)
-
-# get the OAuth token
-# this example requires a Google Drive account
-google_token <- oauth2.0_token(oauth_endpoints("google"), 
-                               myapp,
-                               scope = c("https://www.googleapis.com/auth/drive"))
-google_token
+myapp
 ```
 
 API with Token/OAuth 2.0 Authentication
 ====================================
 
-* After you get your token, it's easy! Simply pass it
-along as an argument to the `GET` function
+```{r, echo=TRUE, eval=TRUE}
+# get the OAuth token
+# this example requires a Google Drive account
+token <- oauth2.0_token(oauth_endpoints("google"), 
+                        myapp,
+                        scope=c("https://www.googleapis.com/auth/drive"))
+token
+```
+
+API with Token/OAuth 2.0 Authentication
+====================================
+
+After you get your token, it's easy! Simply pass it along as an argument to the 
+`GET` function.
 
 ```{r, echo=TRUE, eval=TRUE}
-
 # give your token to "GET" along with the URL
 url <- 'https://www.googleapis.com/drive/v2/about'
-req <- GET(url, google_token)
+req <- GET(url, token)
 
 # parse the response
 your_drive_metadata <- content(req, 'parsed')
@@ -287,12 +285,10 @@ your_drive_metadata$user[c(2,6)]
 sprintf("%1.2f%%", 100 * 
           as.numeric(your_drive_metadata$quotaBytesUsed) / 
           as.numeric(your_drive_metadata$quotaBytesTotal))
-
 ```
 
 Some more details on OAuth 2.0 Tokens
 ====================================
-left: 50%
 
 <div class="attribution">
   <div class="attribution-link">
@@ -301,9 +297,9 @@ left: 50%
   </div>
 </div>
 
+<br/>
 * Your script is an "application" working on sombody's behalf
-* The user consents to your application's scope 
-<img style="margin-left: 70px; margin-top: 30px; margin-bottom: 10px;" width="65%;" src="./img/auth-consent-small.png" />
+* The user consents to your application's scope
 * The token is returned to allow you to continue accessing
 given that authorization
 
@@ -318,11 +314,9 @@ break-after-token-auth
 title: false
 
 <h3>
-  <div class="midcenter" style="margin-left:-400px; margin-top:-200px;">
+  <div style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; margin: auto;">
     <span style="font-weight: 700; color:#25679E;">We just learned:</span>
     </br></br>
-    <span style="line-height: 1.5em;">Grabbing Data from an API with Token or OAuth 2.0 Authentication</span>
+    <span style="line-height: 1.5em;">Grabbing Data from an API with<br/>Token or OAuth 2.0 Authentication</span>
   </div>
 </h3>
-
-
