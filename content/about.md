@@ -19,16 +19,16 @@ I'm Steve Mortimer and I enjoy helping others make better decisions and enjoy be
 
 ### Experience
 
-**Homes.com** (2015-2017)</br>
-*Senior Manager of Data Science*</br>
-Led analytics team in efforts to improve customer prospecting, forecasting & 
-inventory management, and customer churn through actionable reporting, workflow 
-tools, and alerts.  
-</br>
-**The Advisory Board Company** (2011-2015)</br>
-*Analyst* &#x2192; *Data Scientist*</br>
-Created suite of predictive tools and analyses to support Higher Education 
-institutions in enhancing student advising and improving graduation outcomes.
+ - **Homes.com** (2015-2017)</br>
+ *Senior Manager of Data Science*</br>
+ Led analytics team in efforts to improve customer prospecting, forecasting & 
+ inventory management, and customer churn through actionable reporting, workflow 
+ tools, and alerts.  
+
+ - **The Advisory Board Company** (2011-2015)</br>
+ *Analyst* &#x2192; *Data Scientist*</br>
+ Created suite of predictive tools and analyses to support higher education 
+ institutions in enhancing student advising and improving graduation outcomes.
 
 ### Internships
 
@@ -40,11 +40,12 @@ institutions in enhancing student advising and improving graduation outcomes.
 ### Technical Skills
 
   - Statistical Tools: R, SAS, SPSS, Weka
-  - Programming Languages: Python, SQL, Java, Visual Basic for Applications (VBA)
+  - Programming Languages: SQL, Python, Apache Spark
   - Databases: SQL Server, PostgreSQL, Oracle, MySQL, MongoDB, Apache Solr
-  - Web Programming : HTML, CSS, XML, JavaScript, REST & SOAP APIs
+  - Web Programming: HTML, CSS, XML, JavaScript, REST & SOAP APIs
   - Interactive Development Environments (IDEs): RStudio, PyCharm, Eclipse
-  - Amazon Web Services - S3, EC2, EMR, Lambda, API Gateway, RDS, DynamoDB, IAM
-  - Version Control Systems: Git/Git-flow, GitHub, Bitbucket, Stash, SVN
+  - Amazon Web Services: IAM, S3, EC2, EMR, RDS, DynamoDB, Lambda, API Gateway
+  - Version Control Systems: Git/Git-flow, SVN, GitHub, Stash
   - Project Management: Atlassian Product Suite (JIRA, Confluence, Stash, Hipchat), Trello
-  - Other: Microsoft Office Suite, Google Apps (Docs, Drive, Sheets, Mail)
+  - Other: Google Apps (Docs, Drive, Sheets, GMail), Microsoft Office Suite 
+  (MS Excel, MS PowerPoint, MS Outlook), Visual Basic for Applications (VBA) 
