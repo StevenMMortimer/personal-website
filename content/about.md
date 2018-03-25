@@ -3,6 +3,9 @@ title = "About"
 date = 2017-05-09T17:37:50Z
 author = "Steven Mortimer"
 description = ""
+aliases = [
+  "/page/about/"
+]
 +++
 
 <img src="/img/headshot.jpg" style="float:right;margin-top:10px;margin-bottom:0px;margin-left:20px;margin-right:0px;border-radius:0px;" /> 
