@@ -1,7 +1,7 @@
 +++
 title = "About"
 date = 2017-05-09T17:37:50Z
-author = "Steven Mortimer"
+author = "Steven M. Mortimer"
 description = ""
 aliases = [
   "/page/about/"

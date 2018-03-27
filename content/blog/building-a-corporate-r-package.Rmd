@@ -1,7 +1,9 @@
 ---
 title: Building a Corporate R Package
-author: ~
+author: Steven M. Mortimer
 date: '2017-11-03'
+aliases: 
+  - /2017/11/03/building-a-corporate-r-package
 slug: building-a-corporate-r-package
 categories: []
 tags:

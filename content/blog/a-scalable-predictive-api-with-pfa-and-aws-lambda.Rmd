@@ -1,7 +1,9 @@
 ---
 title: A Scalable Predictive API with PFA and AWS Lambda
-author: ~
+author: Steven M. Mortimer
 date: '2017-07-28'
+aliases: 
+  - /2017/07/28/a-scalable-predictive-api-with-pfa-and-aws-lambda
 slug: a-scalable-predictive-api-with-pfa-and-aws-lambda
 categories: []
 tags:
@@ -22,9 +24,8 @@ need to be translated to another programming language? Will it scale? Does it ne
 to be dumbed down? Usually, the person who built the model is not an expert on
 how to deploy the model in infrastructure, which has led to a proliferation of
 turn-key solutions for converting machine learning models into web APIs: 
-[Azure ML](https://azure.microsoft.com/en-us/services/machine-learning/), 
-[YHat ScienceOps](https://www.yhat.com/products/scienceops), 
-[Domino Data Lab](https://www.dominodatalab.com/solutions/), 
+<a href="https://azure.microsoft.com/en-us/services/machine-learning/" target="_blank">Azure ML</a>, 
+<a href="https://www.yhat.com/products/scienceops" target="_blank">YHat ScienceOps</a>, <a href="https://www.dominodatalab.com/solutions/" target="_blank">Domino Data Lab</a>,  
 and many others. I’m not a big fan of spending money on these
 types of platforms or systems because they are usually costly and require learning
 quirks of a specific platform that has limited features and support, so I've

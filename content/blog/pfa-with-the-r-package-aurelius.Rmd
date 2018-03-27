@@ -1,7 +1,9 @@
 ---
 title: "PFA with the R Package aurelius"
-author: ~
+author: Steven M. Mortimer
 date: '2017-02-13'
+aliases: 
+  - /2017/02/13/pfa-with-the-r-package-aurelius
 description: ''
 slug: pfa-with-the-r-package-aurelius
 tags:

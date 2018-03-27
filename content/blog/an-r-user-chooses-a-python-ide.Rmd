@@ -1,7 +1,9 @@
 ---
 title: An R User Chooses a Python IDE
-author: ~
+author: Steven M. Mortimer
 date: '2017-04-07'
+aliases: 
+  - /2017/04/07/an-r-user-chooses-a-python-ide
 slug: an-r-user-chooses-a-python-ide
 categories: []
 tags:
