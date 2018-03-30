@@ -1,5 +1,6 @@
 baseURL = "https://stevenmortimer.com/"
 languageCode = "en-us"
+copyright = "This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License."
 title = "Home"
 theme = "hugo-sustain"
 enableEmoji = true
@@ -10,6 +11,9 @@ pluralizelisttitles = false
 paginate = 5
 paginatePath = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
+[author]
+    name = "Steven M. Mortimer"
 
 [blackfriday] 
     hrefTargetBlank = true
@@ -78,3 +82,8 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     name = "LinkedIn"
     url = "https://linkedin.com/in/StevenMMortimer"
     weight = 5
+    
+[[menu.main]]
+    name = "R-Bloggers"
+    url = "https://www.r-bloggers.com/"
+    weight = 6    
