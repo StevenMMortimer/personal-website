@@ -1,7 +1,9 @@
 ---
 title: "PFA with the R Package aurelius"
-author: ~
+author: Steven M. Mortimer
 date: '2017-02-13'
+aliases: 
+  - /2017/02/13/pfa-with-the-r-package-aurelius
 description: ''
 slug: pfa-with-the-r-package-aurelius
 tags:
@@ -92,10 +94,10 @@ pfa_model &lt;- pfa_engine(rf_model_as_pfa)
 test_dat &lt;- iris2[73,1:4]
 round(pfa_model$action(as.list(test_dat)), 6)
 #&gt;     setosa versicolor  virginica 
-#&gt;      0.000      0.862      0.138
+#&gt;       0.00       0.83       0.17
 round(unclass(predict(object=rf_model, newdata=test_dat, type=&#39;prob&#39;)), 6) 
 #&gt;    setosa versicolor virginica
-#&gt; 73      0      0.862     0.138</code></pre>
+#&gt; 73      0       0.83      0.17</code></pre>
 <p>Once you’re happy with your model, just export to a flat file using <code>write_pfa()</code>. This format can be read and used by any PFA interpreter. With R you can read the file back in using <code>read_pfa()</code>.</p>
 <pre class="r"><code># you can export your model for use in other systems
 write_pfa(rf_model_as_pfa, file = &#39;~/my_rf_model.pfa&#39;)
