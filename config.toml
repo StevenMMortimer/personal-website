@@ -1,7 +1,7 @@
 baseURL = "https://stevenmortimer.com/"
 languageCode = "en-us"
 copyright = "This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License."
-title = "Home"
+title = "stevenmortimer.com"
 theme = "hugo-sustain"
 enableEmoji = true
 googleAnalytics = "UA-98603021-1"
@@ -12,8 +12,9 @@ paginate = 5
 paginatePath = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
-[author]
+[Author]
     name = "Steven M. Mortimer"
+    email = "reportmort@gmail.com"
 
 [blackfriday] 
     hrefTargetBlank = true
