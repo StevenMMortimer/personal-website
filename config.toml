@@ -25,19 +25,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [Taxonomies]
     category = "categories"
     tag = "tags"
-    
-[outputs]
-    home = [ "HTML", "RSS", "RFEED"]
-
-[outputFormats]
-  [outputFormats.RSS]
-    mediatype = "application/rss"
-    baseName = "feed"
-
-  [outputFormats.RFEED]
-    mediatype = "application/rss"
-    baseName = "feed_r"
-    noUgly = true    
 
 [Params]
     intro = true
@@ -101,4 +88,18 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[menu.main]]
     name = "R-Bloggers"
     url = "https://www.r-bloggers.com/"
-    weight = 6    
+    weight = 6  
+    
+    
+[outputs]
+    home = [ "HTML", "RSS", "RFEED"]
+
+[outputFormats]
+[outputFormats.RSS]
+mediatype = "application/rss"
+baseName = "feed"
+
+[outputFormats.RFEED]
+mediatype = "application/rss"
+baseName = "feed_r"
+noUgly = true
