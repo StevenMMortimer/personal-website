@@ -1,12 +1,13 @@
 ---
 title: Google Sites for Documentation
-author: Steven M. Mortimer
+author: "Steven M. Mortimer"
 date: "2017-06-02"
 aliases: 
   - /2017/06/01/google-sites-for-documentation
   - /2017/06/02/google-sites-for-documentation
 slug: google-sites-for-documentation
-categories: []
+categories:
+  - R
 tags:
   - r-code
   - google-sites

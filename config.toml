@@ -12,6 +12,9 @@ paginate = 5
 paginatePath = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
+[Permalinks]
+    blog = "/:slug"
+
 [Author]
     name = "Steven M. Mortimer"
     email = "reportmort@gmail.com"
@@ -20,7 +23,21 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     hrefTargetBlank = true
 
 [Taxonomies]
+    category = "categories"
     tag = "tags"
+    
+[outputs]
+    home = [ "HTML", "RSS", "RFEED"]
+
+[outputFormats]
+  [outputFormats.RSS]
+    mediatype = "application/rss"
+    baseName = "feed"
+
+  [outputFormats.RFEED]
+    mediatype = "application/rss"
+    baseName = "feed_r"
+    noUgly = true    
 
 [Params]
     intro = true
@@ -56,9 +73,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 	highlight_style = "github"
 	highlight_version = "9.11.0"
 
-[Permalinks]
-    blog = "/:filename"
-    
 [[menu.main]]
     name = "Projects"
     url = "/projects/"

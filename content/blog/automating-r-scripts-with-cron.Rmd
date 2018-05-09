@@ -5,7 +5,8 @@ date: '2017-08-15'
 aliases: 
   - /2017/08/15/automating-r-scripts-with-cron
 slug: automating-r-scripts-with-cron
-categories: []
+categories:
+  - R
 tags:
   - tools
   - enterprise-r

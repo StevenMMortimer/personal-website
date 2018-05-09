@@ -1,11 +1,12 @@
 ---
 title: An R User Chooses a Python IDE
-author: Steven M. Mortimer
+author: "Steven M. Mortimer"
 date: '2017-04-07'
 aliases: 
   - /2017/04/07/an-r-user-chooses-a-python-ide
 slug: an-r-user-chooses-a-python-ide
-categories: []
+categories:
+  - R
 tags:
   - tools
 description: "There are many options for Python IDEs, so which one is best for R users starting to use Python for the first time?"

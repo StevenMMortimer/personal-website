@@ -1,9 +1,10 @@
 ---
 title: Cleaning Contact Info
-author: ~
+author: "Steven M. Mortimer"
 date: '2016-11-02'
-slug: ''
-categories: []
+slug: 'cleaning-contact-info'
+categories:
+  - R
 tags:
   - r-code
   - data-cleaning

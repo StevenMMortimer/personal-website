@@ -1,11 +1,12 @@
 ---
 title: A Scalable Predictive API with PFA and AWS Lambda
-author: Steven M. Mortimer
+author: "Steven M. Mortimer"
 date: '2017-07-28'
 aliases: 
   - /2017/07/28/a-scalable-predictive-api-with-pfa-and-aws-lambda
 slug: a-scalable-predictive-api-with-pfa-and-aws-lambda
-categories: []
+categories:
+  - R
 tags:
   - r-code
   - PFA
