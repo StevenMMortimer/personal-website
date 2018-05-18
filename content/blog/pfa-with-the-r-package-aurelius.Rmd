@@ -34,16 +34,16 @@ outdated so when I heard about PFA, I was pretty excited. A new JSON-based stand
 for encoding any type of analytics, not just certain supported models like PMML. 
 I mainly work in the R programming language, so I was disappointed to find resources 
 lacking that would convert models made in R into the PFA standard. The great 
-folks at the <a href="http://dmg.org" target="_blank">Data Mining Group</a> (DMG) had started on an R package 
-called `aurelius` that contained the bare bones functions to construct the syntax. 
-After reading through the Project pages on GitHub, I saw everything was there, 
-but it wasn't as convenient as I would like so I started writing "model producers". 
-Model producers are functions that convert model objects in R into their PFA 
-equivalent to be exported and used in other systems. In this process I learned 
-a great deal. I thought I knew how models worked, but actually reading through 
-the mechanics of scoring has made me appreciate them so much more. Below is an 
-outline of working with the `aurelius` package, but note that this work has yet 
-to be integrated into the project and exists on forked branch in my GitHub 
+folks at the <a href="http://dmg.org" target="_blank">Data Mining Group</a> (DMG) 
+had started on an R package called `aurelius` that contained the bare bones functions 
+to construct the syntax. After reading through the Project pages on GitHub, I saw 
+everything was there, but it wasn't as convenient as I would like so I started 
+writing "model producers". Model producers are functions that convert model objects 
+in R into their PFA equivalent to be exported and used in other systems. In this 
+process I learned a great deal. I thought I knew how models worked, but actually 
+reading through the mechanics of scoring has made me appreciate them so much more. 
+Below is an outline of working with the `aurelius` package, but note that this work 
+has yet to be integrated into the project and exists on forked branch in my GitHub 
 (installation command shown below).
 
 ```{r install-package, eval=FALSE}

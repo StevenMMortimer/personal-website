@@ -4,5 +4,6 @@
 .Ruserdata
 *.DS_Store
 .httr-oauth
+.httr-oauth*
 public/
 blogdown/
