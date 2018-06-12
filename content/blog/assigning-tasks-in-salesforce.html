@@ -1,0 +1,95 @@
+---
+title: Assigning Tasks in Salesforce
+author: Steven M. Mortimer
+date: '2018-06-16'
+slug: assigning-tasks-in-salesforce
+categories:
+  - R
+tags:
+  - r-code
+  - salesforce
+description: "This post covers how to assign tasks in Salesforce using the salesforcer R package."
+output:
+  blogdown::html_page:
+    toc: true
+draft: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#the-business-case">The Business Case</a></li>
+<li><a href="#authenticating">Authenticating</a></li>
+<li><a href="#finding-customers-to-target">Finding Customers to Target</a></li>
+<li><a href="#assigning-tasks-to-customer-service">Assigning Tasks to Customer Service</a></li>
+<li><a href="#submitting-the-tasks-into-salesforce">Submitting the Tasks into Salesforce</a></li>
+<li><a href="#final-conclusions">Final Conclusions</a></li>
+</ul>
+</div>
+
+<ul>
+<li>prep</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Create opportunities with money for 20 customers</li>
+<li>Create 5 customer service employees</li>
+<li>Create some tasks where the cust. service staff already worked with employee</li>
+</ol>
+<div id="the-business-case" class="section level2">
+<h2>The Business Case</h2>
+<p>Salesforce is truly a force to be reckoned with in the CRM space. Many organizations are using Salesforce to perform all sorts of customer management and have teams of people fully dedicated to using it. One use case I’ve personally found interesting is having analytics determine the precise timing and action for a salesperson or customer service representative to influence a customer. One way to encourage the action is to create a “task” in Salesforce and assign it to a customer and company employee. This task can have a great deal of detail and provides a systematic way for tracking outcomes. Below I will walk through how to create and assign a task using the <strong>salesforcer</strong> R package.</p>
+</div>
+<div id="authenticating" class="section level2">
+<h2>Authenticating</h2>
+<p>While working with Salesforce data I decided to develop an R package <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer"><b>salesforcer</b></a> that makes it easier to retrieve Square data from R so that you can focus on the analysis. After installing the <strong>salesforcer</strong> package you can authenticate with your usename, password, and security token, or by using an OAuth 2.0 flow. The credentials are cached in the package environment during your R session and refreshed if needed.</p>
+<pre class="r"><code>install.packages(&quot;salesforcer&quot;)
+
+library(tidyverse)
+library(salesforcer)
+
+# authenticate using OAuth 2.0 flow
+sf_auth()</code></pre>
+</div>
+<div id="finding-customers-to-target" class="section level2">
+<h2>Finding Customers to Target</h2>
+<p>For this example, let’s say that we wanted to find customers in Salesforce who have purchased at least $100 in product. Maybe this is part of a customer appreciation campaign where we would like a member of our customer service team to reach out and personally thank the customer and ask if they need anything.</p>
+<pre class="r"><code>cust_opptys &lt;- sf_query(&quot;SELECT Id, Amnt 
+                         FROM Opportunities 
+                         WHERE Opportunities&quot;)
+target_cust &lt;- cust_opptys %&gt;%
+  group_by(Id) %&gt;%
+  summarize(total_amt = sum(Amt)) %&gt;%
+  filter(total_amt &gt; 100) %&gt;% 
+  arrange(desc(total_amt))
+
+target_cust</code></pre>
+<p>Note: If your query will return 10K+ customers, then it might be more performant to use the Bulk Query API. This can be invoked by setting the <code>api_type</code> argument to “Bulk 1.0”.</p>
+<p>The proposed rule of finding any customer having purchased $100 might seem simple, but your rules are limited only by your imagination and resources. For example, another use case might be reaching out to a customer based on the customer’s usage of a software product you sell. For example, let’s say that you sell a SaaS product. You may want to reach out to a customer to check that they are properly trained and are finding value if they haven’t used the product frequently. You could write an R script to figure out those customers by pinging your product traffic history databases or create a custom field in Salesforce and have other systems populate it on a regular basis. Once you have the customers it is possible to trigger workflows, tasks, derive and add other fields, etc. The possibilities truly are limitless.</p>
+</div>
+<div id="assigning-tasks-to-customer-service" class="section level2">
+<h2>Assigning Tasks to Customer Service</h2>
+<p>Let’s continue with the customer appreciation use case. Once we know the customer, we want to create and assign a task for a representative to see and follow-up on. In Salesforce the <code>User</code> object contains the 18-character ID that uniquely identifies each Salesforce user. Once you find the IDs of certain individuals (by name, team, etc.) then put their User ID on the task.</p>
+<pre class="r"><code>cust_reps &lt;- sf_query(&quot;SELECT Id 
+                         FROM User 
+                         WHERE IsManager = false AND Dept = &#39;Customer Service&#39;&quot;)
+cust_reps</code></pre>
+<p>Above you can see that we have five employees in the customer service department. Earlier we found a total of 20 customers to reach out to, so we’ll just need to assign each of the five employees to four customers each. This process could be random, itcould be based on timezone, we could even give preference if the representative has a history of working with the customer already.</p>
+<pre class="r"><code>target_cust &lt;- target_cust %&gt;% 
+  transform(User = cust_reps$Id)</code></pre>
+</div>
+<div id="submitting-the-tasks-into-salesforce" class="section level2">
+<h2>Submitting the Tasks into Salesforce</h2>
+<p>Once you have the data prepared to create each task, then you can submit them to Salesforce using the <code>sf_create()</code> function.</p>
+<pre class="r"><code>created_tasks &lt;- sf_create(target_cust, &quot;Task&quot;)
+created_tasks</code></pre>
+<p>The tasks can be found individually by using the returned ID and forming the direct URL. For example, the first task we created has ID, so the URL is of the form:</p>
+<p><a href="https://%7BYOUR" class="uri">https://{YOUR</a> SERVER INSTANCE}.salesforce.com/004/adsflkjdsaf2309430</p>
+<p>Below is a screenshot of how the tasks might appear from the point of view of the customer service representative.</p>
+<ul>
+<li>include a screen shot of a person with the task on their dashboard</li>
+</ul>
+</div>
+<div id="final-conclusions" class="section level2">
+<h2>Final Conclusions</h2>
+<p>This is a quick and easy way to notify other Salesforce users (potentially en-mass). You may find better ways to track these interventions by creating a “campaign” in Salesforce or updating a notes field or other custom field on the customer. The actual implementation is up to you and your Salesforce team, but the method of programming the result from R using the <strong>salesforcer</strong> package would be almost exactly the same. Simply swap out the target object and data fields and you’ll be able to control the creation, deletion, and updating of any object in Salesforce.</p>
+</div>

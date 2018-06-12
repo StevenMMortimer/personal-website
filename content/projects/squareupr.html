@@ -1,0 +1,195 @@
+---
+title: "squareupr"
+description: "An R Package for the Square APIs"
+author: ~
+tags:
+ - r-code
+ - square
+date: 2018-06-01
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#quickstart-guide">Quickstart Guide</a><ul>
+<li><a href="#install-squareupr-library">Install squareupr Library</a></li>
+<li><a href="#authentication">Authentication</a></li>
+<li><a href="#determining-business-locations">Determining Business Locations</a></li>
+<li><a href="#pulling-transactions">Pulling Transactions</a></li>
+<li><a href="#helper-functions">Helper Functions</a></li>
+</ul></li>
+<li><a href="#check-out-the-tests">Check out the Tests</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#questions">Questions</a></li>
+<li><a href="#support">Support</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>The <strong>squareupr</strong> package is the R implementation of the <a target="_blank" href="UPDATE THIS LINKE WITH THE REAL ONE">Square APIs</a> (Connect v1 &amp; v2). I created the package while analyzing customer data from Square and found that a package was necessary to make my code more efficient and reproducible. The functions in the package are simple wrappers built using the <strong>httr</strong> package that reach out to the various Square API endpoints. There are also a few convenience functions that transform data once receiving it from the APIs.</p>
+<p><img alt="GitHub - squareupr" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/squareupr">https://github.com/StevenMMortimer/squareupr</a></p>
+</div>
+<div id="features" class="section level2">
+<h2>Features</h2>
+<p>The package currently supports the following API operations:</p>
+<ul>
+<li>OAuth 2.0 (Single sign-on) and Personal Access Token Authentication methods (<code>sq_auth()</code>)</li>
+<li>v2 Locations Endpoint (<code>sq_list_locations()</code>, <code>sq_get_location()</code>)</li>
+<li>v2 Transactions Endpoint (<code>sq_list_transactions()</code>, <code>sq_get_transaction()</code>)</li>
+<li>v2 Customers Endpoint - CRUD (Create, Retrieve, Update, Delete) methods for customers with:
+<ul>
+<li><code>sq_list_customers()</code>, <code>sq_get_customer()</code>, <code>sq_create_customer()</code>, <code>sq_update_customer()</code>, <code>sq_delete_customer()</code></li>
+</ul></li>
+<li>v1 Payments Endpoint (<code>sq_list_payments()</code>, <code>sq_get_payment()</code>)</li>
+<li>v1 Items Endpoint - CRUD (Create, Retrieve, Update, Delete) methods for items with:
+<ul>
+<li><code>sq_list_items()</code>, <code>sq_get_item()</code>, <code>sq_create_item()</code>, <code>sq_update_item()</code>, <code>sq_delete_item()</code></li>
+</ul></li>
+</ul>
+</div>
+<div id="quickstart-guide" class="section level2">
+<h2>Quickstart Guide</h2>
+<div id="install-squareupr-library" class="section level3">
+<h3>Install squareupr Library</h3>
+<pre class="r"><code># This package is experimental and not available on CRAN. 
+# You can install directly from GitHub using the devtools package
+# install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;StevenMMortimer/squareupr&quot;)</code></pre>
+</div>
+<div id="authentication" class="section level3">
+<h3>Authentication</h3>
+<p>First, load the <strong>squareupr</strong> package and authenticate. There are two ways to authenticate:</p>
+<ol style="list-style-type: decimal">
+<li>Personal Access Token</li>
+<li>OAuth 2.0</li>
+</ol>
+<pre class="r"><code>library(tidyverse)
+library(squareupr)
+
+# Using Personal Access Token (PAT)
+sq_auth(personal_access_token = &quot;sq-Th1s1sMyPers0nalAcessT0ken&quot;)
+
+# Using OAuth 2.0 authentication
+sq_auth()</code></pre>
+<p>NOTE: Before using OAuth 2.0 authentication it is necessary that you set up your own Connected App in the Square dashboard. An App ID and App Secret will be provided, then you will be able to plug into your script like so:</p>
+<pre class="r"><code>options(squareupr.app_id = &quot;sq0-99-thisisatest99connected33app22id&quot;)
+options(squareupr.app_secret = &quot;sq0-Th1s1sMyAppS3cr3t&quot;)
+sq_auth()</code></pre>
+<p>OAuth 2.0 credentials will be cached locally in a file entitled <code>&quot;.httr-oauth-squareupr&quot;</code> in the current working directory so that a new token is not needed each session.</p>
+</div>
+<div id="determining-business-locations" class="section level3">
+<h3>Determining Business Locations</h3>
+<p>The first step, after authenticating, is determining the unique IDs associated with each of your Square business locations. The API data is often organized or pulled by location, so it is important to know which ID is associated with each location you may have, even if you only have one location. In the <strong>squareupr</strong> packge you can use the <code>sq_list_locations()</code> function to retrieve the details of each location. The ID to take note of is listed in the <code>ID</code> column shown in the data below.</p>
+<pre class="r"><code># list all locations
+our_locations &lt;- sq_list_locations()
+our_locations$name &lt;- &quot;{HIDDEN}&quot;
+our_locations$phone_number &lt;- &quot;{HIDDEN}&quot;
+our_locations %&gt;% 
+  select(id, name, address, phone_number, status)
+#&gt; # A tibble: 5 x 5
+#&gt;   id            name     address    phone_number status
+#&gt;   &lt;chr&gt;         &lt;chr&gt;    &lt;list&gt;     &lt;chr&gt;        &lt;chr&gt; 
+#&gt; 1 46FYN9N9RQS54 {HIDDEN} &lt;list [5]&gt; {HIDDEN}     ACTIVE
+#&gt; 2 DRDCJ2X8E2PMV {HIDDEN} &lt;list [6]&gt; {HIDDEN}     ACTIVE
+#&gt; 3 8T1TYXE840S00 {HIDDEN} &lt;list [5]&gt; {HIDDEN}     ACTIVE
+#&gt; 4 1AWPRVVVFWGQF {HIDDEN} &lt;list [5]&gt; {HIDDEN}     ACTIVE
+#&gt; 5 50X1GNAWEC8V0 {HIDDEN} &lt;list [6]&gt; {HIDDEN}     ACTIVE</code></pre>
+</div>
+<div id="pulling-transactions" class="section level3">
+<h3>Pulling Transactions</h3>
+<p>Transactions are organized by location. With with the <code>sq_list_transactions()</code> function you can provide the location and timeframe to search. The function defaults to pulling transactions from the previous day using <code>Sys.Date() - 1</code> if no dates are specified.</p>
+<pre class="r"><code># list all locations
+our_locations &lt;- sq_list_locations()
+our_transactions &lt;- sq_list_transactions(location = our_locations$id[2], 
+                                         begin_time = as.Date(&#39;2018-05-11&#39;), 
+                                         end_time = as.Date(&#39;2018-05-12&#39;))
+our_transactions
+#&gt; # A tibble: 245 x 6
+#&gt;    id          location_id  created_at    tenders product client_id       
+#&gt;    &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;         &lt;list&gt;  &lt;chr&gt;   &lt;chr&gt;           
+#&gt;  1 bUjFGVjBvN… DRDCJ2X8E2P… 2018-05-12T0… &lt;list … REGIST… D5528FBA-E5DE-4…
+#&gt;  2 5PZP31N5Zs… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… A3A1FF51-325A-4…
+#&gt;  3 BTrGydD6he… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 2B3D32EB-8E58-4…
+#&gt;  4 XsqOAHl68z… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… C50AF3D7-BE32-4…
+#&gt;  5 vmLRzrwByS… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 52E40E1B-2333-4…
+#&gt;  6 pTbzQApZW7… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 962766FF-1436-4…
+#&gt;  7 lnE20zklpP… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… A02191CC-9AC9-4…
+#&gt;  8 DSumrqQW0L… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 1135FF4F-9B89-4…
+#&gt;  9 tPwFXetIwe… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 0D95E79D-B44C-4…
+#&gt; 10 bqUuFrzH71… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 48FD6A49-80A9-4…
+#&gt; # ... with 235 more rows</code></pre>
+<p>At first glance there does not appear to be very much detail on the transaction record. However, the <code>tender</code> field represents a method of payment used in a Square transaction so it contains information regarding the amount of money paid in total, in Square fees, and tip. The <code>tender</code> field even contains information regarding the <code>customer_id</code> and credit card information.</p>
+</div>
+<div id="helper-functions" class="section level3">
+<h3>Helper Functions</h3>
+<p>In Square, customers can be assigned to groups. Those groups can be helpful for studies on a particular set of customers. The <strong>squareupr</strong> package has a convenience function called <code>sq_extract_cust_groups()</code> that will take data retrieved from the Customer API endpoint and extract the group membership of each customer into a <code>tbl_df</code> that is one row per customer group membership (i.e. customers may be repeated in rows if they belong to more than one group). Note: Square may create some loyalty and churn risk groups without you having to manually create them.</p>
+<pre class="r"><code># list all customers
+our_customers &lt;- sq_list_customers()
+our_customers$given_name &lt;- &quot;{HIDDEN}&quot;
+our_customers$family_name &lt;- &quot;{HIDDEN}&quot;
+our_customers %&gt;% select(id, given_name, family_name, preferences, groups)
+#&gt; # A tibble: 11,939 x 5
+#&gt;    id                         given_name family_name preferences groups   
+#&gt;    &lt;chr&gt;                      &lt;chr&gt;      &lt;chr&gt;       &lt;list&gt;      &lt;list&gt;   
+#&gt;  1 M1RBDFRK7S1Q1EP6EZFJFV3CBW {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [1…
+#&gt;  2 56EB9YV54D5W1BYE9P0BXNRC7C {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;NULL&gt;   
+#&gt;  3 Z2HYX7GT2160V7P9PQM1BK03HG {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;NULL&gt;   
+#&gt;  4 017CX5SWZX0MQ5A5GTPKDS6Y2M {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;NULL&gt;   
+#&gt;  5 58MK9F1HQ5447D1QZDX60NHTP4 {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [2…
+#&gt;  6 T5HXZFS1RH6SN7N2JG9GTS9WGG {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;NULL&gt;   
+#&gt;  7 MBSJA4QV4WX6N2XV8WV9VJJTG8 {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [2…
+#&gt;  8 ECVG5QMV99390S6PXJF9KWNN84 {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [1…
+#&gt;  9 H8BZA910D96BGRRQDMBF08ABH4 {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [1…
+#&gt; 10 ZCBZJ234217KTV812WX4DP2404 {HIDDEN}   {HIDDEN}    &lt;list [1]&gt;  &lt;list [2…
+#&gt; # ... with 11,929 more rows
+
+# show the groups that each customer belongs to
+# filter to the groups designated automatically by Square
+sq_extract_cust_groups(our_customers) %&gt;%
+  filter(grepl(&quot;^CQ689YH4KCJMY&quot;, groups.id))
+#&gt; # A tibble: 13,607 x 3
+#&gt;    id                         groups.id                 groups.name       
+#&gt;    &lt;chr&gt;                      &lt;chr&gt;                     &lt;chr&gt;             
+#&gt;  1 M1RBDFRK7S1Q1EP6EZFJFV3CBW CQ689YH4KCJMY.LOYALTY_ALL Loyalty Participa…
+#&gt;  2 58MK9F1HQ5447D1QZDX60NHTP4 CQ689YH4KCJMY.CHURN_RISK  Lapsed            
+#&gt;  3 58MK9F1HQ5447D1QZDX60NHTP4 CQ689YH4KCJMY.REACHABLE   Reachable         
+#&gt;  4 MBSJA4QV4WX6N2XV8WV9VJJTG8 CQ689YH4KCJMY.LOYALTY_ALL Loyalty Participa…
+#&gt;  5 MBSJA4QV4WX6N2XV8WV9VJJTG8 CQ689YH4KCJMY.REACHABLE   Reachable         
+#&gt;  6 ZCBZJ234217KTV812WX4DP2404 CQ689YH4KCJMY.REACHABLE   Reachable         
+#&gt;  7 FKEMR8KZCN3BH98RV78PKHKQ1R CQ689YH4KCJMY.LOYALTY_ALL Loyalty Participa…
+#&gt;  8 FKEMR8KZCN3BH98RV78PKHKQ1R CQ689YH4KCJMY.LOYAL       Regulars          
+#&gt;  9 78VMJPJNK959AHH0ZQPXDXEG3C CQ689YH4KCJMY.LOYALTY_ALL Loyalty Participa…
+#&gt; 10 QASM1G54VX0QN2S15YS6KHEFCC CQ689YH4KCJMY.LOYAL       Regulars          
+#&gt; # ... with 13,597 more rows</code></pre>
+</div>
+</div>
+<div id="check-out-the-tests" class="section level2">
+<h2>Check out the Tests</h2>
+<p>The <strong>squareupr</strong> package has quite a bit of unit test coverage to track any changes made between newly released versions of the Square APIs. These tests are great source of examples for how to interect with the API. The tests are available <a target="_blank" href="https://github.com/StevenMMortimer/squareupr/tree/master/tests/testthat">here</a>.</p>
+</div>
+<div id="license" class="section level2">
+<h2>License</h2>
+<p>The <strong>squareupr</strong> package is licensed under the MIT License (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>).</p>
+</div>
+<div id="questions" class="section level2">
+<h2>Questions</h2>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/squareupr/issues">https://github.com/StevenMMortimer/squareupr/issues</a>. Thank you!</p>
+</div>
+<div id="support" class="section level2">
+<h2>Support</h2>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>Thank you for your support!</p>
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<div style="text-align: center;">
+<script type='text/javascript'>
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
+  </script>
+</div>
+<p><br></p>
+</div>

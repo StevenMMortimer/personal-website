@@ -18,7 +18,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [Author]
     name = "Steven M. Mortimer"
-    email = "reportmort@gmail.com"
+    email = "steve@evolveefficient.com"
 
 [blackfriday] 
     hrefTargetBlank = true
@@ -39,7 +39,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     twitter = "StevenMMortimer"
     stackoverflow = "users/5258043/steven-m-mortimer"
     kofi = "StevenMMortimer"
-    email = "reportmort@gmail.com"
+    email = "steve@evolveefficient.com"
     opengraph = true
     twittercards = true
     shareTwitter = true

@@ -27,7 +27,7 @@ The **roas** package is the R implementation of the Open Ad Stream (OAS) API.
 I created the package because very few tools and documentation exist for the OAS API.
 
 <img alt="GitHub - roas" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
-View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/roas">https://github.com/StevenMMortimer/roas</a>.
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/roas">https://github.com/StevenMMortimer/roas</a>
 
 ## Features
 
@@ -44,7 +44,7 @@ The functions are named to mimic each OAS request action ('Add', 'List', 'Update
 many of these actions are reserved words, so the functions are named {oas_action}(). 
 For example, running the 'List' action is done with the function oas_list().
 
-## How to Get Started
+## Quickstart Guide
 
 ### Install roas Library
 

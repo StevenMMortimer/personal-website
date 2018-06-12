@@ -6,7 +6,7 @@ tags:
  - r-code
  - ad-serving
  - doubleclick
-date: 2017-05-22
+date: 2018-04-22
 output:
   blogdown::html_page:
     toc: true
@@ -17,7 +17,7 @@ output:
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#features">Features</a></li>
-<li><a href="#how-to-get-started">How to Get Started</a><ul>
+<li><a href="#quickstart-guide">Quickstart Guide</a><ul>
 <li><a href="#install-rdfp-library">Install rdfp Library</a></li>
 <li><a href="#setup-and-authenticate">Setup and Authenticate</a></li>
 <li><a href="#check-current-user-info">Check Current User Info</a></li>
@@ -49,11 +49,16 @@ output:
 <li>Simple Administrative Tools</li>
 </ul>
 </div>
-<div id="how-to-get-started" class="section level2">
-<h2>How to Get Started</h2>
+<div id="quickstart-guide" class="section level2">
+<h2>Quickstart Guide</h2>
 <div id="install-rdfp-library" class="section level3">
 <h3>Install rdfp Library</h3>
-<pre class="r"><code>devtools::install_github(&quot;StevenMMortimer/rdfp&quot;)</code></pre>
+<pre class="r"><code># install from CRAN
+install.packages(&quot;rdfp&quot;)
+
+# or get the latest version available on GitHub using the devtools package
+# install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;StevenMMortimer/rdfp&quot;)</code></pre>
 </div>
 <div id="setup-and-authenticate" class="section level3">
 <h3>Setup and Authenticate</h3>
@@ -61,7 +66,6 @@ output:
 <pre class="r"><code>library(dplyr)
 library(lubridate)
 library(rdfp)
-options(stringsAsFactors = FALSE)
 options(rdfp.network_code = 123456789)</code></pre>
 </div>
 <div id="check-current-user-info" class="section level3">
@@ -78,15 +82,15 @@ network_info</code></pre>
 <pre class="r"><code># this creates an extra field on the USER entity type that denotes what shift 
 # the user works during the day. First we create the field, then populate
 # with potential options since it is a dropdown field.
-request_data &lt;- data.frame(name=&#39;Shift&#39;,
-                           description=&#39;The shift that this user usually works.&#39;, 
-                           entityType=&#39;USER&#39;,
-                           dataType=&#39;DROP_DOWN&#39;,
-                           visibility=&#39;FULL&#39;)
+request_data &lt;- tibble(name=&#39;Shift&#39;,
+                       description=&#39;The shift that this user usually works.&#39;, 
+                       entityType=&#39;USER&#39;,
+                       dataType=&#39;DROP_DOWN&#39;,
+                       visibility=&#39;FULL&#39;)
 dfp_createCustomFields_result &lt;- dfp_createCustomFields(request_data)
 
-request_data &lt;- data.frame(customFieldId=rep(dfp_createCustomFields_result$id, 3),
-                           displayName=c(&#39;Morning&#39;, &#39;Afternoon&#39;, &#39;Evening&#39;))
+request_data &lt;- tibble(customFieldId = rep(dfp_createCustomFields_result$id, 3),
+                       displayName = c(&#39;Morning&#39;, &#39;Afternoon&#39;, &#39;Evening&#39;))
 dfp_createCustomFieldOptions_result &lt;- dfp_createCustomFieldOptions(request_data)</code></pre>
 </div>
 <div id="setup-custom-targeting-keys-and-values" class="section level3">
@@ -99,10 +103,10 @@ request_data &lt;- list(keys=list(name=&#39;Test1&#39;,
 dfp_createCustomTargetingKeys_result &lt;- dfp_createCustomTargetingKeys(request_data)
 
 # create the values
-request_data &lt;- data.frame(customTargetingKeyId=rep(dfp_createCustomTargetingKeys_result$id,2),
-                           name=c(&#39;TestValue1&#39;,&#39;TestValue2&#39;), 
-                           displayName=c(&#39;TestValue1&#39;,&#39;TestValue2&#39;), 
-                           matchType=rep(&#39;EXACT&#39;, 2))
+request_data &lt;- tibble(customTargetingKeyId = rep(dfp_createCustomTargetingKeys_result$id, 2),
+                       name = c(&#39;TestValue1&#39;, &#39;TestValue2&#39;), 
+                       displayName = c(&#39;TestValue1&#39;, &#39;TestValue2&#39;), 
+                       matchType = rep(&#39;EXACT&#39;, 2))
 dfp_createCustomTargetingValues_result &lt;- dfp_createCustomTargetingValues(request_data)</code></pre>
 </div>
 <div id="create-an-order" class="section level3">
@@ -130,18 +134,10 @@ dfp_createOrders_result &lt;- dfp_createOrders(request_data)</code></pre>
 </div>
 <div id="get-line-items-by-a-filter" class="section level3">
 <h3>Get Line Items By A Filter</h3>
-<p>Below is an example of how to get objects by Publishers Query Language (PQL) statement. The statement is constructed as a list of lists that are nested to emulate the hierarchy of the XML to be created. The example uses the <code>dfp_getLineItemsByStatement</code> function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201702/LineItemService">LineItemService</a>.</p>
+<p>Below is an example of how to get objects by Publishers Query Language (PQL) statement. The statement is constructed as a list of lists that are nested to emulate the hierarchy of the XML to be created. The example uses the <code>dfp_getLineItemsByStatement</code> function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201802/LineItemService">LineItemService</a>.</p>
 <pre class="r"><code># Retrieve all Line Items that have a status of &quot;DELIVERING&quot;
-dat &lt;- list(&#39;filterStatement&#39;=list(&#39;query&#39;=&quot;WHERE status=&#39;DELIVERING&#39;&quot;))
-
-resultset &lt;- dfp_getLineItemsByStatement(dat)
-
-# the result is a list
-# Google uses the first two elements for metadata
-head(resultset, 2)
-
-# the rest should be parsed as needed
-tail(resultset, -2)</code></pre>
+request_data &lt;- list(&#39;filterStatement&#39;=list(&#39;query&#39;=&quot;WHERE status=&#39;DELIVERING&#39;&quot;))
+dfp_getLineItemsByStatement_result &lt;- dfp_getLineItemsByStatement(request_data)</code></pre>
 </div>
 <div id="run-a-report" class="section level3">
 <h3>Run a Report</h3>
@@ -151,13 +147,13 @@ tail(resultset, -2)</code></pre>
 # Documentation for the reportQuery object can be found in R using 
 # ?dfp_ReportService_object_factory and searching for ReportQuery
 # Also online documentation is available that lists available child elements for reportQuery
-# https://developers.google.com/doubleclick-publishers/docs/reference/v201702/ReportService.ReportQuery
+# https://developers.google.com/doubleclick-publishers/docs/reference/v201802/ReportService.ReportQuery
 request_data &lt;- list(reportJob=list(reportQuery=list(dimensions=&#39;MONTH_AND_YEAR&#39;, 
                                                      dimensions=&#39;AD_UNIT_ID&#39;,
                                                      adUnitView=&#39;FLAT&#39;,
                                                      columns=&#39;TOTAL_INVENTORY_LEVEL_IMPRESSIONS&#39;, 
-                                                     startDate=list(year=2015, month=10, day=1),
-                                                     endDate=list(year=2015, month=10, day=31),
+                                                     startDate=list(year=2018, month=3, day=1),
+                                                     endDate=list(year=2018, month=3, day=30),
                                                      dateRangeType=&#39;CUSTOM_DATE&#39;
                                                      )))
 
@@ -185,15 +181,11 @@ dfp_createUsers_result &lt;- dfp_createUsers(request_data)</code></pre>
 </div>
 <div id="license" class="section level2">
 <h2>License</h2>
-<p>The <strong>rdfp</strong> package is licensed under the MIT License (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>).</p>
-<ul>
-<li>COPYING - rdfp package license (MIT)</li>
-<li>NOTICE - Copyright notices for additional included software</li>
-</ul>
+<p>The <strong>rdfp</strong> package is licensed under the MIT License (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)</p>
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>

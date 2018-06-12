@@ -1,0 +1,217 @@
+---
+title: "salesforcer"
+description: "An R Package for the Salesforce APIs"
+author: "Steven M. Mortimer"
+tags:
+ - r-code
+ - crm
+ - salesforce
+date: 2018-06-11
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+
+<div id="TOC">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#quickstart-guide">Quickstart Guide</a><ul>
+<li><a href="#install-salesforcer-library">Install salesforcer Library</a></li>
+<li><a href="#authentication">Authentication</a></li>
+<li><a href="#support-for-multiple-apis">Support for Multiple APIs</a></li>
+<li><a href="#support-for-metadata">Support for Metadata</a></li>
+<li><a href="#extension-of-the-rforcecom-package">Extension of the RForcecom Package</a></li>
+</ul></li>
+<li><a href="#check-out-the-tests">Check out the Tests</a></li>
+<li><a href="#credits">Credits</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#questions">Questions</a></li>
+<li><a href="#support">Support</a></li>
+</ul>
+</div>
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>The <strong>salesforcer</strong> package is the R implementation of the Salesforce platform APIs. I created the package to build upon the functionality provided in the <strong>RForcecom</strong> package by including calls from more APIs (REST, SOAP, Bulk, and Metadata) along with following more tidy data principles when wrangling data from the APIs.</p>
+<p><img alt="GitHub - salesforcer" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer">https://github.com/StevenMMortimer/salesforcer</a></p>
+</div>
+<div id="features" class="section level2">
+<h2>Features</h2>
+<p>This R package supports a variety of Salesforce API operations and more will be added. Package features include:</p>
+<ul>
+<li>OAuth 2.0 (Single Sign On) and Basic (Username-Password) Authentication methods (<code>sf_auth()</code>)</li>
+<li>CRUD (Create, Retrieve, Update, Delete) methods for records using the SOAP, REST, and Bulk APIs</li>
+<li>Query records via the SOAP, REST, and Bulk 1.0 APIs using <code>sf_query()</code></li>
+<li>Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata API with:
+<ul>
+<li><code>sf_describe_objects()</code>, <code>sf_create_metadata()</code>, <code>sf_update_metadata()</code></li>
+</ul></li>
+<li>Utilize backwards compatible functions for the <strong>RForcecom</strong> package, such as:
+<ul>
+<li><code>rforcecom.login()</code>, <code>rforcecom.query()</code>, <code>rforcecom.create()</code>, <code>rforcecom.update()</code></li>
+</ul></li>
+<li>Basic utility calls (<code>sf_user_info()</code>, <code>sf_server_timestamp()</code>, <code>sf_list_objects()</code>)</li>
+</ul>
+</div>
+<div id="quickstart-guide" class="section level2">
+<h2>Quickstart Guide</h2>
+<div id="install-salesforcer-library" class="section level3">
+<h3>Install salesforcer Library</h3>
+<pre class="r"><code># install from CRAN
+install.packages(&quot;salesforcer&quot;)
+
+# or get the latest version available on GitHub using the devtools package
+# install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;StevenMMortimer/salesforcer&quot;)</code></pre>
+</div>
+<div id="authentication" class="section level3">
+<h3>Authentication</h3>
+<p>The <strong>salesforcer</strong> package provides two methods to authenticate:</p>
+<ol style="list-style-type: decimal">
+<li>OAuth 2.0</li>
+<li>Basic Username-Password with Security Token</li>
+</ol>
+<p>It is recommended to use OAuth 2.0 so that passwords do not have to be shared or embedded within scripts. User credentials will be stored in locally cached file entitled “.httr-oauth-salesforcer” in the current working directory. These credentials will be passed to the API for each call and refreshed if necessary.</p>
+<pre class="r"><code>library(tidyverse)
+library(salesforcer)
+
+# Using OAuth 2.0 authentication
+sf_auth()
+
+# Using Basic Username-Password authentication
+sf_auth(username = &quot;test@gmail.com&quot;, 
+        password = &quot;{PASSWORD_HERE}&quot;,
+        security_token = &quot;{SECURITY_TOKEN_HERE}&quot;)</code></pre>
+</div>
+<div id="support-for-multiple-apis" class="section level3">
+<h3>Support for Multiple APIs</h3>
+<p>The <strong>salesforcer</strong> package is unique in that it provides a common interface to all of the REST, SOAP, and Bulk APIs. If you would like to create a set of records, then you would use the same R function, <code>sf_create()</code>, in the same way and just change the function argument called <code>api_type</code>.</p>
+<pre class="r"><code># create a dataset of 2 new contacts to create
+n &lt;- 2
+new_contacts &lt;- tibble(FirstName = rep(&quot;Test&quot;, n),
+                       LastName = paste0(&quot;Contact-Create-&quot;, 1:n))
+
+# using the REST API
+rest_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;REST&quot;)
+rest_records
+#&gt; # A tibble: 2 x 3
+#&gt;   id                 success errors    
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;   &lt;list&gt;    
+#&gt; 1 0036A00000VayuWQAR TRUE    &lt;list [0]&gt;
+#&gt; 2 0036A00000VayuXQAR TRUE    &lt;list [0]&gt;
+
+# using the REST API
+soap_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;SOAP&quot;)
+soap_records
+#&gt; # A tibble: 2 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;chr&gt;  
+#&gt; 1 0036A00000VayuYQAR true   
+#&gt; 2 0036A00000VayuZQAR true
+
+# using the Bulk 1.0 API
+bulk_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;Bulk 1.0&quot;)
+bulk_records
+#&gt; # A tibble: 2 x 4
+#&gt;   Id                 Success Created Error
+#&gt;   &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;   &lt;lgl&gt;
+#&gt; 1 0036A00000VayubQAB true    true    NA   
+#&gt; 2 0036A00000VayucQAB true    true    NA</code></pre>
+<p>This form is especially useful when switching between the REST and Bulk APIs where if you start dealing with larger and larger datasets, then you can switch code easily to the Bulk API. <strong>Note</strong>: The Bulk 2.0 API does NOT guarantee the order of the data submitted is preserved in the output that is returned. This means that you must join on other data columns to match up the IDs that are returned in the output with the data you submitted. For this reason, Bulk 2.0 may not be a good solution for creating, updating, or upserting records where you need to keep track of the created IDs. The Bulk 2.0 API would be fine for deleting records where you only need to know which IDs were successfully deleted.</p>
+</div>
+<div id="support-for-metadata" class="section level3">
+<h3>Support for Metadata</h3>
+<p>The <strong>salesforcer</strong> package also supports the creating, editing, and deleting of Salesforce metadata. Metadata refers to the configuration of “objects” within Salesforce. An object could be a standard or new type of record. For example, the Metadata API can configuring which fields are captured on an Account or whether they should be displayed on the page. Even more complex configurations, such as, workflows and triggers can be configured using the Metadata API. The support for the Metadata API in <strong>salesforcer</strong> is experimental, so please use at your own risk and consult the appropriate Salesforce resources when trying to use. Below is a simple example that creates a custom object and adds data fields to it.</p>
+<pre class="r"><code># create an object
+base_obj_name &lt;- &quot;Custom_Account1&quot;
+
+custom_object &lt;- list()
+custom_object$fullName &lt;- paste0(base_obj_name, &quot;__c&quot;)
+custom_object$label &lt;- paste0(gsub(&quot;_&quot;, &quot; &quot;, base_obj_name))
+custom_object$pluralLabel &lt;- paste0(base_obj_name, &quot;s&quot;)
+custom_object$nameField &lt;- list(displayFormat = &#39;AN-{0000}&#39;, 
+                                label = paste0(base_obj_name, &#39; Number&#39;), 
+                                type = &#39;AutoNumber&#39;)
+custom_object$deploymentStatus &lt;- &#39;Deployed&#39;
+custom_object$sharingModel &lt;- &#39;ReadWrite&#39;
+custom_object$enableActivities &lt;- &#39;true&#39;
+custom_object$description &lt;- paste0(base_obj_name, &quot; created by the Metadata API&quot;)
+custom_object_result &lt;- sf_create_metadata(metadata_type = &#39;CustomObject&#39;,
+                                           metadata = custom_object)
+
+# add fields to the object
+custom_fields &lt;- tibble(fullName=c(paste0(base_obj_name, &#39;__c.CustomField3__c&#39;), 
+                                   paste0(base_obj_name, &#39;__c.CustomField4__c&#39;)), 
+                        label=c(&#39;Test Field3&#39;, &#39;Test Field4&#39;), 
+                        length=c(100, 100), 
+                        type=c(&#39;Text&#39;, &#39;Text&#39;))
+create_fields_result &lt;- sf_create_metadata(metadata_type = &#39;CustomField&#39;, 
+                                           metadata = custom_fields)
+
+# delete the object
+deleted_custom_object_result &lt;- sf_delete_metadata(metadata_type = &#39;CustomObject&#39;, 
+                                                   object_names = c(&#39;Custom_Account1__c&#39;))</code></pre>
+</div>
+<div id="extension-of-the-rforcecom-package" class="section level3">
+<h3>Extension of the RForcecom Package</h3>
+<p>The <strong>salesforcer</strong> package can be seen as an extension of the popular <strong>RForcecom</strong> package that originally introduced R users to the Salesforce APIs. However, there are a few key differences. First, <strong>salesforcer</strong> supports more APIs. It allows for the same methods to utilize either the REST or SOAP APIs. It also supports the newer version of the Bulk API called “Bulk 2.0” and a limited set of functionality from the Metadata API. There are future plans to incorporate the Reporting and Analytics APIs. Second, <strong>salesforcer</strong> makes it easier to submit multiple records at once by supplying a <code>data.frame</code> instead of a named vector.</p>
+<pre class="r"><code>n &lt;- 2
+new_contacts &lt;- tibble(FirstName = rep(&quot;Test&quot;, n),
+                       LastName = paste0(&quot;Contact-Create-&quot;, 1:n))
+
+# the RForcecom way
+rforcecom_results &lt;- NULL
+for(i in 1:nrow(new_contacts)){
+  temp &lt;- RForcecom::rforcecom.create(session, 
+                                      objectName = &quot;Contact&quot;, 
+                                      fields = unlist(slice(new_contacts,i)))
+  rforcecom_results &lt;- bind_rows(rforcecom_results, temp)
+}
+rforcecom_results
+#&gt;                   id success
+#&gt; 1 0036A00000VayulQAB    true
+#&gt; 2 0036A00000VayuIQAR    true
+
+# the salesforcer way
+salesforcer_results &lt;- salesforcer::sf_create(new_contacts, object_name=&quot;Contact&quot;)
+salesforcer_results
+#&gt; # A tibble: 2 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;chr&gt;  
+#&gt; 1 0036A00000VayuqQAB true   
+#&gt; 2 0036A00000VayurQAB true</code></pre>
+<p>Finally, the package is meant to adhere to principles outlined by the <strong>tidyverse</strong> package. Function names are snake case and data is returned as <code>tbl_df</code> objects. Do not worry if you are fully utilizing the <strong>RForcecom</strong> package. Many of those functions are included in the <strong>salesforcer</strong> package so you can drop the <strong>RForcecom</strong> dependency but not have to change all of your code at once.</p>
+</div>
+</div>
+<div id="check-out-the-tests" class="section level2">
+<h2>Check out the Tests</h2>
+<p>The <strong>salesforcer</strong> package has quite a bit of unit test coverage to track any code changes and ensure package reliabilty. These tests are an excellent source of examples because they cover most all cases of utilizing the package functions.</p>
+<p>For example, if you are not sure on how to upsert records using the Bulk API just check out the tests at <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/blob/master/tests/testthat/test-bulk.R">https://github.com/StevenMMortimer/salesforcer/blob/master/tests/testthat/test-bulk.R</a>.</p>
+<p>The <code>test-bulk.R</code> script walks through a process of creating, searching, querying, updating, upserting, and deleting the same set of records, so it is a concise set of code for manipulating records via the Bulk API. Similar test scripts exist for the REST and SOAP APIs as well.</p>
+</div>
+<div id="credits" class="section level2">
+<h2>Credits</h2>
+<p>This application uses other open source software components. The authentication components are mostly verbatim copies of the routines established in the <strong>googlesheets</strong> package (<a target="_blank" href="https://github.com/jennybc/googlesheets">https://github.com/jennybc/googlesheets</a>). Methods are inspired by the <strong>RForcecom</strong> package (<a target="_blank" href="https://github.com/hiratake55/RForcecom">https://github.com/hiratake55/RForcecom</a>). We acknowledge and are grateful to these developers for their contributions to open source.</p>
+</div>
+<div id="license" class="section level2">
+<h2>License</h2>
+<p>The <strong>salesforcer</strong> package is licensed under the MIT License (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)</p>
+</div>
+<div id="questions" class="section level2">
+<h2>Questions</h2>
+<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">https://github.com/StevenMMortimer/salesforcer/issues</a>. Thank you!</p>
+</div>
+<div id="support" class="section level2">
+<h2>Support</h2>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>Thank you for your support!</p>
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<div style="text-align: center;">
+<script type='text/javascript'>
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
+  </script>
+</div>
+<p><br></p>
+</div>

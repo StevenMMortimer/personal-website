@@ -1,0 +1,194 @@
+---
+title: "squareupr"
+description: "An R Package for the Square APIs"
+author: ~
+tags:
+ - r-code
+ - square
+date: 2018-06-01
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  cache = FALSE,
+  fig.align = "center"
+)
+```
+
+## Overview
+
+The **squareupr** package is the R implementation of the <a target="_blank" href="UPDATE THIS LINKE WITH THE REAL ONE">Square APIs</a> 
+(Connect v1 & v2). I created the package while analyzing customer data from Square and 
+found that a package was necessary to make my code more efficient and reproducible. 
+The functions in the package are simple wrappers built using the **httr** package 
+that reach out to the various Square API endpoints. There are also a few convenience 
+functions that transform data once receiving it from the APIs.
+
+<img alt="GitHub - squareupr" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/squareupr">https://github.com/StevenMMortimer/squareupr</a>
+
+## Features
+
+The package currently supports the following API operations: 
+
+  * OAuth 2.0 (Single sign-on) and Personal Access Token Authentication methods (`sq_auth()`)
+  * v2 Locations Endpoint (`sq_list_locations()`, `sq_get_location()`)
+  * v2 Transactions Endpoint (`sq_list_transactions()`, `sq_get_transaction()`)
+  * v2 Customers Endpoint - CRUD (Create, Retrieve, Update, Delete) methods for customers with: 
+    * `sq_list_customers()`, `sq_get_customer()`, `sq_create_customer()`, `sq_update_customer()`, `sq_delete_customer()`
+  * v1 Payments Endpoint (`sq_list_payments()`, `sq_get_payment()`)
+  * v1 Items Endpoint - CRUD (Create, Retrieve, Update, Delete) methods for items with: 
+    * `sq_list_items()`, `sq_get_item()`, `sq_create_item()`, `sq_update_item()`, `sq_delete_item()`
+
+## Quickstart Guide
+
+### Install squareupr Library
+
+```{r eval=FALSE}
+# This package is experimental and not available on CRAN. 
+# You can install directly from GitHub using the devtools package
+# install.packages("devtools")
+devtools::install_github("StevenMMortimer/squareupr")
+```
+
+### Authentication
+
+First, load the **squareupr** package and authenticate. There are two ways to authenticate:  
+
+  1. Personal Access Token
+  2. OAuth 2.0
+
+```{r auth, include = FALSE}
+library(tidyverse)
+library(squareupr)
+settings <- readRDS(here::here("blogdown", "projects", "squareupr_test_settings.rds"))
+suppressMessages(sq_auth(personal_access_token = settings$personal_access_token, 
+                         verbose = FALSE))
+```
+
+```{r, eval=FALSE}
+library(tidyverse)
+library(squareupr)
+
+# Using Personal Access Token (PAT)
+sq_auth(personal_access_token = "sq-Th1s1sMyPers0nalAcessT0ken")
+
+# Using OAuth 2.0 authentication
+sq_auth()
+```
+
+NOTE: Before using OAuth 2.0 authentication it is necessary that you set up your 
+own Connected App in the Square dashboard. An App ID and App Secret will be 
+provided, then you will be able to plug into your script like so:
+
+```{r other-params, eval=FALSE}
+options(squareupr.app_id = "sq0-99-thisisatest99connected33app22id")
+options(squareupr.app_secret = "sq0-Th1s1sMyAppS3cr3t")
+sq_auth()
+```
+
+OAuth 2.0 credentials will be cached locally in a file entitled `".httr-oauth-squareupr"` 
+in the current working directory so that a new token is not needed each session.
+
+### Determining Business Locations
+
+The first step, after authenticating, is determining the unique IDs associated with 
+each of your Square business locations. The API data is often organized or pulled 
+by location, so it is important to know which ID is associated with each location you 
+may have, even if you only have one location. In the **squareupr** packge you can 
+use the `sq_list_locations()` function to retrieve the details of each location. 
+The ID to take note of is listed in the `ID` column shown in the data below.
+
+```{r locations}
+# list all locations
+our_locations <- sq_list_locations()
+our_locations$name <- "{HIDDEN}"
+our_locations$phone_number <- "{HIDDEN}"
+our_locations %>% 
+  select(id, name, address, phone_number, status)
+```
+
+### Pulling Transactions
+
+Transactions are organized by location. With with the `sq_list_transactions()` 
+function you can provide the location and timeframe to search. The function defaults 
+to pulling transactions from the previous day using `Sys.Date() - 1` if no dates are 
+specified.
+
+```{r transactions-by-location}
+# list all locations
+our_locations <- sq_list_locations()
+our_transactions <- sq_list_transactions(location = our_locations$id[2], 
+                                         begin_time = as.Date('2018-05-11'), 
+                                         end_time = as.Date('2018-05-12'))
+our_transactions
+```
+
+At first glance there does not appear to be very much detail on the transaction record. 
+However, the `tender` field represents a method of payment used in a Square transaction 
+so it contains information regarding the amount of money paid in total, in Square fees, 
+and tip. The `tender` field even contains information regarding the `customer_id` and 
+credit card information.
+
+### Helper Functions
+
+In Square, customers can be assigned to groups. Those groups can be helpful for studies 
+on a particular set of customers. The **squareupr** package has a convenience function
+called `sq_extract_cust_groups()` that will take data retrieved from the Customer 
+API endpoint and extract the group membership of each customer into a `tbl_df` that 
+is one row per customer group membership (i.e. customers may be repeated in rows 
+if they belong to more than one group). Note: Square may create some loyalty and churn 
+risk groups without you having to manually create them.
+
+```{r customers}
+# list all customers
+our_customers <- sq_list_customers()
+our_customers$given_name <- "{HIDDEN}"
+our_customers$family_name <- "{HIDDEN}"
+our_customers %>% select(id, given_name, family_name, preferences, groups)
+
+# show the groups that each customer belongs to
+# filter to the groups designated automatically by Square
+sq_extract_cust_groups(our_customers) %>%
+  filter(grepl("^CQ689YH4KCJMY", groups.id))
+```
+
+## Check out the Tests
+
+The **squareupr** package has quite a bit of unit test coverage to track any 
+changes made between newly released versions of the Square APIs. These tests are 
+great source of examples for how to interect with the API. The tests are available 
+<a target="_blank" href="https://github.com/StevenMMortimer/squareupr/tree/master/tests/testthat">here</a>.
+
+## License
+
+The **squareupr** package is licensed under the MIT License 
+(<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>).
+  
+## Questions
+
+If you have further questions please submit them via email or issue on GitHub at 
+<a target="_blank" href="https://github.com/StevenMMortimer/squareupr/issues">https://github.com/StevenMMortimer/squareupr/issues</a>. 
+Thank you!
+
+## Support
+
+This project was made with love and coffee. Studies show that I write R code 3x faster 
+after drinking one cup coffee and that productivity scales linearly. Imagine what 
+I could accomplish if you bought me 10 cups of coffee...
+
+Thank you for your support!
+
+<script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
+<div  style="text-align: center;">
+  <script type='text/javascript'>
+      kofiwidget2.init('Buy Me a Coffee', '#46b798', 'StevenMMortimer');kofiwidget2.draw();
+  </script>
+</div>
+<br>

@@ -6,7 +6,7 @@ tags:
  - r-code
  - ad-serving
  - doubleclick
-date: 2017-05-22
+date: 2018-04-22
 output:
   blogdown::html_page:
     toc: true
@@ -31,7 +31,7 @@ to support integration of R with the Doubleclick for Publishers platform and wan
 something on par with existing, supported client libraries.
 
 <img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
-View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a>.
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a>
 
 ## Features
 
@@ -41,11 +41,16 @@ Anything that the DFP API supports, you can do with this R package!
  - Forecasting/Inventory Management/Reporting
  - Simple Administrative Tools
 
-## How to Get Started
+## Quickstart Guide
 
 ### Install rdfp Library
 
 ```{r eval=FALSE}
+# install from CRAN
+install.packages("rdfp")
+
+# or get the latest version available on GitHub using the devtools package
+# install.packages("devtools")
 devtools::install_github("StevenMMortimer/rdfp")
 ```
 
@@ -59,7 +64,6 @@ would like to connect to.
 library(dplyr)
 library(lubridate)
 library(rdfp)
-options(stringsAsFactors = FALSE)
 options(rdfp.network_code = 123456789)
 ```
 
@@ -83,15 +87,15 @@ Google's explanation on their uses at <a target="_blank" href="https://support.g
 # this creates an extra field on the USER entity type that denotes what shift 
 # the user works during the day. First we create the field, then populate
 # with potential options since it is a dropdown field.
-request_data <- data.frame(name='Shift',
-                           description='The shift that this user usually works.', 
-                           entityType='USER',
-                           dataType='DROP_DOWN',
-                           visibility='FULL')
+request_data <- tibble(name='Shift',
+                       description='The shift that this user usually works.', 
+                       entityType='USER',
+                       dataType='DROP_DOWN',
+                       visibility='FULL')
 dfp_createCustomFields_result <- dfp_createCustomFields(request_data)
 
-request_data <- data.frame(customFieldId=rep(dfp_createCustomFields_result$id, 3),
-                           displayName=c('Morning', 'Afternoon', 'Evening'))
+request_data <- tibble(customFieldId = rep(dfp_createCustomFields_result$id, 3),
+                       displayName = c('Morning', 'Afternoon', 'Evening'))
 dfp_createCustomFieldOptions_result <- dfp_createCustomFieldOptions(request_data)
 ```
 
@@ -111,10 +115,10 @@ request_data <- list(keys=list(name='Test1',
 dfp_createCustomTargetingKeys_result <- dfp_createCustomTargetingKeys(request_data)
 
 # create the values
-request_data <- data.frame(customTargetingKeyId=rep(dfp_createCustomTargetingKeys_result$id,2),
-                           name=c('TestValue1','TestValue2'), 
-                           displayName=c('TestValue1','TestValue2'), 
-                           matchType=rep('EXACT', 2))
+request_data <- tibble(customTargetingKeyId = rep(dfp_createCustomTargetingKeys_result$id, 2),
+                       name = c('TestValue1', 'TestValue2'), 
+                       displayName = c('TestValue1', 'TestValue2'), 
+                       matchType = rep('EXACT', 2))
 dfp_createCustomTargetingValues_result <- dfp_createCustomTargetingValues(request_data)
 ```
 
@@ -150,20 +154,12 @@ dfp_createOrders_result <- dfp_createOrders(request_data)
 Below is an example of how to get objects by Publishers Query Language (PQL) statement.
 The statement is constructed as a list of lists that are nested to emulate
 the hierarchy of the XML to be created. The example uses the `dfp_getLineItemsByStatement`
-function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201702/LineItemService">LineItemService</a>.
+function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201802/LineItemService">LineItemService</a>.
 
 ```{r eval=FALSE}
 # Retrieve all Line Items that have a status of "DELIVERING"
-dat <- list('filterStatement'=list('query'="WHERE status='DELIVERING'"))
-
-resultset <- dfp_getLineItemsByStatement(dat)
-
-# the result is a list
-# Google uses the first two elements for metadata
-head(resultset, 2)
-
-# the rest should be parsed as needed
-tail(resultset, -2)
+request_data <- list('filterStatement'=list('query'="WHERE status='DELIVERING'"))
+dfp_getLineItemsByStatement_result <- dfp_getLineItemsByStatement(request_data)
 ```
 
 ### Run a Report
@@ -176,13 +172,13 @@ Below is an example of how to make a simple report request.
 # Documentation for the reportQuery object can be found in R using 
 # ?dfp_ReportService_object_factory and searching for ReportQuery
 # Also online documentation is available that lists available child elements for reportQuery
-# https://developers.google.com/doubleclick-publishers/docs/reference/v201702/ReportService.ReportQuery
+# https://developers.google.com/doubleclick-publishers/docs/reference/v201802/ReportService.ReportQuery
 request_data <- list(reportJob=list(reportQuery=list(dimensions='MONTH_AND_YEAR', 
                                                      dimensions='AD_UNIT_ID',
                                                      adUnitView='FLAT',
                                                      columns='TOTAL_INVENTORY_LEVEL_IMPRESSIONS', 
-                                                     startDate=list(year=2015, month=10, day=1),
-                                                     endDate=list(year=2015, month=10, day=31),
+                                                     startDate=list(year=2018, month=3, day=1),
+                                                     endDate=list(year=2018, month=3, day=30),
                                                      dateRangeType='CUSTOM_DATE'
                                                      )))
 
@@ -223,16 +219,13 @@ We acknowledge and are grateful to these developers for their contributions to o
 ## License
 
 The **rdfp** package is licensed under the MIT License 
-(<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>).  
-
-  - COPYING - rdfp package license (MIT)
-  - NOTICE  - Copyright notices for additional included software
+(<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)
   
 ## Questions
 
 If you have further questions please submit them via email or issue on GitHub at 
 <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. 
-I'm happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!
+Thank you!
 
 ## Support
 
