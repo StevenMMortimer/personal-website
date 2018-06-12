@@ -46,7 +46,9 @@ how to use them for maximum effect. Here is a list of topics covered in the pres
 4. Using Twitter, StackOverflow, and LinkedIn
 
 <object style="text-align:center;margin-top:30px;" data="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf" type="application/pdf">
-  <embed src="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf" type="application/pdf" />
+  <iframe src="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf" seamless>
+    This browser does not support PDFs. Please download the PDF to view it: <a href="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf">Download PDF</a>
+  </iframe>
 </object>
 <a target="_blank" href="/presentations/building-personal-portfolio/20180301-general-assembly-portfolios-discussion.pdf">
   Click Here to View in New Tab
