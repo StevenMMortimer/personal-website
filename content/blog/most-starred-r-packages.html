@@ -1,0 +1,1354 @@
+---
+title: Most Starred R Packages
+author: Steven M. Mortimer
+date: '2018-06-17'
+slug: most-starred-r-packages
+categories:
+  - R
+tags:
+  - r-code
+  - cran
+  - github
+description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
+image: "blog/most-starred-r-packages/star-download-relationship.png"
+output:
+  blogdown::html_page:
+    toc: true
+draft: true
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#pulling-list-of-packages-their-details">Pulling List of Packages &amp; their Details</a></li>
+<li><a href="#analyzing-the-data">Analyzing the Data</a></li>
+<li><a href="#credits">Credits</a></li>
+<li><a href="#appendix">Appendix</a><ul>
+<li><a href="#top-10-most-starred-packages">Top 10 Most Starred Packages</a></li>
+<li><a href="#top-10-most-downloaded-packages-with-stars">Top 10 Most Downloaded Packages with Stars</a></li>
+<li><a href="#top-10-packages-by-stars-per-download-frequently-starred">Top 10 Packages by Stars per Download (frequently starred)</a></li>
+<li><a href="#bottom-10-packages-by-stars-per-download-infrequently-starred">Bottom 10 Packages by Stars per Download (infrequently starred)</a></li>
+<li><a href="#full-script">Full Script</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
+<div class="figure">
+<img src="/blog/most-starred-r-packages/star-download-relationship.png" />
+
+</div>
+<div id="pulling-list-of-packages-their-details" class="section level2">
+<h2>Pulling List of Packages &amp; their Details</h2>
+<p>CRAN provides a list and links to all current packages at <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. By scraping this page, I found 12,675 current R packages (non-archived). For each package I pinged its detail page using the canonical form link (e.g. <a href="https://cran.r-project.org/package=ggplot2" class="uri">https://cran.r-project.org/package=ggplot2</a>). From there I looked at the description field “URL” to see if it contained “github.com”. It turns out that 3,718 of the packages (29.3% of the total) referenced GitHub. Below is the code snippet for retrieving the list of packages that was taken from Gergely Daróczi’s <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.</p>
+<pre class="r"><code># getting list of the packages
+pkgs &lt;- readHTMLTable(readLines(file.path(&#39;https://cran.rstudio.com/src/contrib&#39;)),
+                      which = 1, 
+                      stringsAsFactors = FALSE)[,-1]
+
+# filter out lines that aren&#39;t really packages
+pkgs &lt;- pkgs %&gt;% 
+  filter(Size != &quot;-&quot;, 
+         grepl(&#39;tar.gz$&#39;, Name)) %&gt;%
+  mutate(Name = sub(&#39;^([a-zA-Z0-9\\.]*).*&#39;, &#39;\\1&#39;, Name))</code></pre>
+<p>While retrieving the package metadata I pinged the GitHub API if a package had a GitHub URL to see if I could get the number of stars for the repository. Currently, GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. Here is the function I used to take a cleaned up version of the package’s URL then form a request to the GitHub API to get star counts:</p>
+<pre class="r"><code># get the star count from a clean version of the package&#39;s URL
+gh_star_count &lt;- function(url){
+  stars  &lt;- tryCatch({
+    this_url &lt;- gsub(&quot;https://github.com/&quot;, &quot;https://api.github.com/repos/&quot;, url)
+    req &lt;- GET(this_url, gtoken)
+    stop_for_status(req)
+    cont &lt;- content(req)
+    cont$stargazers_count  
+  }, error = function(e){
+    return(NA_integer_)
+  })
+  return(stars)
+}</code></pre>
+</div>
+<div id="analyzing-the-data" class="section level2">
+<h2>Analyzing the Data</h2>
+<p>Once I had all the package detail data, I found that R packages, on average, have 35.7 GitHub stars, but the median number of stars is only six! <strong>ggplot2</strong> has the most stars with 3,174. In my analysis I removed the <strong>xgboost</strong>, <strong>h2o</strong>, and <strong>feather</strong> packages which point to the repository of their implementations in many languages, not just R.</p>
+<div class="figure">
+<img src="/blog/most-starred-r-packages/star-distribution.png" />
+
+</div>
+<p>What I really found interesting was comparing CRAN downloads to stars. Using the <strong>cranlogs</strong> package I was able to get the total package downloads dating back to January 1, 2014. In contrast with the low star counts, the median downloads for R packages is 8,975. Combining stars and downloads data I found that the median R package has 903 downloads per star. Only 38.7% of packages had more than 10 stars, which shows how hard stars are to get even if you’ve written a great package. I’m not sure what proportion of R users frequently reference and contribute to GitHub, but it would be interesting to compare that with the high ratios of downloads to stars.</p>
+<div class="figure">
+<img src="/blog/most-starred-r-packages/star-download-scatter.png" />
+
+</div>
+<p>There are some real outliers in the data. For example, the <strong>Rcpp</strong> package, perhaps the all-time most downloaded package, has 15.8M downloads and only 377 stars. Similarly, Hadley’s <strong>scales</strong> package has 9.4M downloads and only 115 stars. These support/helper packages just don’t get the same star love as the headliners like <strong>ggplot2</strong>, <strong>shiny</strong>, and <strong>dplyr</strong>.</p>
+<p>Of course, I could not help but check out the stats for some of the most prolific package authors. After parsing out individuals with the “aut”, “cre” roles I came to the not so surprising conclusion that Hadley has the most stars of any author with 12,408 stars. Dirk Eddelbuettel had one of the lowest star-to-download ratios. For every ~38K downloads Dirk’s repositories will receive one star. Pay no attention to the man behind the curtain since his <strong>Rcpp</strong> package underpins a whole host of packages without all the GitHub fanfare. Here is a list of popular R package authors and their stats:</p>
+<table class="table table-striped table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Notable Packages
+</th>
+<th style="text-align:right;">
+Downloads
+</th>
+<th style="text-align:right;">
+Stars
+</th>
+<th style="text-align:right;">
+Downloads Per Star
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:left;">
+ggplot2, dplyr, httr
+</td>
+<td style="text-align:right;">
+113,160,314
+</td>
+<td style="text-align:right;">
+12,408
+</td>
+<td style="text-align:right;">
+9,119.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dirk Eddelbuettel
+</td>
+<td style="text-align:left;">
+Rcpp, BH
+</td>
+<td style="text-align:right;">
+28,433,586
+</td>
+<td style="text-align:right;">
+745
+</td>
+<td style="text-align:right;">
+38,165.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yihui Xie
+</td>
+<td style="text-align:left;">
+knitr, rmarkdown, bookdown
+</td>
+<td style="text-align:right;">
+42,472,860
+</td>
+<td style="text-align:right;">
+6,315
+</td>
+<td style="text-align:right;">
+6,725.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Winston Chang
+</td>
+<td style="text-align:left;">
+R6, shiny
+</td>
+<td style="text-align:right;">
+17,161,005
+</td>
+<td style="text-align:right;">
+4,027
+</td>
+<td style="text-align:right;">
+4,261.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jennifer Bryan
+</td>
+<td style="text-align:left;">
+readxl, gapminder, googlesheets
+</td>
+<td style="text-align:right;">
+6,055,774
+</td>
+<td style="text-align:right;">
+1,714
+</td>
+<td style="text-align:right;">
+3,533.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+JJ Allaire
+</td>
+<td style="text-align:left;">
+rstudioapi, reticulate, tensorflow
+</td>
+<td style="text-align:right;">
+8,882,553
+</td>
+<td style="text-align:right;">
+2,798
+</td>
+<td style="text-align:right;">
+3,174.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jeroen Ooms
+</td>
+<td style="text-align:left;">
+jsonlite, curl, openssl
+</td>
+<td style="text-align:right;">
+25,907,868
+</td>
+<td style="text-align:right;">
+1,483
+</td>
+<td style="text-align:right;">
+17,469.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Scott Chamberlain
+</td>
+<td style="text-align:left;">
+geojsonio, taxize
+</td>
+<td style="text-align:right;">
+1,770,664
+</td>
+<td style="text-align:right;">
+2,528
+</td>
+<td style="text-align:right;">
+700.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jim Hester
+</td>
+<td style="text-align:left;">
+devtools, memoise, readr
+</td>
+<td style="text-align:right;">
+22,867,071
+</td>
+<td style="text-align:right;">
+4,332
+</td>
+<td style="text-align:right;">
+5,278.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Kirill Müller
+</td>
+<td style="text-align:left;">
+tibble, DBI
+</td>
+<td style="text-align:right;">
+36,159,009
+</td>
+<td style="text-align:right;">
+1,077
+</td>
+<td style="text-align:right;">
+33,573.8
+</td>
+</tr>
+</tbody>
+</table>
+<p>I’m sure you could create mixed models to determine the download to star relationship for individuals. Also, You could use other package attributes to predict stars or downloads, but I’ll leave that to another curious soul. I will include tables below regarding the top 10 most downloaded, most starred, most and least downloaded per star.</p>
+</div>
+<div id="credits" class="section level2">
+<h2>Credits</h2>
+<p>Credit is due since this script borrows a couple different pieces of code and code concepts. Retrieving the list of packages is from Gergely Daróczi’s <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>. Authenticating to GitHub was taken from one of the <strong>httr</strong> <a target="_blank" href="https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r">demos</a>.</p>
+</div>
+<div id="appendix" class="section level2">
+<h2>Appendix</h2>
+<div id="top-10-most-starred-packages" class="section level3">
+<h3>Top 10 Most Starred Packages</h3>
+<table class="table table-striped table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:right;">
+Downloads
+</th>
+<th style="text-align:right;">
+Stars
+</th>
+<th style="text-align:right;">
+Downloads Per Star
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ggplot2
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+13,001,703
+</td>
+<td style="text-align:right;">
+3,174
+</td>
+<td style="text-align:right;">
+4,096.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+shiny
+</td>
+<td style="text-align:left;">
+Winston Chang
+</td>
+<td style="text-align:right;">
+4,571,794
+</td>
+<td style="text-align:right;">
+2,902
+</td>
+<td style="text-align:right;">
+1,575.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dplyr
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+8,276,844
+</td>
+<td style="text-align:right;">
+2,408
+</td>
+<td style="text-align:right;">
+3,437.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+devtools
+</td>
+<td style="text-align:left;">
+Jim Hester
+</td>
+<td style="text-align:right;">
+5,536,730
+</td>
+<td style="text-align:right;">
+1,645
+</td>
+<td style="text-align:right;">
+3,365.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+knitr
+</td>
+<td style="text-align:left;">
+Yihui Xie
+</td>
+<td style="text-align:right;">
+7,131,564
+</td>
+<td style="text-align:right;">
+1,581
+</td>
+<td style="text-align:right;">
+4,510.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+data.table
+</td>
+<td style="text-align:left;">
+Matt Dowle
+</td>
+<td style="text-align:right;">
+6,005,795
+</td>
+<td style="text-align:right;">
+1,457
+</td>
+<td style="text-align:right;">
+4,122.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+plotly
+</td>
+<td style="text-align:left;">
+Carson Sievert
+</td>
+<td style="text-align:right;">
+1,195,880
+</td>
+<td style="text-align:right;">
+1,255
+</td>
+<td style="text-align:right;">
+952.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+rmarkdown
+</td>
+<td style="text-align:left;">
+Yihui Xie
+</td>
+<td style="text-align:right;">
+5,432,495
+</td>
+<td style="text-align:right;">
+1,160
+</td>
+<td style="text-align:right;">
+4,683.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tensorflow
+</td>
+<td style="text-align:left;">
+JJ Allaire
+</td>
+<td style="text-align:right;">
+94,856
+</td>
+<td style="text-align:right;">
+1,033
+</td>
+<td style="text-align:right;">
+91.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bookdown
+</td>
+<td style="text-align:left;">
+Yihui Xie
+</td>
+<td style="text-align:right;">
+126,586
+</td>
+<td style="text-align:right;">
+1,009
+</td>
+<td style="text-align:right;">
+125.5
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="top-10-most-downloaded-packages-with-stars" class="section level3">
+<h3>Top 10 Most Downloaded Packages with Stars</h3>
+<table class="table table-striped table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:right;">
+Downloads
+</th>
+<th style="text-align:right;">
+Stars
+</th>
+<th style="text-align:right;">
+Downloads Per Star
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rcpp
+</td>
+<td style="text-align:left;">
+Dirk Eddelbuettel
+</td>
+<td style="text-align:right;">
+15,824,781
+</td>
+<td style="text-align:right;">
+377
+</td>
+<td style="text-align:right;">
+41,975.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ggplot2
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+13,001,703
+</td>
+<td style="text-align:right;">
+3,174
+</td>
+<td style="text-align:right;">
+4,096.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stringr
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+11,547,828
+</td>
+<td style="text-align:right;">
+268
+</td>
+<td style="text-align:right;">
+43,088.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stringi
+</td>
+<td style="text-align:left;">
+Marek Gagolewski
+</td>
+<td style="text-align:right;">
+11,310,113
+</td>
+<td style="text-align:right;">
+122
+</td>
+<td style="text-align:right;">
+92,705.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+digest
+</td>
+<td style="text-align:left;">
+Dirk Eddelbuettel with contributions by Antoine Lucas
+</td>
+<td style="text-align:right;">
+11,233,244
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+267,458.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+plyr
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+10,340,396
+</td>
+<td style="text-align:right;">
+470
+</td>
+<td style="text-align:right;">
+22,000.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R6
+</td>
+<td style="text-align:left;">
+Winston Chang
+</td>
+<td style="text-align:right;">
+9,993,128
+</td>
+<td style="text-align:right;">
+212
+</td>
+<td style="text-align:right;">
+47,137.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+reshape2
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+9,582,245
+</td>
+<td style="text-align:right;">
+173
+</td>
+<td style="text-align:right;">
+55,388.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+scales
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+9,380,757
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+81,571.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+jsonlite
+</td>
+<td style="text-align:left;">
+Jeroen Ooms
+</td>
+<td style="text-align:right;">
+9,112,790
+</td>
+<td style="text-align:right;">
+176
+</td>
+<td style="text-align:right;">
+51,777.2
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="top-10-packages-by-stars-per-download-frequently-starred" class="section level3">
+<h3>Top 10 Packages by Stars per Download (frequently starred)</h3>
+<table class="table table-striped table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:right;">
+Downloads
+</th>
+<th style="text-align:right;">
+Stars
+</th>
+<th style="text-align:right;">
+Downloads Per Star
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+r2d3
+</td>
+<td style="text-align:left;">
+Javier Luraschi
+</td>
+<td style="text-align:right;">
+416
+</td>
+<td style="text-align:right;">
+235
+</td>
+<td style="text-align:right;">
+1.77
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+workflowr
+</td>
+<td style="text-align:left;">
+John Blischak
+</td>
+<td style="text-align:right;">
+448
+</td>
+<td style="text-align:right;">
+169
+</td>
+<td style="text-align:right;">
+2.65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+goodpractice
+</td>
+<td style="text-align:left;">
+Hannah Frick
+</td>
+<td style="text-align:right;">
+523
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+2.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+xtensor
+</td>
+<td style="text-align:left;">
+Johan Mabille
+</td>
+<td style="text-align:right;">
+2,057
+</td>
+<td style="text-align:right;">
+664
+</td>
+<td style="text-align:right;">
+3.10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+scico
+</td>
+<td style="text-align:left;">
+Thomas Lin Pedersen
+</td>
+<td style="text-align:right;">
+185
+</td>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+3.14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+shinytest
+</td>
+<td style="text-align:left;">
+Winston Chang
+</td>
+<td style="text-align:right;">
+418
+</td>
+<td style="text-align:right;">
+113
+</td>
+<td style="text-align:right;">
+3.70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+furrr
+</td>
+<td style="text-align:left;">
+Davis Vaughan
+</td>
+<td style="text-align:right;">
+724
+</td>
+<td style="text-align:right;">
+171
+</td>
+<td style="text-align:right;">
+4.23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pkgdown
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+1,589
+</td>
+<td style="text-align:right;">
+332
+</td>
+<td style="text-align:right;">
+4.79
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+rtika
+</td>
+<td style="text-align:left;">
+Sasha Goodman
+</td>
+<td style="text-align:right;">
+168
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+5.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mindr
+</td>
+<td style="text-align:left;">
+Peng Zhao
+</td>
+<td style="text-align:right;">
+2,051
+</td>
+<td style="text-align:right;">
+368
+</td>
+<td style="text-align:right;">
+5.57
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="bottom-10-packages-by-stars-per-download-infrequently-starred" class="section level3">
+<h3>Bottom 10 Packages by Stars per Download (infrequently starred)</h3>
+<table class="table table-striped table-hover table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:right;">
+Downloads
+</th>
+<th style="text-align:right;">
+Stars
+</th>
+<th style="text-align:right;">
+Downloads Per Star
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+mime
+</td>
+<td style="text-align:left;">
+Yihui Xie
+</td>
+<td style="text-align:right;">
+7,398,765
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+616,563.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pkgmaker
+</td>
+<td style="text-align:left;">
+Renaud Gaujoux
+</td>
+<td style="text-align:right;">
+1,228,173
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+614,086.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+rngtools
+</td>
+<td style="text-align:left;">
+Renaud Gaujoux
+</td>
+<td style="text-align:right;">
+1,224,959
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+612,479.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+magic
+</td>
+<td style="text-align:left;">
+Robin K. S. Hankin
+</td>
+<td style="text-align:right;">
+344,741
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+344,741.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gsubfn
+</td>
+<td style="text-align:left;">
+G. Grothendieck
+</td>
+<td style="text-align:right;">
+675,056
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+337,528.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bindrcpp
+</td>
+<td style="text-align:left;">
+Kirill Müller
+</td>
+<td style="text-align:right;">
+2,996,452
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+299,645.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+plogr
+</td>
+<td style="text-align:left;">
+Kirill Müller
+</td>
+<td style="text-align:right;">
+3,343,099
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+278,591.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+digest
+</td>
+<td style="text-align:left;">
+Dirk Eddelbuettel with contributions by Antoine Lucas
+</td>
+<td style="text-align:right;">
+11,233,244
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+267,458.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+munsell
+</td>
+<td style="text-align:left;">
+Charlotte Wickham
+</td>
+<td style="text-align:right;">
+7,778,712
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+250,926.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+proto
+</td>
+<td style="text-align:left;">
+Hadley Wickham
+</td>
+<td style="text-align:right;">
+2,593,246
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+235,749.6
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="full-script" class="section level3">
+<h3>Full Script</h3>
+<p>Below and available via gist with data at: <a target="_blank" href="https://gist.github.com/StevenMMortimer/1b4b626d3d91240a77f969ae04b37114">https://gist.github.com/StevenMMortimer/1b4b626d3d91240a77f969ae04b37114</a></p>
+<pre class="r"><code># load packages &amp; custom functions ---------------------------------------------
+
+library(tidyverse)
+library(httr)
+library(cranlogs)
+library(XML)
+library(ggrepel)
+library(scales)
+library(knitr)
+library(stringr)
+
+gh_from_url &lt;- function(x){
+  if(!grepl(&#39;,&#39;, x)){
+    x &lt;- strsplit(x, &quot; &quot;)[[1]]
+    x &lt;- trimws(x[min(which(grepl(pattern=&#39;http://github.com|https://github.com|http://www.github.com&#39;, x, ignore.case=TRUE)))])    
+  } else {
+    x &lt;- strsplit(x, &quot;,&quot;)[[1]]
+    x &lt;- trimws(x[min(which(grepl(pattern=&#39;http://github.com|https://github.com|http://www.github.com&#39;, x, ignore.case=TRUE)))])    
+  }
+  x &lt;- gsub(&quot;http://&quot;, &quot;https://&quot;, tolower(x))
+  x &lt;- gsub(&quot;www\\.github\\.com&quot;, &quot;github.com&quot;, x)
+  x &lt;- gsub(&quot;/$&quot;, &quot;&quot;, x)
+  x &lt;- gsub(&quot;^github.com&quot;, &quot;https://github.com&quot;, x)
+  x &lt;- gsub(&quot;/issues&quot;, &quot;&quot;, x)
+  x &lt;- gsub(&quot;\\.git&quot;, &quot;&quot;, x)
+  return(x)
+}
+
+aut_maintainer_from_details &lt;- function(x){
+  x &lt;- gsub(&quot;&#39;|\&quot;&quot;, &quot;&quot;, x)
+  if(grepl(&#39;,&#39;, x)){
+    x &lt;- strsplit(x, &quot;\\],&quot;)[[1]]
+    aut_cre_ind &lt;- grepl(pattern=&#39;\\[aut, cre|\\[cre, aut|\\[cre&#39;, x, ignore.case=TRUE)
+    if(any(aut_cre_ind)){
+      x &lt;- x[min(which(aut_cre_ind))]
+      x &lt;- gsub(&quot;\\[aut, cre|\\[cre, aut|\\[cre&quot;, &quot;&quot;, x)
+    }
+    x &lt;- strsplit(x, &quot;,&quot;)[[1]][1]
+    x &lt;- trimws(gsub(&quot;\\]&quot;, &quot;&quot;, x))
+    x &lt;- trimws(gsub(&quot; \\[aut&quot;, &quot;&quot;, x))
+  }
+  return(x)
+}
+
+gh_star_count &lt;- function(url){
+  stars  &lt;- tryCatch({
+    this_url &lt;- gsub(&quot;https://github.com/&quot;, &quot;https://api.github.com/repos/&quot;, url)
+    req &lt;- GET(this_url, gtoken)
+    stop_for_status(req)
+    cont &lt;- content(req)
+    cont$stargazers_count  
+  }, error = function(e){
+    return(NA_integer_)
+  })
+  return(stars)
+}
+
+# authenticate to github -------------------------------------------------------
+# use Hadley&#39;s key and secret
+myapp &lt;- oauth_app(&quot;github&quot;,
+                   key = &quot;56b637a5baffac62cad9&quot;,
+                   secret = &quot;8e107541ae1791259e9987d544ca568633da2ebf&quot;)
+github_token &lt;- oauth2.0_token(oauth_endpoints(&quot;github&quot;), myapp)
+gtoken &lt;- config(token = github_token)
+
+# pull list of packages --------------------------------------------------------
+
+# get list of currently available packages on CRAN
+pkgs &lt;- readHTMLTable(readLines(file.path(&#39;https://cran.rstudio.com/src/contrib&#39;)),
+                      which = 1, 
+                      stringsAsFactors = FALSE)[,-1]
+
+# filter out lines that aren&#39;t really packages
+pkgs &lt;- pkgs %&gt;% 
+  filter(Size != &quot;-&quot;, 
+         grepl(&#39;tar.gz$&#39;, Name)) %&gt;%
+  mutate(Name = sub(&#39;^([a-zA-Z0-9\\.]*).*&#39;, &#39;\\1&#39;, Name)) %&gt;%
+  distinct(Name, .keep_all = TRUE)
+
+# get details for each package -------------------------------------------------
+
+all_pkg_details &lt;- NULL
+
+# old fashioned looping! 
+# WARNING: This takes awhile to complete
+for(i in 1:nrow(pkgs)){
+  
+  if(i %% 100 == 0){
+    message(sprintf(&quot;Processing package #%s out of %s&quot;, i, nrow(pkgs)))
+  }
+  
+  pkg_details &lt;- readHTMLTable(readLines(file.path(sprintf(&#39;https://cran.r-project.org/package=%s&#39;, pkgs[i,]$Name))), 
+                               header=FALSE, 
+                               which = 1, 
+                               stringsAsFactors = FALSE)
+  pkg_details &lt;- pkg_details %&gt;%
+    mutate(V1 = gsub(&quot;:&quot;, &quot;&quot;, V1)) %&gt;%
+    spread(V1, V2)
+  
+  this_url &lt;- pkg_details$URL
+  on_github &lt;- FALSE
+  this_github_url &lt;- NA_character_
+  gh_stars &lt;- NA_integer_
+  if(!is.null(this_url)){
+    on_github &lt;- grepl(&#39;http://github.com|https://github.com|http://www.github.com&#39;, this_url)
+    if(on_github){
+      this_github_url &lt;- gh_from_url(this_url)
+      gh_stars &lt;- gh_star_count(this_github_url)
+    } else {
+      # check the BugReports URL as a backup (e.g. shiny package references GitHub this way)
+      issues_on_github &lt;- grepl(&#39;http://github.com|https://github.com|http://www.github.com&#39;, pkg_details$BugReports)
+      if(length(issues_on_github) == 0 || !issues_on_github){
+        this_github_url &lt;- NA_character_
+      } else {
+        this_github_url &lt;- gh_from_url(pkg_details$BugReports)
+        gh_stars &lt;- gh_star_count(this_github_url)  
+        on_github &lt;- TRUE
+      }
+    }
+  } else {
+    this_url &lt;- NA_character_
+  }
+  
+  downloads &lt;- cran_downloads(pkgs[i,]$Name, from = &quot;2014-01-01&quot;, to = &quot;2018-06-15&quot;)
+  
+  all_pkg_details &lt;- rbind(all_pkg_details, 
+                           tibble(name = pkgs[i,]$Name, 
+                                  published = pkg_details$Published,
+                                  author = aut_maintainer_from_details(pkg_details$Author),
+                                  url = this_url,
+                                  github_ind = on_github, 
+                                  github_url = this_github_url,
+                                  downloads = sum(downloads$count),
+                                  stars = gh_stars
+                           )
+  )
+}
+
+# basic summary stats ----------------------------------------------------------
+
+# remove observations where the GitHub URL refers to a repository that 
+# is not specific to R and therefore might have an inflated star count
+all_pkg_details_clean &lt;- all_pkg_details %&gt;% 
+  filter(!(name %in% c(&#39;xgboost&#39;, &#39;h2o&#39;, &#39;feather&#39;))) %&gt;% 
+  mutate(downloads_per_star = downloads / stars, 
+         downloads_per_star = ifelse(!is.finite(downloads_per_star), NA_real_, downloads_per_star))
+
+# proportion of all packages listing github
+sum(all_pkg_details$github_ind)
+mean(all_pkg_details$github_ind)
+# proportion of packages with stars
+mean(!is.na(all_pkg_details$stars))
+
+# typical number of stars per package
+mean(all_pkg_details_clean$stars, na.rm=TRUE)
+median(all_pkg_details_clean$stars, na.rm=TRUE)
+max(all_pkg_details_clean$stars, na.rm=TRUE)
+
+# typical number of downloads per package
+mean(all_pkg_details_clean$downloads, na.rm=TRUE)
+median(all_pkg_details_clean$downloads, na.rm=TRUE)
+
+# percent of packages over 10 stars
+mean(all_pkg_details_clean$stars &gt; 10, na.rm=TRUE)
+
+mean(all_pkg_details_clean$downloads_per_star, na.rm=TRUE)
+median(all_pkg_details_clean$downloads_per_star, na.rm=TRUE)
+
+
+# stars histogram --------------------------------------------------------------
+ggplot(data=all_pkg_details_clean, mapping=aes(stars)) +
+  geom_histogram(aes(fill=..count..), bins=60) +
+  scale_x_continuous(trans = &quot;log1p&quot;, breaks=c(0,1,2,3,10,100,1000,3000)) + 
+  labs(x = &quot;Stars&quot;, 
+       y = &quot;Count&quot;, 
+       fill = &quot;Count&quot;, 
+       caption = &quot;Source: api.github.com as of 6/16/18&quot;) + 
+  ggtitle(&quot;Distribution of GitHub Stars on R Packages&quot;) + 
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank(), 
+        plot.caption=element_text(hjust = 0))
+
+# stars to downloads scatterplot -----------------------------------------------
+plot_dat &lt;- all_pkg_details_clean
+idx_label &lt;- which(with(plot_dat, downloads &gt; 10000000 | stars &gt; 1000))
+plot_dat$name2 &lt;- plot_dat$name
+plot_dat$name &lt;- &quot;&quot;
+plot_dat$name[idx_label] &lt;- plot_dat$name2[idx_label]
+
+ggplot(data=plot_dat, aes(stars, downloads, label = name)) +
+  geom_point(color = ifelse(plot_dat$name == &quot;&quot;, &quot;grey50&quot;, &quot;red&quot;)) +
+  geom_text_repel(box.padding = .5) + 
+  scale_y_continuous(labels = comma) + 
+  scale_x_continuous(labels = comma) + 
+  labs(x = &quot;GitHub Stars&quot;, 
+       y = &quot;CRAN Downloads&quot;, 
+       caption = &quot;Sources:\napi.github.com as of 6/16/18\ncranlogs as of 1/1/14 - 6/15/18&quot;) + 
+  ggtitle(&quot;Relationship Between CRAN Downloads and GitHub Stars&quot;) + 
+  theme_bw() + 
+  theme(plot.caption=element_text(hjust = 0))
+
+# author stats -----------------------------------------------------------------
+
+# summary by author
+authors_detail &lt;- all_pkg_details_clean %&gt;% 
+  group_by(author) %&gt;% 
+  summarize(downloads = sum(downloads, na.rm=TRUE), 
+            stars = sum(stars, na.rm=TRUE)) %&gt;% 
+  mutate(downloads_per_star = downloads / stars, 
+         downloads_per_star = ifelse(!is.finite(downloads_per_star), NA_real_, downloads_per_star)) %&gt;% 
+  arrange(desc(downloads))
+
+# popular authors
+pop_authors &lt;- tibble(author = c(&#39;Hadley Wickham&#39;, 
+                                 &#39;Dirk Eddelbuettel&#39;, 
+                                 &#39;Yihui Xie&#39;, 
+                                 &#39;Winston Chang&#39;, 
+                                 &#39;Jennifer Bryan&#39;, 
+                                 &#39;JJ Allaire&#39;,
+                                 &#39;Jeroen Ooms&#39;, 
+                                 &#39;Scott Chamberlain&#39;, 
+                                 &#39;Jim Hester&#39;, 
+                                 &#39;Kirill Müller&#39;), 
+                      notable_packages = c(&#39;ggplot2, dplyr, httr&#39;,
+                                           &#39;Rcpp, BH&#39;, 
+                                           &#39;knitr, rmarkdown, bookdown&#39;, 
+                                           &#39;R6, shiny&#39;, 
+                                           &#39;readxl, gapminder, googlesheets&#39;, 
+                                           &#39;rstudioapi, reticulate, tensorflow&#39;, 
+                                           &#39;jsonlite, curl, openssl&#39;, 
+                                           &#39;geojsonio, taxize&#39;, 
+                                           &#39;devtools, memoise, readr&#39;, 
+                                           &#39;tibble, DBI&#39;)
+)
+author_stats &lt;- pop_authors %&gt;% 
+  inner_join(., authors_detail, by=&#39;author&#39;) %&gt;%
+  select(author, notable_packages, downloads, stars, downloads_per_star) %&gt;% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %&gt;%
+  rename_all(. %&gt;% gsub(&quot;_&quot;, &quot; &quot;, .) %&gt;% str_to_title)
+
+# single author 
+#all_pkg_details_clean %&gt;% filter(author == &#39;Dirk Eddelbuettel&#39;) %&gt;% arrange(desc(downloads))  
+
+# top 10 lists -----------------------------------------------------------------
+
+# Top 10 Most Starred Packages
+
+top_starred &lt;- all_pkg_details_clean %&gt;% 
+  select(name, author, downloads, stars, downloads_per_star) %&gt;%
+  arrange(desc(stars)) %&gt;%
+  slice(1:10) %&gt;% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %&gt;%
+  rename_all(. %&gt;% gsub(&quot;_&quot;, &quot; &quot;, .) %&gt;% str_to_title)
+
+# Top 10 Most Downloaded Packages with stars
+
+top_downloaded &lt;- all_pkg_details_clean %&gt;% 
+  filter(!is.na(stars)) %&gt;%
+  select(name, author, downloads, stars, downloads_per_star) %&gt;%
+  arrange(desc(downloads)) %&gt;%
+  slice(1:10) %&gt;% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %&gt;%
+  rename_all(. %&gt;% gsub(&quot;_&quot;, &quot; &quot;, .) %&gt;% str_to_title)
+
+# Bottom 10 Packages by Downloads per Star (frequently starred) 
+
+frequently_starred &lt;- all_pkg_details_clean %&gt;% 
+  filter(downloads &gt; 100) %&gt;% 
+  select(name, author, downloads, stars, downloads_per_star) %&gt;%
+  arrange(downloads_per_star) %&gt;%
+  slice(1:10) %&gt;% 
+  mutate(downloads_per_star = round(downloads_per_star, 2)) %&gt;%
+  rename_all(. %&gt;% gsub(&quot;_&quot;, &quot; &quot;, .) %&gt;% str_to_title)
+
+# Top 10 Packages by Downloads per Star (infrequently starred) 
+
+infrequently_starred &lt;- all_pkg_details_clean %&gt;% 
+  select(name, author, downloads, stars, downloads_per_star) %&gt;%
+  arrange(desc(downloads_per_star)) %&gt;%
+  slice(1:10) %&gt;% 
+  rename_all(. %&gt;% gsub(&quot;_&quot;, &quot; &quot;, .) %&gt;% str_to_title)</code></pre>
+</div>
+</div>

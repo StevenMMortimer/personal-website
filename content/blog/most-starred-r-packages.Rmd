@@ -1,0 +1,535 @@
+---
+title: Most Starred R Packages
+author: Steven M. Mortimer
+date: '2018-06-17'
+slug: most-starred-r-packages
+categories:
+  - R
+tags:
+  - r-code
+  - cran
+  - github
+description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
+image: "blog/most-starred-r-packages/star-download-relationship.png"
+output:
+  blogdown::html_page:
+    toc: true
+draft: true
+---
+
+```{r setup, include = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  eval = FALSE,
+  cache = FALSE,
+  fig.align = "center"
+)
+library(knitr)
+library(kableExtra)
+```
+
+It seems like all the best R packages proudly use GitHub and have a README adorned 
+with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> 
+got me wondering: What proportion of current R packages use GitHub? Or at least refer 
+to it in the URL of the package description. Also, what is the relationship between 
+the number of CRAN downloads and the number of stars on a repository? My curiosity 
+got the best of me so I hastily wrote a script to pull the data. 
+Click [here](#full-script) to go straight to the full script and data included at the bottom 
+of this post. I acknowledge there are more elegant ways to have coded this, but let's press on.
+
+![](/blog/most-starred-r-packages/star-download-relationship.png)
+
+## Pulling List of Packages & their Details
+
+CRAN provides a list and links to all current packages at 
+<a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. 
+By scraping this page, I found 12,675 current R packages (non-archived). For each package I pinged 
+its detail page using the canonical form link (e.g. https://cran.r-project.org/package=ggplot2). 
+From there I looked at the description field "URL" to see if it contained "github.com". It turns out 
+that 3,718 of the packages (29.3% of the total) referenced GitHub. Below is the code snippet for retrieving the list of packages that was taken from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.
+
+```{r packages-list}
+# getting list of the packages
+pkgs <- readHTMLTable(readLines(file.path('https://cran.rstudio.com/src/contrib')),
+                      which = 1, 
+                      stringsAsFactors = FALSE)[,-1]
+
+# filter out lines that aren't really packages
+pkgs <- pkgs %>% 
+  filter(Size != "-", 
+         grepl('tar.gz$', Name)) %>%
+  mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name))
+```
+
+While retrieving the package metadata I pinged the GitHub API if a package had a 
+GitHub URL to see if I could get the number of stars for the repository. 
+Currently, GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but 
+out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. 
+Here is the function I used to take a cleaned up version of the package's URL then 
+form a request to the GitHub API to get star counts:
+
+```{r star-counts}
+# get the star count from a clean version of the package's URL
+gh_star_count <- function(url){
+  stars  <- tryCatch({
+    this_url <- gsub("https://github.com/", "https://api.github.com/repos/", url)
+    req <- GET(this_url, gtoken)
+    stop_for_status(req)
+    cont <- content(req)
+    cont$stargazers_count  
+  }, error = function(e){
+    return(NA_integer_)
+  })
+  return(stars)
+}
+```
+
+## Analyzing the Data
+
+Once I had all the package detail data, I found that R packages, on average, have 35.7
+GitHub stars, but the median number of stars is only six! **ggplot2** has the most 
+stars with 3,174. In my analysis I removed the **xgboost**, **h2o**, and **feather** packages
+which point to the repository of their implementations in many languages, not just R. 
+
+![](/blog/most-starred-r-packages/star-distribution.png)
+
+What I really found interesting was comparing CRAN downloads to stars. Using the **cranlogs** 
+package I was able to get the total package downloads dating back to January 1, 2014. 
+In contrast with the low star counts, the median downloads for R packages is 8,975. 
+Combining stars and downloads data I found that the median R package has 
+903 downloads per star. Only 38.7% of packages had more than 10 stars, which shows 
+how hard stars are to get even if you've written a great package. I'm not sure 
+what proportion of R users frequently reference and contribute to GitHub, but it 
+would be interesting to compare that with the high ratios of downloads to stars. 
+
+![](/blog/most-starred-r-packages/star-download-scatter.png)
+
+There are some real outliers in the data. For example, the **Rcpp** package, perhaps the all-time 
+most downloaded package, has 15.8M downloads and only 377 stars. Similarly, Hadley's 
+**scales** package has 9.4M downloads and only 115 stars. These support/helper packages just 
+don't get the same star love as the headliners like **ggplot2**, **shiny**, and **dplyr**.
+
+Of course, I could not help but check out the stats for some of the most prolific package authors. 
+After parsing out individuals with the "aut", "cre" roles I came to the not so surprising 
+conclusion that Hadley has the most stars of any author with 12,408 stars. Dirk Eddelbuettel had one 
+of the lowest star-to-download ratios. For every ~38K downloads Dirk's repositories will receive one star. 
+Pay no attention to the man behind the curtain since his **Rcpp** package underpins a whole 
+host of packages without all the GitHub fanfare. Here is a list of popular R package 
+authors and their stats:
+
+```{r author_stats, eval=TRUE, include=FALSE}
+author_stats <- structure(list(Author = c("Hadley Wickham", "Dirk Eddelbuettel", 
+"Yihui Xie", "Winston Chang", "Jennifer Bryan", "JJ Allaire", 
+"Jeroen Ooms", "Scott Chamberlain", "Jim Hester", "Kirill Müller"
+), `Notable Packages` = c("ggplot2, dplyr, httr", "Rcpp, BH", 
+"knitr, rmarkdown, bookdown", "R6, shiny", "readxl, gapminder, googlesheets", 
+"rstudioapi, reticulate, tensorflow", "jsonlite, curl, openssl", 
+"geojsonio, taxize", "devtools, memoise, readr", "tibble, DBI"
+), Downloads = c(113160314, 28433586, 42472860, 17161005, 6055774, 
+8882553, 25907868, 1770664, 22867071, 36159009), Stars = c(12408L, 
+745L, 6315L, 4027L, 1714L, 2798L, 1483L, 2528L, 4332L, 1077L), 
+    `Downloads Per Star` = c(9119.9, 38165.9, 6725.7, 4261.5, 
+    3533.1, 3174.6, 17469.9, 700.4, 5278.6, 33573.8)), class = c("tbl_df", 
+"tbl", "data.frame"), row.names = c(NA, -10L), .Names = c("Author", 
+"Notable Packages", "Downloads", "Stars", "Downloads Per Star"
+))
+```
+
+```{r author_stats_table, eval=TRUE, echo=FALSE}
+kable_styling(kable(author_stats, 
+                    format.args = list(big.mark = ",")), 
+              bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+I'm sure you could create mixed models to determine the download to star relationship 
+for individuals. Also, You could use other package attributes to predict stars or downloads, 
+but I'll leave that to another curious soul. I will include tables below regarding the 
+top 10 most downloaded, most starred, most and least downloaded per star.
+
+## Credits
+
+Credit is due since this script borrows a couple different pieces of code and code concepts. 
+Retrieving the list of packages is from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>. Authenticating 
+to GitHub was taken from one of the **httr** <a target="_blank" href="https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r">demos</a>.
+
+## Appendix
+
+### Top 10 Most Starred Packages
+
+```{r top_starred, eval=TRUE, include=FALSE}
+top_starred <- structure(list(Name = c("ggplot2", "shiny", "dplyr", "devtools", 
+"knitr", "data.table", "plotly", "rmarkdown", "tensorflow", "bookdown"
+), Author = c("Hadley Wickham", "Winston Chang", "Hadley Wickham", 
+"Jim Hester", "Yihui Xie", "Matt Dowle", "Carson Sievert", "Yihui Xie", 
+"JJ Allaire", "Yihui Xie"), Downloads = c(13001703, 4571794, 
+8276844, 5536730, 7131564, 6005795, 1195880, 5432495, 94856, 
+126586), Stars = c(3174L, 2902L, 2408L, 1645L, 1581L, 1457L, 
+1255L, 1160L, 1033L, 1009L), `Downloads Per Star` = c(4096.3, 
+1575.4, 3437.2, 3365.8, 4510.8, 4122, 952.9, 4683.2, 91.8, 125.5
+)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+-10L), .Names = c("Name", "Author", "Downloads", "Stars", "Downloads Per Star"
+))
+```
+
+```{r top_starred_table, eval=TRUE, echo=FALSE}
+kable_styling(kable(top_starred, 
+                    format.args = list(big.mark = ",")), 
+              bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+### Top 10 Most Downloaded Packages with Stars
+
+```{r top_downloaded, eval=TRUE, include=FALSE}
+top_downloaded <- structure(list(Name = c("Rcpp", "ggplot2", "stringr", "stringi", 
+"digest", "plyr", "R6", "reshape2", "scales", "jsonlite"), Author = c("Dirk Eddelbuettel", 
+"Hadley Wickham", "Hadley Wickham", "Marek Gagolewski", "Dirk Eddelbuettel with contributions \n by Antoine Lucas", 
+"Hadley Wickham", "Winston Chang", "Hadley Wickham", "Hadley Wickham", 
+"Jeroen Ooms"), Downloads = c(15824781, 13001703, 11547828, 11310113, 
+11233244, 10340396, 9993128, 9582245, 9380757, 9112790), Stars = c(377L, 
+3174L, 268L, 122L, 42L, 470L, 212L, 173L, 115L, 176L), `Downloads Per Star` = c(41975.5, 
+4096.3, 43088.9, 92705.8, 267458.2, 22000.8, 47137.4, 55388.7, 
+81571.8, 51777.2)), class = c("tbl_df", "tbl", "data.frame"), row.names = c(NA, 
+-10L), .Names = c("Name", "Author", "Downloads", "Stars", "Downloads Per Star"
+))
+```
+
+```{r top_downloaded_table, eval=TRUE, echo=FALSE}
+kable_styling(kable(top_downloaded, 
+                    format.args = list(big.mark = ",")), 
+              bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+### Top 10 Packages by Stars per Download (frequently starred) 
+
+```{r frequently_starred, eval=TRUE, include=FALSE}
+frequently_starred <- structure(list(Name = c("r2d3", "workflowr", "goodpractice", 
+"xtensor", "scico", "shinytest", "furrr", "pkgdown", "rtika", 
+"mindr"), Author = c("Javier Luraschi", "John Blischak", "Hannah Frick", 
+"Johan Mabille", "Thomas Lin Pedersen", "Winston Chang", "Davis Vaughan", 
+"Hadley Wickham", "Sasha Goodman", "Peng Zhao"), Downloads = c(416, 
+448, 523, 2057, 185, 418, 724, 1589, 168, 2051), Stars = c(235L, 
+169L, 192L, 664L, 59L, 113L, 171L, 332L, 32L, 368L), `Downloads Per Star` = c(1.77, 
+2.65, 2.72, 3.1, 3.14, 3.7, 4.23, 4.79, 5.25, 5.57)), class = c("tbl_df", 
+"tbl", "data.frame"), row.names = c(NA, -10L), .Names = c("Name", 
+"Author", "Downloads", "Stars", "Downloads Per Star"))
+```
+
+```{r frequently_starred_table, eval=TRUE, echo=FALSE}
+kable_styling(kable(frequently_starred, 
+                    format.args = list(big.mark = ",")), 
+              bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+### Bottom 10 Packages by Stars per Download (infrequently starred) 
+
+```{r infrequently_starred, eval=TRUE, include=FALSE}
+infrequently_starred <- structure(list(Name = c("mime", "pkgmaker", "rngtools", "magic", 
+"gsubfn", "bindrcpp", "plogr", "digest", "munsell", "proto"), 
+    Author = c("Yihui Xie", "Renaud Gaujoux", "Renaud Gaujoux", 
+    "Robin K. S. Hankin", "G. Grothendieck", "Kirill Müller", 
+    "Kirill Müller", "Dirk Eddelbuettel with contributions \n by Antoine Lucas", 
+    "Charlotte Wickham", "Hadley Wickham"), Downloads = c(7398765, 
+    1228173, 1224959, 344741, 675056, 2996452, 3343099, 11233244, 
+    7778712, 2593246), Stars = c(12L, 2L, 2L, 1L, 2L, 10L, 12L, 
+    42L, 31L, 11L), `Downloads Per Star` = c(616563.75, 614086.5, 
+    612479.5, 344741, 337528, 299645.2, 278591.583333333, 267458.19047619, 
+    250926.193548387, 235749.636363636)), class = c("tbl_df", 
+"tbl", "data.frame"), row.names = c(NA, -10L), .Names = c("Name", 
+"Author", "Downloads", "Stars", "Downloads Per Star"))
+```
+
+```{r infrequently_starred_table, eval=TRUE, echo=FALSE}
+kable_styling(kable(infrequently_starred, 
+                    format.args = list(big.mark = ",")), 
+              bootstrap_options = c("striped", "hover", "responsive"))
+```
+
+### Full Script
+
+Below and available via gist with data at: <a target="_blank" href="https://gist.github.com/StevenMMortimer/1b4b626d3d91240a77f969ae04b37114">https://gist.github.com/StevenMMortimer/1b4b626d3d91240a77f969ae04b37114</a>
+
+```{r full-script}
+# load packages & custom functions ---------------------------------------------
+
+library(tidyverse)
+library(httr)
+library(cranlogs)
+library(XML)
+library(ggrepel)
+library(scales)
+library(knitr)
+library(stringr)
+
+gh_from_url <- function(x){
+  if(!grepl(',', x)){
+    x <- strsplit(x, " ")[[1]]
+    x <- trimws(x[min(which(grepl(pattern='http://github.com|https://github.com|http://www.github.com', x, ignore.case=TRUE)))])    
+  } else {
+    x <- strsplit(x, ",")[[1]]
+    x <- trimws(x[min(which(grepl(pattern='http://github.com|https://github.com|http://www.github.com', x, ignore.case=TRUE)))])    
+  }
+  x <- gsub("http://", "https://", tolower(x))
+  x <- gsub("www\\.github\\.com", "github.com", x)
+  x <- gsub("/$", "", x)
+  x <- gsub("^github.com", "https://github.com", x)
+  x <- gsub("/issues", "", x)
+  x <- gsub("\\.git", "", x)
+  return(x)
+}
+
+aut_maintainer_from_details <- function(x){
+  x <- gsub("'|\"", "", x)
+  if(grepl(',', x)){
+    x <- strsplit(x, "\\],")[[1]]
+    aut_cre_ind <- grepl(pattern='\\[aut, cre|\\[cre, aut|\\[cre', x, ignore.case=TRUE)
+    if(any(aut_cre_ind)){
+      x <- x[min(which(aut_cre_ind))]
+      x <- gsub("\\[aut, cre|\\[cre, aut|\\[cre", "", x)
+    }
+    x <- strsplit(x, ",")[[1]][1]
+    x <- trimws(gsub("\\]", "", x))
+    x <- trimws(gsub(" \\[aut", "", x))
+  }
+  return(x)
+}
+
+gh_star_count <- function(url){
+  stars  <- tryCatch({
+    this_url <- gsub("https://github.com/", "https://api.github.com/repos/", url)
+    req <- GET(this_url, gtoken)
+    stop_for_status(req)
+    cont <- content(req)
+    cont$stargazers_count  
+  }, error = function(e){
+    return(NA_integer_)
+  })
+  return(stars)
+}
+
+# authenticate to github -------------------------------------------------------
+# use Hadley's key and secret
+myapp <- oauth_app("github",
+                   key = "56b637a5baffac62cad9",
+                   secret = "8e107541ae1791259e9987d544ca568633da2ebf")
+github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
+gtoken <- config(token = github_token)
+
+# pull list of packages --------------------------------------------------------
+
+# get list of currently available packages on CRAN
+pkgs <- readHTMLTable(readLines(file.path('https://cran.rstudio.com/src/contrib')),
+                      which = 1, 
+                      stringsAsFactors = FALSE)[,-1]
+
+# filter out lines that aren't really packages
+pkgs <- pkgs %>% 
+  filter(Size != "-", 
+         grepl('tar.gz$', Name)) %>%
+  mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)) %>%
+  distinct(Name, .keep_all = TRUE)
+
+# get details for each package -------------------------------------------------
+
+all_pkg_details <- NULL
+
+# old fashioned looping! 
+# WARNING: This takes awhile to complete
+for(i in 1:nrow(pkgs)){
+  
+  if(i %% 100 == 0){
+    message(sprintf("Processing package #%s out of %s", i, nrow(pkgs)))
+  }
+  
+  pkg_details <- readHTMLTable(readLines(file.path(sprintf('https://cran.r-project.org/package=%s', pkgs[i,]$Name))), 
+                               header=FALSE, 
+                               which = 1, 
+                               stringsAsFactors = FALSE)
+  pkg_details <- pkg_details %>%
+    mutate(V1 = gsub(":", "", V1)) %>%
+    spread(V1, V2)
+  
+  this_url <- pkg_details$URL
+  on_github <- FALSE
+  this_github_url <- NA_character_
+  gh_stars <- NA_integer_
+  if(!is.null(this_url)){
+    on_github <- grepl('http://github.com|https://github.com|http://www.github.com', this_url)
+    if(on_github){
+      this_github_url <- gh_from_url(this_url)
+      gh_stars <- gh_star_count(this_github_url)
+    } else {
+      # check the BugReports URL as a backup (e.g. shiny package references GitHub this way)
+      issues_on_github <- grepl('http://github.com|https://github.com|http://www.github.com', pkg_details$BugReports)
+      if(length(issues_on_github) == 0 || !issues_on_github){
+        this_github_url <- NA_character_
+      } else {
+        this_github_url <- gh_from_url(pkg_details$BugReports)
+        gh_stars <- gh_star_count(this_github_url)  
+        on_github <- TRUE
+      }
+    }
+  } else {
+    this_url <- NA_character_
+  }
+  
+  downloads <- cran_downloads(pkgs[i,]$Name, from = "2014-01-01", to = "2018-06-15")
+  
+  all_pkg_details <- rbind(all_pkg_details, 
+                           tibble(name = pkgs[i,]$Name, 
+                                  published = pkg_details$Published,
+                                  author = aut_maintainer_from_details(pkg_details$Author),
+                                  url = this_url,
+                                  github_ind = on_github, 
+                                  github_url = this_github_url,
+                                  downloads = sum(downloads$count),
+                                  stars = gh_stars
+                           )
+  )
+}
+
+# basic summary stats ----------------------------------------------------------
+
+# remove observations where the GitHub URL refers to a repository that 
+# is not specific to R and therefore might have an inflated star count
+all_pkg_details_clean <- all_pkg_details %>% 
+  filter(!(name %in% c('xgboost', 'h2o', 'feather'))) %>% 
+  mutate(downloads_per_star = downloads / stars, 
+         downloads_per_star = ifelse(!is.finite(downloads_per_star), NA_real_, downloads_per_star))
+
+# proportion of all packages listing github
+sum(all_pkg_details$github_ind)
+mean(all_pkg_details$github_ind)
+# proportion of packages with stars
+mean(!is.na(all_pkg_details$stars))
+
+# typical number of stars per package
+mean(all_pkg_details_clean$stars, na.rm=TRUE)
+median(all_pkg_details_clean$stars, na.rm=TRUE)
+max(all_pkg_details_clean$stars, na.rm=TRUE)
+
+# typical number of downloads per package
+mean(all_pkg_details_clean$downloads, na.rm=TRUE)
+median(all_pkg_details_clean$downloads, na.rm=TRUE)
+
+# percent of packages over 10 stars
+mean(all_pkg_details_clean$stars > 10, na.rm=TRUE)
+
+mean(all_pkg_details_clean$downloads_per_star, na.rm=TRUE)
+median(all_pkg_details_clean$downloads_per_star, na.rm=TRUE)
+
+
+# stars histogram --------------------------------------------------------------
+ggplot(data=all_pkg_details_clean, mapping=aes(stars)) +
+  geom_histogram(aes(fill=..count..), bins=60) +
+  scale_x_continuous(trans = "log1p", breaks=c(0,1,2,3,10,100,1000,3000)) + 
+  labs(x = "Stars", 
+       y = "Count", 
+       fill = "Count", 
+       caption = "Source: api.github.com as of 6/16/18") + 
+  ggtitle("Distribution of GitHub Stars on R Packages") + 
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank(), 
+        plot.caption=element_text(hjust = 0))
+
+# stars to downloads scatterplot -----------------------------------------------
+plot_dat <- all_pkg_details_clean
+idx_label <- which(with(plot_dat, downloads > 10000000 | stars > 1000))
+plot_dat$name2 <- plot_dat$name
+plot_dat$name <- ""
+plot_dat$name[idx_label] <- plot_dat$name2[idx_label]
+
+ggplot(data=plot_dat, aes(stars, downloads, label = name)) +
+  geom_point(color = ifelse(plot_dat$name == "", "grey50", "red")) +
+  geom_text_repel(box.padding = .5) + 
+  scale_y_continuous(labels = comma) + 
+  scale_x_continuous(labels = comma) + 
+  labs(x = "GitHub Stars", 
+       y = "CRAN Downloads", 
+       caption = "Sources:\napi.github.com as of 6/16/18\ncranlogs as of 1/1/14 - 6/15/18") + 
+  ggtitle("Relationship Between CRAN Downloads and GitHub Stars") + 
+  theme_bw() + 
+  theme(plot.caption=element_text(hjust = 0))
+
+# author stats -----------------------------------------------------------------
+
+# summary by author
+authors_detail <- all_pkg_details_clean %>% 
+  group_by(author) %>% 
+  summarize(downloads = sum(downloads, na.rm=TRUE), 
+            stars = sum(stars, na.rm=TRUE)) %>% 
+  mutate(downloads_per_star = downloads / stars, 
+         downloads_per_star = ifelse(!is.finite(downloads_per_star), NA_real_, downloads_per_star)) %>% 
+  arrange(desc(downloads))
+
+# popular authors
+pop_authors <- tibble(author = c('Hadley Wickham', 
+                                 'Dirk Eddelbuettel', 
+                                 'Yihui Xie', 
+                                 'Winston Chang', 
+                                 'Jennifer Bryan', 
+                                 'JJ Allaire',
+                                 'Jeroen Ooms', 
+                                 'Scott Chamberlain', 
+                                 'Jim Hester', 
+                                 'Kirill Müller'), 
+                      notable_packages = c('ggplot2, dplyr, httr',
+                                           'Rcpp, BH', 
+                                           'knitr, rmarkdown, bookdown', 
+                                           'R6, shiny', 
+                                           'readxl, gapminder, googlesheets', 
+                                           'rstudioapi, reticulate, tensorflow', 
+                                           'jsonlite, curl, openssl', 
+                                           'geojsonio, taxize', 
+                                           'devtools, memoise, readr', 
+                                           'tibble, DBI')
+)
+author_stats <- pop_authors %>% 
+  inner_join(., authors_detail, by='author') %>%
+  select(author, notable_packages, downloads, stars, downloads_per_star) %>% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %>%
+  rename_all(. %>% gsub("_", " ", .) %>% str_to_title)
+
+# single author 
+#all_pkg_details_clean %>% filter(author == 'Dirk Eddelbuettel') %>% arrange(desc(downloads))  
+
+# top 10 lists -----------------------------------------------------------------
+
+# Top 10 Most Starred Packages
+
+top_starred <- all_pkg_details_clean %>% 
+  select(name, author, downloads, stars, downloads_per_star) %>%
+  arrange(desc(stars)) %>%
+  slice(1:10) %>% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %>%
+  rename_all(. %>% gsub("_", " ", .) %>% str_to_title)
+
+# Top 10 Most Downloaded Packages with stars
+
+top_downloaded <- all_pkg_details_clean %>% 
+  filter(!is.na(stars)) %>%
+  select(name, author, downloads, stars, downloads_per_star) %>%
+  arrange(desc(downloads)) %>%
+  slice(1:10) %>% 
+  mutate(downloads_per_star = round(downloads_per_star, 1)) %>%
+  rename_all(. %>% gsub("_", " ", .) %>% str_to_title)
+
+# Bottom 10 Packages by Downloads per Star (frequently starred) 
+
+frequently_starred <- all_pkg_details_clean %>% 
+  filter(downloads > 100) %>% 
+  select(name, author, downloads, stars, downloads_per_star) %>%
+  arrange(downloads_per_star) %>%
+  slice(1:10) %>% 
+  mutate(downloads_per_star = round(downloads_per_star, 2)) %>%
+  rename_all(. %>% gsub("_", " ", .) %>% str_to_title)
+
+# Top 10 Packages by Downloads per Star (infrequently starred) 
+
+infrequently_starred <- all_pkg_details_clean %>% 
+  select(name, author, downloads, stars, downloads_per_star) %>%
+  arrange(desc(downloads_per_star)) %>%
+  slice(1:10) %>% 
+  rename_all(. %>% gsub("_", " ", .) %>% str_to_title)
+```
