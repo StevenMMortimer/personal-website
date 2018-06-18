@@ -1,8 +1,8 @@
 ---
-title: Most Starred R Packages
+title: Most Starred R Packages on GitHub
 author: Steven M. Mortimer
 date: '2018-06-18'
-slug: most-starred-r-packages
+slug: most-starred-r-packages-on-github
 categories:
   - R
 tags:
@@ -10,10 +10,9 @@ tags:
   - cran
   - github
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
-image: "blog/most-starred-r-packages/star-download-relationship.png"
+image: "blog/most-starred-r-packages-on-github/star-download-relationship.png"
 output:
   blogdown::html_page
-draft: true
 ---
 
 ```{r setup, include = FALSE, message = FALSE}
@@ -44,10 +43,12 @@ of this post. I acknowledge there are more elegant ways to have coded this, but 
 
 CRAN provides a list and links to all current packages at 
 <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. 
-By scraping this page, I found 12,675 current R packages (non-archived). For each package I pinged 
+By scraping this page I found 12,675 current R packages (non-archived). For each package I pinged 
 its detail page using the canonical form link (e.g. https://cran.r-project.org/package=ggplot2). 
-From there I looked at the description field "URL" to see if it contained "github.com". It turns out 
-that 3,718 of the packages (29.3% of the total) referenced GitHub. Below is the code snippet for retrieving the list of packages that was taken from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.
+From there I looked at the package description fields `"URL"` and `"BugReports"` to see 
+if either contained "github.com". It turns out that 3,718 of the packages (29.3% 
+of the total) referenced GitHub. Below is the code snippet for retrieving the 
+list of packages that was taken from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.
 
 ```{r packages-list}
 # getting list of the packages
@@ -62,9 +63,9 @@ pkgs <- pkgs %>%
   mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name))
 ```
 
-While retrieving the package metadata I pinged the GitHub API if a package had a 
-GitHub URL to see if I could get the number of stars for the repository. 
-Currently, GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but 
+While retrieving the package metadata I pinged the GitHub API to see if I could 
+get the number of stars for the repository. Currently, GitHub allows 5,000 
+authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but 
 out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. 
 Here is the function I used to take a cleaned up version of the package's URL then 
 form a request to the GitHub API to get star counts:
@@ -88,31 +89,31 @@ gh_star_count <- function(url){
 ## Analyzing the Data
 
 Once I had all the package detail data, I found that R packages, on average, have 35.7
-GitHub stars, but the median number of stars is only six! **ggplot2** has the most 
+GitHub stars, but the median number of stars is only 6! **ggplot2** has the most 
 stars with 3,174. In my analysis I removed the **xgboost**, **h2o**, and **feather** packages
 which point to the repository of their implementations in many languages, not just R. 
 
 ![](/blog/most-starred-r-packages/star-distribution.png)
 
-What I really found interesting was comparing CRAN downloads to stars. Using the **cranlogs** 
-package I was able to get the total package downloads dating back to January 1, 2014. 
-In contrast with the low star counts, the median downloads for R packages is 8,975. 
-Combining stars and downloads data I found that the median R package has 
-903 downloads per star. Only 38.7% of packages had more than 10 stars, which shows 
-how hard stars are to get even if you've written a great package. I'm not sure 
-what proportion of R users frequently reference and contribute to GitHub, but it 
-would be interesting to compare that with the high ratios of downloads to stars. 
+What I really found interesting was comparing CRAN downloads to GitHub repo stars. 
+Using the **cranlogs** package I was able to get the total package downloads dating 
+back to January 1, 2014. In contrast with the low star counts, the median downloads 
+for R packages is 8,975. Combining stars and downloads data I found that the median 
+R package has 903 downloads per star. Only 38.7% of packages had more than 10 stars, 
+which shows how hard stars are to get even if you've written a great package. I'm 
+not sure what proportion of R users frequently reference and contribute to GitHub, 
+but it would be interesting to compare that with the high ratios of downloads to stars. 
 
 ![](/blog/most-starred-r-packages/star-download-scatter.png)
 
-There are some real outliers in the data. For example, the **Rcpp** package, perhaps the all-time 
-most downloaded package, has 15.8M downloads and only 377 stars. Similarly, Hadley's 
+There are some real outliers in the data. For example, the **Rcpp** package, perhaps the 
+most downloaded package of all-time, has 15.8M downloads and only 377 stars. Similarly, Hadley's 
 **scales** package has 9.4M downloads and only 115 stars. These support/helper packages just 
 don't get the same star love as the headliners like **ggplot2**, **shiny**, and **dplyr**.
 
 Of course, I could not help but check out the stats for some of the most prolific package authors. 
-After parsing out individuals with the "aut", "cre" roles I came to the not so surprising 
-conclusion that Hadley has the most stars of any author with 12,408 stars. Dirk Eddelbuettel had one 
+After parsing out individuals with the `["aut", "cre"]` roles I came to the not so surprising 
+conclusion that Hadley has the most stars of any author with 12,408 stars. In contrast, Dirk Eddelbuettel had one 
 of the lowest star-to-download ratios. For every ~38K downloads Dirk's repositories will receive one star. 
 Pay no attention to the man behind the curtain since his **Rcpp** package underpins a whole 
 host of packages without all the GitHub fanfare. Here is a list of popular R package 
@@ -142,14 +143,14 @@ kable_styling(kable(author_stats,
               bootstrap_options = c("striped", "hover", "responsive"))
 ```
 
-I'm sure you could create mixed models to determine the download to star relationship 
+I'm sure you could create mixed models to determine the unique download to star relationship 
 for individuals. Also, you could use other package attributes to predict stars or downloads, 
 but I'll leave that to another curious soul. I will include tables below regarding the 
 top 10 most downloaded, most starred, most and least downloaded per star.
 
 ## Credits
 
-Credit is due since this script borrows a couple different pieces of code and code concepts. 
+Credit is due since this script borrows a couple different pieces of code and concepts. 
 Retrieving the list of packages is from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>. Authenticating 
 to GitHub was taken from one of the **httr** <a target="_blank" href="https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r">demos</a>.
 
