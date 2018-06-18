@@ -1,7 +1,7 @@
 ---
 title: Most Starred R Packages
 author: Steven M. Mortimer
-date: '2018-06-17'
+date: '2018-06-18'
 slug: most-starred-r-packages
 categories:
   - R
@@ -12,33 +12,18 @@ tags:
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
 image: "blog/most-starred-r-packages/star-download-relationship.png"
 output:
-  blogdown::html_page:
-    toc: true
+  blogdown::html_page
 draft: true
 ---
 
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
-<div id="TOC">
-<ul>
-<li><a href="#pulling-list-of-packages-their-details">Pulling List of Packages &amp; their Details</a></li>
-<li><a href="#analyzing-the-data">Analyzing the Data</a></li>
-<li><a href="#credits">Credits</a></li>
-<li><a href="#appendix">Appendix</a><ul>
-<li><a href="#top-10-most-starred-packages">Top 10 Most Starred Packages</a></li>
-<li><a href="#top-10-most-downloaded-packages-with-stars">Top 10 Most Downloaded Packages with Stars</a></li>
-<li><a href="#top-10-packages-by-stars-per-download-frequently-starred">Top 10 Packages by Stars per Download (frequently starred)</a></li>
-<li><a href="#bottom-10-packages-by-stars-per-download-infrequently-starred">Bottom 10 Packages by Stars per Download (infrequently starred)</a></li>
-<li><a href="#full-script">Full Script</a></li>
-</ul></li>
-</ul>
-</div>
 
-<p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
 <div class="figure">
 <img src="/blog/most-starred-r-packages/star-download-relationship.png" />
 
 </div>
+<p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
 <div id="pulling-list-of-packages-their-details" class="section level2">
 <h2>Pulling List of Packages &amp; their Details</h2>
 <p>CRAN provides a list and links to all current packages at <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. By scraping this page, I found 12,675 current R packages (non-archived). For each package I pinged its detail page using the canonical form link (e.g. <a href="https://cran.r-project.org/package=ggplot2" class="uri">https://cran.r-project.org/package=ggplot2</a>). From there I looked at the description field “URL” to see if it contained “github.com”. It turns out that 3,718 of the packages (29.3% of the total) referenced GitHub. Below is the code snippet for retrieving the list of packages that was taken from Gergely Daróczi’s <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.</p>
@@ -274,7 +259,7 @@ tibble, DBI
 </tr>
 </tbody>
 </table>
-<p>I’m sure you could create mixed models to determine the download to star relationship for individuals. Also, You could use other package attributes to predict stars or downloads, but I’ll leave that to another curious soul. I will include tables below regarding the top 10 most downloaded, most starred, most and least downloaded per star.</p>
+<p>I’m sure you could create mixed models to determine the download to star relationship for individuals. Also, you could use other package attributes to predict stars or downloads, but I’ll leave that to another curious soul. I will include tables below regarding the top 10 most downloaded, most starred, most and least downloaded per star.</p>
 </div>
 <div id="credits" class="section level2">
 <h2>Credits</h2>

@@ -1,7 +1,7 @@
 ---
 title: Most Starred R Packages
 author: Steven M. Mortimer
-date: '2018-06-17'
+date: '2018-06-18'
 slug: most-starred-r-packages
 categories:
   - R
@@ -12,8 +12,7 @@ tags:
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
 image: "blog/most-starred-r-packages/star-download-relationship.png"
 output:
-  blogdown::html_page:
-    toc: true
+  blogdown::html_page
 draft: true
 ---
 
@@ -30,6 +29,8 @@ library(knitr)
 library(kableExtra)
 ```
 
+![](/blog/most-starred-r-packages/star-download-relationship.png)
+
 It seems like all the best R packages proudly use GitHub and have a README adorned 
 with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> 
 got me wondering: What proportion of current R packages use GitHub? Or at least refer 
@@ -38,8 +39,6 @@ the number of CRAN downloads and the number of stars on a repository? My curiosi
 got the best of me so I hastily wrote a script to pull the data. 
 Click [here](#full-script) to go straight to the full script and data included at the bottom 
 of this post. I acknowledge there are more elegant ways to have coded this, but let's press on.
-
-![](/blog/most-starred-r-packages/star-download-relationship.png)
 
 ## Pulling List of Packages & their Details
 
@@ -144,7 +143,7 @@ kable_styling(kable(author_stats,
 ```
 
 I'm sure you could create mixed models to determine the download to star relationship 
-for individuals. Also, You could use other package attributes to predict stars or downloads, 
+for individuals. Also, you could use other package attributes to predict stars or downloads, 
 but I'll leave that to another curious soul. I will include tables below regarding the 
 top 10 most downloaded, most starred, most and least downloaded per star.
 
