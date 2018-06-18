@@ -19,7 +19,7 @@ output:
 
 
 <div class="figure">
-<img src="/blog/most-starred-r-packages/star-download-relationship.png" />
+<img src="/blog/most-starred-r-packages-on-github/star-download-relationship.png" />
 
 </div>
 <p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
@@ -55,12 +55,12 @@ gh_star_count &lt;- function(url){
 <h2>Analyzing the Data</h2>
 <p>Once I had all the package detail data, I found that R packages, on average, have 35.7 GitHub stars, but the median number of stars is only 6! <strong>ggplot2</strong> has the most stars with 3,174. In my analysis I removed the <strong>xgboost</strong>, <strong>h2o</strong>, and <strong>feather</strong> packages which point to the repository of their implementations in many languages, not just R.</p>
 <div class="figure">
-<img src="/blog/most-starred-r-packages/star-distribution.png" />
+<img src="/blog/most-starred-r-packages-on-github/star-distribution.png" />
 
 </div>
 <p>What I really found interesting was comparing CRAN downloads to GitHub repo stars. Using the <strong>cranlogs</strong> package I was able to get the total package downloads dating back to January 1, 2014. In contrast with the low star counts, the median downloads for R packages is 8,975. Combining stars and downloads data I found that the median R package has 903 downloads per star. Only 38.7% of packages had more than 10 stars, which shows how hard stars are to get even if you’ve written a great package. I’m not sure what proportion of R users frequently reference and contribute to GitHub, but it would be interesting to compare that with the high ratios of downloads to stars.</p>
 <div class="figure">
-<img src="/blog/most-starred-r-packages/star-download-scatter.png" />
+<img src="/blog/most-starred-r-packages-on-github/star-download-scatter.png" />
 
 </div>
 <p>There are some real outliers in the data. For example, the <strong>Rcpp</strong> package, perhaps the most downloaded package of all-time, has 15.8M downloads and only 377 stars. Similarly, Hadley’s <strong>scales</strong> package has 9.4M downloads and only 115 stars. These support/helper packages just don’t get the same star love as the headliners like <strong>ggplot2</strong>, <strong>shiny</strong>, and <strong>dplyr</strong>.</p>
