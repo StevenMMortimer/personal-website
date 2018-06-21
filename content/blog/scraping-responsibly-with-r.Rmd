@@ -1,14 +1,14 @@
 ---
-title: Scraping Responsibily with R
+title: Scraping Responsibly with R
 author: Steven M. Mortimer
 date: '2018-06-21'
-slug: scraping-responsibily-with-r
+slug: scraping-responsibly-with-r
 categories:
   - R
 tags:
   - r-code
 description: "This post demonstrates how to check the robots.txt file from R before scraping a website."
-image: "blog/scraping-responsibily-with-r/always-scrape-responsibly.jpg"
+image: "blog/scraping-responsibly-with-r/always-scrape-responsibly.jpg"
 output:
   blogdown::html_page
 ---
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-![](/blog/scraping-responsibily-with-r/always-scrape-responsibly.jpg)
+![](/blog/scraping-responsibly-with-r/always-scrape-responsibly.jpg)
 I recently wrote a blog post <a target="_blank" href="https://stevenmortimer.com/most-starred-r-packages-on-github/">here</a> 
 comparing the number of CRAN downloads an R package gets relative to its number of 
 stars on GitHub. What I didn't really think about during my analysis was whether or 
@@ -46,7 +46,7 @@ on specific resources of the domain.
 My other blog post analysis originally started with trying to get a list of all current R packages 
 on CRAN by parsing the HTML from <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. 
 The page looks like this:
-![](/blog/scraping-responsibily-with-r/cran-screenshot.png)
+![](/blog/scraping-responsibly-with-r/cran-screenshot.png)
 
 The question is whether or not scraping this page is permitted according to the robots.txt file 
 on the `cran.rstudio.com` domain. This is where the **robotstxt** package can help 
@@ -73,7 +73,7 @@ After retrieving the list of packages I decided to scrape details from the DESCR
 file of each package. Here is where things get interesting. CRAN's <a target="_blank" 
 href="http://cran.rstudio.com/robots.txt">`robots.txt`</a> file shows that scraping the 
 DESCRIPTION file of each package is not allowed.
-![](/blog/scraping-responsibily-with-r/robots-screenshot.png)
+![](/blog/scraping-responsibly-with-r/robots-screenshot.png)
 Furthermore, you can verify this using the **robotstxt** package:
 
 ```{r check-2, warning=FALSE, message=FALSE}
