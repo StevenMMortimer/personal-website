@@ -223,7 +223,7 @@ mtcars %>%
 Pipelines - Flowing into ggplot
 ====================================
 
-```{r, fig.align='center', fig.height=6, fig.width=8}
+```{r eval=FALSE}
 dat %>%
   gather(-Country, key=Year, value=Data) %>%
   separate(Country, c('Continent', 'Country')) %>%
@@ -234,6 +234,9 @@ dat %>%
   scale_y_continuous(labels = scales::percent)
 ```
 
+<div style="text-align:center;">
+  <img style="width:50%;" src="./img/ggplot-pipeline-example.png" />
+</div>
 
 ```{r, echo=FALSE, eval=TRUE}
 movie_list <- list(movie1 = list(genre='comedy', sales_mm=28.32), 
