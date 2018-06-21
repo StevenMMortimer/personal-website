@@ -1127,6 +1127,7 @@ gtoken &lt;- config(token = github_token)
 
 # get list of currently available packages on CRAN
 pkgs &lt;- tools::CRAN_package_db()
+
 # remove duplicate MD5sum column since tibbles can&#39;t handle duplicate column names
 pkgs &lt;- pkgs[,unique(names(pkgs))]
 
@@ -1147,7 +1148,7 @@ for(i in 1:nrow(pkgs)){
     message(sprintf(&quot;Processing package #%s out of %s&quot;, i, nrow(pkgs)))
   }
   
-  this_url &lt;- pkg_details$URL
+  this_url &lt;- pkgs[i,]$URL
   on_github &lt;- FALSE
   this_github_url &lt;- NA_character_
   gh_stars &lt;- NA_integer_
@@ -1158,11 +1159,11 @@ for(i in 1:nrow(pkgs)){
       gh_stars &lt;- gh_star_count(this_github_url)
     } else {
       # check the BugReports URL as a backup (e.g. shiny package references GitHub this way)
-      issues_on_github &lt;- grepl(&#39;http://github.com|https://github.com|http://www.github.com&#39;, pkg_details$BugReports)
+      issues_on_github &lt;- grepl(&#39;http://github.com|https://github.com|http://www.github.com&#39;, pkgs[i,]$BugReports)
       if(length(issues_on_github) == 0 || !issues_on_github){
         this_github_url &lt;- NA_character_
       } else {
-        this_github_url &lt;- gh_from_url(pkg_details$BugReports)
+        this_github_url &lt;- gh_from_url(pkgs[i,]$BugReports)
         gh_stars &lt;- gh_star_count(this_github_url)  
         on_github &lt;- TRUE
       }
@@ -1175,8 +1176,8 @@ for(i in 1:nrow(pkgs)){
   
   all_pkg_details &lt;- rbind(all_pkg_details, 
                            tibble(name = pkgs[i,]$Name, 
-                                  published = pkg_details$Published,
-                                  author = aut_maintainer_from_details(pkg_details$Author),
+                                  published = pkgs[i,]$Published,
+                                  author = aut_maintainer_from_details(pkgs[i,]$Author),
                                   url = this_url,
                                   github_ind = on_github, 
                                   github_url = this_github_url,

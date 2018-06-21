@@ -310,6 +310,7 @@ gtoken <- config(token = github_token)
 
 # get list of currently available packages on CRAN
 pkgs <- tools::CRAN_package_db()
+
 # remove duplicate MD5sum column since tibbles can't handle duplicate column names
 pkgs <- pkgs[,unique(names(pkgs))]
 
@@ -330,7 +331,7 @@ for(i in 1:nrow(pkgs)){
     message(sprintf("Processing package #%s out of %s", i, nrow(pkgs)))
   }
   
-  this_url <- pkg_details$URL
+  this_url <- pkgs[i,]$URL
   on_github <- FALSE
   this_github_url <- NA_character_
   gh_stars <- NA_integer_
@@ -341,11 +342,11 @@ for(i in 1:nrow(pkgs)){
       gh_stars <- gh_star_count(this_github_url)
     } else {
       # check the BugReports URL as a backup (e.g. shiny package references GitHub this way)
-      issues_on_github <- grepl('http://github.com|https://github.com|http://www.github.com', pkg_details$BugReports)
+      issues_on_github <- grepl('http://github.com|https://github.com|http://www.github.com', pkgs[i,]$BugReports)
       if(length(issues_on_github) == 0 || !issues_on_github){
         this_github_url <- NA_character_
       } else {
-        this_github_url <- gh_from_url(pkg_details$BugReports)
+        this_github_url <- gh_from_url(pkgs[i,]$BugReports)
         gh_stars <- gh_star_count(this_github_url)  
         on_github <- TRUE
       }
@@ -358,8 +359,8 @@ for(i in 1:nrow(pkgs)){
   
   all_pkg_details <- rbind(all_pkg_details, 
                            tibble(name = pkgs[i,]$Name, 
-                                  published = pkg_details$Published,
-                                  author = aut_maintainer_from_details(pkg_details$Author),
+                                  published = pkgs[i,]$Published,
+                                  author = aut_maintainer_from_details(pkgs[i,]$Author),
                                   url = this_url,
                                   github_ind = on_github, 
                                   github_url = this_github_url,
