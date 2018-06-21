@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   echo = TRUE,
   eval = FALSE,
-  cache = FALSE,
+  cache = TRUE,
   fig.align = "center"
 )
 library(knitr)
@@ -43,8 +43,8 @@ of this post. I acknowledge there are more elegant ways to have coded this, but 
 ## Pulling List of Packages & their Details
 
 CORRECTION: I orginally posted this article with code that scraped CRAN to get the 
-list of packages and their metadata. This could violate CRAN Terms & Conditions and generally 
-isn't responsible. Thanks to Maëlle Salmon <a target="_blank" href="https://twitter.com/ma_salmon">(@ma_salmon)</a> 
+list of packages and their metadata. This could violate CRAN Terms and Conditions 
+and generally isn't responsible. Thanks to Maëlle Salmon (<a target="_blank" href="https://twitter.com/ma_salmon">@ma_salmon</a>) 
 I was reminded of how to scrape responsibly and that there is a function, `tools::CRAN_package_db()`, 
 that returns all the metadata for the current packages on CRAN. So without scraping CRAN here is how you 
 get the package metadata:
@@ -144,12 +144,6 @@ I'm sure you could create mixed models to determine the unique download to star 
 for individuals. Also, you could use other package attributes to predict stars or downloads, 
 but I'll leave that to another curious soul. I will include tables below regarding the 
 top 10 most downloaded, most starred, most and least downloaded per star.
-
-## Credits
-
-Credit is due since this script borrows a couple different pieces of code and concepts. 
-Retrieving the list of packages is from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>. Authenticating 
-to GitHub was taken from one of the **httr** <a target="_blank" href="https://github.com/r-lib/httr/blob/master/demo/oauth2-github.r">demos</a>.
 
 ## Appendix
 

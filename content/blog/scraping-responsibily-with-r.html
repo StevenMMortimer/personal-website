@@ -1,0 +1,61 @@
+---
+title: Scraping Responsibily with R
+author: Steven M. Mortimer
+date: '2018-06-21'
+slug: scraping-responsibily-with-r
+categories:
+  - R
+tags:
+  - r-code
+description: "This post demonstrates how to check the robots.txt file from R before scraping a website."
+image: "blog/scraping-responsibily-with-r/always-scrape-responsibly.jpg"
+output:
+  blogdown::html_page
+draft: true
+---
+
+
+
+<p><img src="/blog/scraping-responsibily-with-r/always-scrape-responsibly.jpg" /> I recently wrote a blog post <a target="_blank" href="https://stevenmortimer.com/most-starred-r-packages-on-github/">here</a> comparing the number of CRAN downloads an R package gets relative to its number of stars on GitHub. What I didn’t really think about during my analysis was whether or not scraping CRAN was a violation of its Terms and Conditions. I simply copy and pasted some code from <a target="_blank" href="https://www.r-bloggers.com/">R-bloggers</a> that seemed to work and went on my merry way. In hindsight, it would have been better to check whether or not the scraping was allowed and maybe find a better way to get the information I needed. Of course, there was a much easier way to get the CRAN package metadata using the function <code>tools::CRAN_package_db()</code> thanks to a hint from Maëlle Salmon provided in this <a target="_blank" href="https://twitter.com/ma_salmon/status/1009525735277678593">tweet</a>.</p>
+<div id="how-to-check-if-scraping-is-permitted" class="section level2">
+<h2>How to Check if Scraping is Permitted</h2>
+<p>Also provided by Maëlle’s tweet was the recommendation for using the <strong>robotstxt</strong> package (currently having 27 Stars + one Star that I just added!). It doesn’t seem to be well known as it only has 6,571 total downloads. I’m hoping this post will help spread the word. It’s easy to use! In this case I’ll check whether or not CRAN permits bots on specific resources of the domain.</p>
+<p>My other blog post analysis originally started with trying to get a list of all current R packages on CRAN by parsing the HTML from <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. The page looks like this: <img src="/blog/scraping-responsibily-with-r/cran-screenshot.png" /></p>
+<p>The question is whether or not scraping this page is permitted according to the robots.txt file on the <code>cran.rstudio.com</code> domain. This is where the <strong>robotstxt</strong> package can help us out. We can check simply by supplying the domain and path that is used to form the full link we are interested in scraping. If the <code>paths_allowed()</code> function returns <code>TRUE</code> then we should be allowed to scrape, if it returns <code>FALSE</code> then we are not permitted to scrape.</p>
+<pre class="r"><code>library(robotstxt)
+
+paths_allowed(
+  paths  = &quot;/src/contrib&quot;, 
+  domain = &quot;cran.rstudio.com&quot;, 
+  bot    = &quot;*&quot;
+)
+#&gt; [1] TRUE</code></pre>
+<p>In this case the value that is returned is <code>TRUE</code> meaning that bots are allowed to scrape that particular path. This was how I originally scraped the list of current R packages, even though you don’t really need to do that since there is the wonderful function <code>tools::CRAN_package_db()</code>.</p>
+<p>After retrieving the list of packages I decided to scrape details from the DESCRIPTION file of each package. Here is where things get interesting. CRAN’s <a target="_blank" 
+href="http://cran.rstudio.com/robots.txt"><code>robots.txt</code></a> file shows that scraping the DESCRIPTION file of each package is not allowed. <img src="/blog/scraping-responsibily-with-r/robots-screenshot.png" /> Furthermore, you can verify this using the <strong>robotstxt</strong> package:</p>
+<pre class="r"><code>paths_allowed(
+  paths = &quot;/web/packages/ggplot2/DESCRIPTION&quot;,
+  domain = &quot;cran.r-project.org&quot;, 
+  bot    = &quot;*&quot;
+)
+#&gt; [1] FALSE</code></pre>
+<p>However, when I decided to scrape the package metadata I did it by parsing the HTML from the canonical package link that resolves to the <code>index.html</code> page for the package. For example, <a target="_blank" href="https://cran.r-project.org/package=ggplot2">https://cran.r-project.org/package=ggplot2</a> resolves to <a target="_blank" href="https://cran.r-project.org/web/packages/ggplot2/index.html">https://cran.r-project.org/web/packages/ggplot2/index.html</a>. If you check whether scraping is allowed on this page, the <strong>robotstxt</strong> package says that it is permitted.</p>
+<pre class="r"><code>paths_allowed(
+  paths = &quot;/web/packages/ggplot2/index.html&quot;,
+  domain = &quot;cran.r-project.org&quot;, 
+  bot    = &quot;*&quot;
+)
+#&gt; [1] TRUE
+
+paths_allowed(
+  paths = &quot;/web/packages/ggplot2&quot;,
+  domain = &quot;cran.r-project.org&quot;, 
+  bot    = &quot;*&quot;
+)
+#&gt; [1] TRUE</code></pre>
+<p>This is a tricky situation because I can access the same information that is in the DESCRIPTION file just by going to the <code>index.html</code> page for the package where scraping seems to be allowed. In the spirit of respecting CRAN it logically follows that I should not be scraping the package index pages if the individual DESCRIPTION files are off-limits. This is despite there being no formal instruction from the <code>robots.txt</code> file about package index pages. All in all, it was an interesting bit of work and glad that I was able to learn about the <strong>robotstxt</strong> package so I can have it in my toolkit going forward.</p>
+<div style="text-align:center;font-size:1.2em;">
+<b>Remember kids, Always Scrape Responsibly!</b>
+</div>
+<p><br> <strong>DISCLAIMER</strong>: I only have a basic understanding of how <code>robots.txt</code> files work based on allowing or disallowing specified paths. I believe in this case CRAN’s <code>robots.txt</code> broadly permitted scraping, but too narrowly disallowed just the DESCRIPTION files. Perhaps this goes back to an older time where those DESCRIPTION files really were the best place for people to start scraping so it made sense to disallow them. Or the reason could be something else entirely.</p>
+</div>
