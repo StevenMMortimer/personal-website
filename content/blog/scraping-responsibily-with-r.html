@@ -54,7 +54,7 @@ paths_allowed(
 #&gt; [1] TRUE</code></pre>
 <p>This is a tricky situation because I can access the same information that is in the DESCRIPTION file just by going to the <code>index.html</code> page for the package where scraping seems to be allowed. In the spirit of respecting CRAN it logically follows that I should not be scraping the package index pages if the individual DESCRIPTION files are off-limits. This is despite there being no formal instruction from the <code>robots.txt</code> file about package index pages. All in all, it was an interesting bit of work and glad that I was able to learn about the <strong>robotstxt</strong> package so I can have it in my toolkit going forward.</p>
 <div style="text-align:center;font-size:1.2em;">
-<b>Remember kids, Always Scrape Responsibly!</b>
+<b>Remember to Always Scrape Responsibly!</b>
 </div>
 <p><br> <strong>DISCLAIMER</strong>: I only have a basic understanding of how <code>robots.txt</code> files work based on allowing or disallowing specified paths. I believe in this case CRAN’s <code>robots.txt</code> broadly permitted scraping, but too narrowly disallowed just the DESCRIPTION files. Perhaps this goes back to an older time where those DESCRIPTION files really were the best place for people to start scraping so it made sense to disallow them. Or the reason could be something else entirely.</p>
 </div>

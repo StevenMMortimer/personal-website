@@ -112,7 +112,7 @@ This is despite there being no formal instruction from the `robots.txt` file abo
 index pages. All in all, it was an interesting bit of work and glad that I was able 
 to learn about the **robotstxt** package so I can have it in my toolkit going forward.
 
-<div style="text-align:center;font-size:1.2em;"><b>Remember kids, Always Scrape Responsibly!</b></div>
+<div style="text-align:center;font-size:1.2em;"><b>Remember to Always Scrape Responsibly!</b></div>
 <br>
 **DISCLAIMER**: I only have a basic understanding of how `robots.txt` files work 
 based on allowing or disallowing specified paths. I believe in this case CRAN's 
