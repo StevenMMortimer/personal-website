@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 )
 library(knitr)
 library(kableExtra)
+library(tidyverse)
 ```
 
 ![](/blog/most-starred-r-packages-on-github/star-download-relationship.png)
@@ -41,32 +42,28 @@ of this post. I acknowledge there are more elegant ways to have coded this, but 
 
 ## Pulling List of Packages & their Details
 
-CRAN provides a list and links to all current packages at 
-<a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. 
-By scraping this page I found 12,675 current R packages (non-archived). For each package I pinged 
-its detail page using the canonical form link (e.g. https://cran.r-project.org/package=ggplot2). 
-From there I looked at the package description fields `"URL"` and `"BugReports"` to see 
-if either contained "github.com". It turns out that 3,718 of the packages (29.3% 
-of the total) referenced GitHub. Below is the code snippet for retrieving the 
-list of packages that was taken from Gergely Daróczi's <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.
+CORRECTION: I orginally posted this article with code that scraped CRAN to get the 
+list of packages and their metadata. This could violate CRAN Terms & Conditions and generally 
+isn't responsible. Thanks to Maëlle Salmon <a target="_blank" href="https://twitter.com/ma_salmon">(@ma_salmon)</a> 
+I was reminded of how to scrape responsibly and that there is a function, `tools::CRAN_package_db()`, 
+that returns all the metadata for the current packages on CRAN. So without scraping CRAN here is how you 
+get the package metadata:
 
-```{r packages-list}
-# getting list of the packages
-pkgs <- readHTMLTable(readLines(file.path('https://cran.rstudio.com/src/contrib')),
-                      which = 1, 
-                      stringsAsFactors = FALSE)[,-1]
-
-# filter out lines that aren't really packages
-pkgs <- pkgs %>% 
-  filter(Size != "-", 
-         grepl('tar.gz$', Name)) %>%
-  mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name))
+```{r get-packages, eval=TRUE}
+pkgs <- tools::CRAN_package_db()
+# remove duplicate MD5sum column since tibbles can't handle duplicate column names
+pkgs <- pkgs[,unique(names(pkgs))]
+pkgs %>%
+  select(Package, Version, Author, BugReports, URL) %>%
+  as.tibble()
 ```
 
-While retrieving the package metadata I pinged the GitHub API to see if I could 
-get the number of stars for the repository. Currently, GitHub allows 5,000 
-authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but 
-out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. 
+From there I looked at the package description fields `"URL"` and `"BugReports"` to see 
+if either contained "github.com". It turns out that 3,718 of the packages (29.3% 
+of the total) referenced GitHub. After retrieving the package metadata I pinged 
+the GitHub API to see if I could get the number of stars for the repository. Currently, 
+GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, 
+but out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. 
 Here is the function I used to take a cleaned up version of the package's URL then 
 form a request to the GitHub API to get star counts:
 
@@ -256,7 +253,6 @@ Below and available via gist with data at: <a target="_blank" href="https://gist
 library(tidyverse)
 library(httr)
 library(cranlogs)
-library(XML)
 library(ggrepel)
 library(scales)
 library(knitr)
@@ -319,15 +315,13 @@ gtoken <- config(token = github_token)
 # pull list of packages --------------------------------------------------------
 
 # get list of currently available packages on CRAN
-pkgs <- readHTMLTable(readLines(file.path('https://cran.rstudio.com/src/contrib')),
-                      which = 1, 
-                      stringsAsFactors = FALSE)[,-1]
+pkgs <- tools::CRAN_package_db()
+# remove duplicate MD5sum column since tibbles can't handle duplicate column names
+pkgs <- pkgs[,unique(names(pkgs))]
 
-# filter out lines that aren't really packages
+# filter out lines any duplicates
 pkgs <- pkgs %>% 
-  filter(Size != "-", 
-         grepl('tar.gz$', Name)) %>%
-  mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)) %>%
+  rename(Name = Package) %>%
   distinct(Name, .keep_all = TRUE)
 
 # get details for each package -------------------------------------------------
@@ -341,14 +335,6 @@ for(i in 1:nrow(pkgs)){
   if(i %% 100 == 0){
     message(sprintf("Processing package #%s out of %s", i, nrow(pkgs)))
   }
-  
-  pkg_details <- readHTMLTable(readLines(file.path(sprintf('https://cran.r-project.org/package=%s', pkgs[i,]$Name))), 
-                               header=FALSE, 
-                               which = 1, 
-                               stringsAsFactors = FALSE)
-  pkg_details <- pkg_details %>%
-    mutate(V1 = gsub(":", "", V1)) %>%
-    spread(V1, V2)
   
   this_url <- pkg_details$URL
   on_github <- FALSE

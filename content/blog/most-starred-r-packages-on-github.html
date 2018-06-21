@@ -1,21 +1,4 @@
----
-title: Most Starred R Packages on GitHub
-author: Steven M. Mortimer
-date: '2018-06-18'
-slug: most-starred-r-packages-on-github
-categories:
-  - R
-tags:
-  - r-code
-  - cran
-  - github
-description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
-image: "blog/most-starred-r-packages-on-github/star-download-relationship.png"
-output:
-  blogdown::html_page
----
-
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<script src="most-starred-r-packages-on-github_files/kePrint-0.0.1/kePrint.js"></script>
 
 
 <div class="figure">
@@ -25,18 +8,28 @@ output:
 <p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
 <div id="pulling-list-of-packages-their-details" class="section level2">
 <h2>Pulling List of Packages &amp; their Details</h2>
-<p>CRAN provides a list and links to all current packages at <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. By scraping this page I found 12,675 current R packages (non-archived). For each package I pinged its detail page using the canonical form link (e.g. <a href="https://cran.r-project.org/package=ggplot2" class="uri">https://cran.r-project.org/package=ggplot2</a>). From there I looked at the package description fields <code>&quot;URL&quot;</code> and <code>&quot;BugReports&quot;</code> to see if either contained “github.com”. It turns out that 3,718 of the packages (29.3% of the total) referenced GitHub. Below is the code snippet for retrieving the list of packages that was taken from Gergely Daróczi’s <a target="_blank" href="https://gist.github.com/daroczig/3cf06d6db4be2bbe3368">gist</a>.</p>
-<pre class="r"><code># getting list of the packages
-pkgs &lt;- readHTMLTable(readLines(file.path(&#39;https://cran.rstudio.com/src/contrib&#39;)),
-                      which = 1, 
-                      stringsAsFactors = FALSE)[,-1]
-
-# filter out lines that aren&#39;t really packages
-pkgs &lt;- pkgs %&gt;% 
-  filter(Size != &quot;-&quot;, 
-         grepl(&#39;tar.gz$&#39;, Name)) %&gt;%
-  mutate(Name = sub(&#39;^([a-zA-Z0-9\\.]*).*&#39;, &#39;\\1&#39;, Name))</code></pre>
-<p>While retrieving the package metadata I pinged the GitHub API to see if I could get the number of stars for the repository. Currently, GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. Here is the function I used to take a cleaned up version of the package’s URL then form a request to the GitHub API to get star counts:</p>
+<p>CORRECTION: I orginally posted this article with code that scraped CRAN to get the list of packages and their metadata. This could violate CRAN Terms &amp; Conditions and generally isn’t responsible. Thanks to <a target="_blank" href="https://twitter.com/ma_salmon"><span class="citation">@ma_salmon</span></a> I was reminded of how to scrape responsibly and that there is a function, <code>tools::CRAN_package_db()</code>, that returns all the metadata for the current packages on CRAN. So without scraping CRAN here is how you get the package metadata:</p>
+<pre class="r"><code>pkgs &lt;- tools::CRAN_package_db()
+# remove duplicate MD5sum column since tibbles can&#39;t handle duplicate column names
+pkgs &lt;- pkgs[,unique(names(pkgs))]
+pkgs %&gt;%
+  select(Package, Version, Author, BugReports, URL) %&gt;%
+  as.tibble()
+#&gt; # A tibble: 12,662 x 5
+#&gt;    Package     Version Author                  BugReports     URL         
+#&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;                   &lt;chr&gt;          &lt;chr&gt;       
+#&gt;  1 A3          1.0.0   Scott Fortmann-Roe      &lt;NA&gt;           &lt;NA&gt;        
+#&gt;  2 abbyyR      0.5.4   Gaurav Sood [aut, cre]  http://github… http://gith…
+#&gt;  3 abc         2.1     &quot;Csillery Katalin [aut… &lt;NA&gt;           &lt;NA&gt;        
+#&gt;  4 abc.data    1.0     &quot;Csillery Katalin [aut… &lt;NA&gt;           &lt;NA&gt;        
+#&gt;  5 ABC.RAP     0.9.0   Abdulmonem Alsaleh [cr… &lt;NA&gt;           &lt;NA&gt;        
+#&gt;  6 ABCanalysis 1.2.1   Michael Thrun, Jorn Lo… &lt;NA&gt;           https://www…
+#&gt;  7 abcdeFBA    0.4     Abhilash Gangadharan, … &lt;NA&gt;           &lt;NA&gt;        
+#&gt;  8 ABCoptim    0.15.0  &quot;George Vega Yon [aut,… &lt;NA&gt;           http://gith…
+#&gt;  9 ABCp2       1.2     &quot;M. Catherine Duryea, … &lt;NA&gt;           &lt;NA&gt;        
+#&gt; 10 abcrf       1.7     &quot;Jean-Michel Marin [au… &lt;NA&gt;           &lt;NA&gt;        
+#&gt; # ... with 12,652 more rows</code></pre>
+<p>From there I looked at the package description fields <code>&quot;URL&quot;</code> and <code>&quot;BugReports&quot;</code> to see if either contained “github.com”. It turns out that 3,718 of the packages (29.3% of the total) referenced GitHub. After retrieving the package metadata I pinged the GitHub API to see if I could get the number of stars for the repository. Currently, GitHub allows 5,000 authenticated requests per hour <a target="_blank" href="https://developer.github.com/v3/#rate-limiting">(link)</a>, but out of all the packages only 3,718 referenced GitHub, so I could make all the requests at once. Here is the function I used to take a cleaned up version of the package’s URL then form a request to the GitHub API to get star counts:</p>
 <pre class="r"><code># get the star count from a clean version of the package&#39;s URL
 gh_star_count &lt;- function(url){
   stars  &lt;- tryCatch({
@@ -1058,7 +1051,6 @@ Hadley Wickham
 library(tidyverse)
 library(httr)
 library(cranlogs)
-library(XML)
 library(ggrepel)
 library(scales)
 library(knitr)
@@ -1121,15 +1113,13 @@ gtoken &lt;- config(token = github_token)
 # pull list of packages --------------------------------------------------------
 
 # get list of currently available packages on CRAN
-pkgs &lt;- readHTMLTable(readLines(file.path(&#39;https://cran.rstudio.com/src/contrib&#39;)),
-                      which = 1, 
-                      stringsAsFactors = FALSE)[,-1]
+pkgs &lt;- tools::CRAN_package_db()
+# remove duplicate MD5sum column since tibbles can&#39;t handle duplicate column names
+pkgs &lt;- pkgs[,unique(names(pkgs))]
 
-# filter out lines that aren&#39;t really packages
+# filter out lines any duplicates
 pkgs &lt;- pkgs %&gt;% 
-  filter(Size != &quot;-&quot;, 
-         grepl(&#39;tar.gz$&#39;, Name)) %&gt;%
-  mutate(Name = sub(&#39;^([a-zA-Z0-9\\.]*).*&#39;, &#39;\\1&#39;, Name)) %&gt;%
+  rename(Name = Package) %&gt;%
   distinct(Name, .keep_all = TRUE)
 
 # get details for each package -------------------------------------------------
@@ -1143,14 +1133,6 @@ for(i in 1:nrow(pkgs)){
   if(i %% 100 == 0){
     message(sprintf(&quot;Processing package #%s out of %s&quot;, i, nrow(pkgs)))
   }
-  
-  pkg_details &lt;- readHTMLTable(readLines(file.path(sprintf(&#39;https://cran.r-project.org/package=%s&#39;, pkgs[i,]$Name))), 
-                               header=FALSE, 
-                               which = 1, 
-                               stringsAsFactors = FALSE)
-  pkg_details &lt;- pkg_details %&gt;%
-    mutate(V1 = gsub(&quot;:&quot;, &quot;&quot;, V1)) %&gt;%
-    spread(V1, V2)
   
   this_url &lt;- pkg_details$URL
   on_github &lt;- FALSE
