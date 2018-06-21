@@ -2,6 +2,8 @@
 title: Most Starred R Packages on GitHub
 author: Steven M. Mortimer
 date: '2018-06-18'
+aliases: 
+  - /most-starred-r-packages
 slug: most-starred-r-packages-on-github
 categories:
   - R
@@ -25,7 +27,7 @@ output:
 <p>It seems like all the best R packages proudly use GitHub and have a README adorned with badges across the top. The recent <a target="_blank" href="https://techcrunch.com/2018/06/04/microsoft-has-acquired-github-for-7-5b-in-microsoft-stock/">Microsoft acquisition of GitHub</a> got me wondering: What proportion of current R packages use GitHub? Or at least refer to it in the URL of the package description. Also, what is the relationship between the number of CRAN downloads and the number of stars on a repository? My curiosity got the best of me so I hastily wrote a script to pull the data. Click <a href="#full-script">here</a> to go straight to the full script and data included at the bottom of this post. I acknowledge there are more elegant ways to have coded this, but let’s press on.</p>
 <div id="pulling-list-of-packages-their-details" class="section level2">
 <h2>Pulling List of Packages &amp; their Details</h2>
-<p>CORRECTION: I orginally posted this article with code that scraped CRAN to get the list of packages and their metadata. This could violate CRAN Terms and Conditions and generally isn’t responsible. Thanks to Maëlle Salmon (<a target="_blank" href="https://twitter.com/ma_salmon"><span class="citation">@ma_salmon</span></a>) I was reminded of how to scrape responsibly and that there is a function, <code>tools::CRAN_package_db()</code>, that returns all the metadata for the current packages on CRAN. So without scraping CRAN here is how you get the package metadata:</p>
+<p>CORRECTION: I orginally posted this article with code that scraped CRAN to get the list of packages and their metadata. This could violate CRAN Terms and Conditions and generally isn’t responsible. Thanks to Maëlle Salmon (<a target="_blank" href="https://twitter.com/ma_salmon"><span class="citation">@ma_salmon</span></a>) I was reminded of how to scrape responsibly and that there is a function, <code>tools::CRAN_package_db()</code>, that returns all the metadata for the current packages on CRAN. I have written another blog post entitled <a target="_blank" href="https://stevenmortimer.com/scraping-responsibly-with-r/">Scraping Responsibly with R</a> that details how to use the <strong>robotstxt</strong> package from rOpenSci to check a domain’s directive on bots. Without scraping CRAN here is how you get the package metadata:</p>
 <pre class="r"><code>pkgs &lt;- tools::CRAN_package_db()
 # remove duplicate MD5sum column since tibbles can&#39;t handle duplicate column names
 pkgs &lt;- pkgs[,unique(names(pkgs))]

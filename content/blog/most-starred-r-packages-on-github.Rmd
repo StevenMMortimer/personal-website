@@ -2,6 +2,8 @@
 title: Most Starred R Packages on GitHub
 author: Steven M. Mortimer
 date: '2018-06-18'
+aliases: 
+  - /most-starred-r-packages
 slug: most-starred-r-packages-on-github
 categories:
   - R
@@ -46,8 +48,10 @@ CORRECTION: I orginally posted this article with code that scraped CRAN to get t
 list of packages and their metadata. This could violate CRAN Terms and Conditions 
 and generally isn't responsible. Thanks to Maëlle Salmon (<a target="_blank" href="https://twitter.com/ma_salmon">@ma_salmon</a>) 
 I was reminded of how to scrape responsibly and that there is a function, `tools::CRAN_package_db()`, 
-that returns all the metadata for the current packages on CRAN. So without scraping CRAN here is how you 
-get the package metadata:
+that returns all the metadata for the current packages on CRAN. I have written another 
+blog post entitled <a target="_blank" href="https://stevenmortimer.com/scraping-responsibly-with-r/">Scraping Responsibly with R</a> 
+that details how to use the **robotstxt** package from rOpenSci to check a domain's 
+directive on bots. Without scraping CRAN here is how you get the package metadata:
 
 ```{r get-packages, eval=TRUE}
 pkgs <- tools::CRAN_package_db()
