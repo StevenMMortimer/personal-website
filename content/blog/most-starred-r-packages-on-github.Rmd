@@ -9,7 +9,7 @@ categories:
   - R
 tags:
   - r-code
-  - cran
+  - CRAN
   - github
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
 image: "blog/most-starred-r-packages-on-github/star-download-relationship.png"
@@ -44,7 +44,7 @@ of this post. I acknowledge there are more elegant ways to have coded this, but 
 
 ## Pulling List of Packages & their Details
 
-CORRECTION: I orginally posted this article with code that scraped CRAN to get the 
+**CORRECTION**: I orginally posted this article with code that scraped CRAN to get the 
 list of packages and their metadata. This could violate CRAN Terms and Conditions 
 and generally isn't responsible. Thanks to Maëlle Salmon (<a target="_blank" href="https://twitter.com/ma_salmon">@ma_salmon</a>) 
 I was reminded of how to scrape responsibly and that there is a function, `tools::CRAN_package_db()`, 

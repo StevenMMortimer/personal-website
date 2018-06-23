@@ -7,6 +7,7 @@ categories:
   - R
 tags:
   - r-code
+  - CRAN
 description: "This post demonstrates how to check the robots.txt file from R before scraping a website."
 image: "blog/scraping-responsibly-with-r/always-scrape-responsibly.jpg"
 output:
@@ -48,7 +49,7 @@ on CRAN by parsing the HTML from <a target="_blank" href="https://cran.rstudio.c
 The page looks like this:
 ![](/blog/scraping-responsibly-with-r/cran-screenshot.png)
 
-The question is whether or not scraping this page is permitted according to the robots.txt file 
+The question is whether or not scraping this page is permitted according to the `robots.txt` file 
 on the `cran.rstudio.com` domain. This is where the **robotstxt** package can help 
 us out. We can check simply by supplying the domain and path that is used to form 
 the full link we are interested in scraping. If the `paths_allowed()` function 
@@ -120,3 +121,9 @@ based on allowing or disallowing specified paths. I believe in this case CRAN's
 files. Perhaps this goes back to an older time where those DESCRIPTION files really 
 were the best place for people to start scraping so it made sense to disallow them. 
 Or the reason could be something else entirely.
+
+**UPDATE**: David G. Johnston messaged me and brought up an important point that 
+the `robots.txt` file primarily is used to tell search engines whether or not 
+to crawl certain portions of a domain. The "Terms of Use" might be a better place 
+to begin looking for any limitations on the usage of the data for the type of project 
+you are creating.

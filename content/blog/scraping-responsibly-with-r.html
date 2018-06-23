@@ -7,6 +7,7 @@ categories:
   - R
 tags:
   - r-code
+  - CRAN
 description: "This post demonstrates how to check the robots.txt file from R before scraping a website."
 image: "blog/scraping-responsibly-with-r/always-scrape-responsibly.jpg"
 output:
@@ -20,7 +21,7 @@ output:
 <h2>How to Check if Scraping is Permitted</h2>
 <p>Also provided by Maëlle’s tweet was the recommendation for using the <strong>robotstxt</strong> package (currently having 27 Stars + one Star that I just added!). It doesn’t seem to be well known as it only has 6,571 total downloads. I’m hoping this post will help spread the word. It’s easy to use! In this case I’ll check whether or not CRAN permits bots on specific resources of the domain.</p>
 <p>My other blog post analysis originally started with trying to get a list of all current R packages on CRAN by parsing the HTML from <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. The page looks like this: <img src="/blog/scraping-responsibly-with-r/cran-screenshot.png" /></p>
-<p>The question is whether or not scraping this page is permitted according to the robots.txt file on the <code>cran.rstudio.com</code> domain. This is where the <strong>robotstxt</strong> package can help us out. We can check simply by supplying the domain and path that is used to form the full link we are interested in scraping. If the <code>paths_allowed()</code> function returns <code>TRUE</code> then we should be allowed to scrape, if it returns <code>FALSE</code> then we are not permitted to scrape.</p>
+<p>The question is whether or not scraping this page is permitted according to the <code>robots.txt</code> file on the <code>cran.rstudio.com</code> domain. This is where the <strong>robotstxt</strong> package can help us out. We can check simply by supplying the domain and path that is used to form the full link we are interested in scraping. If the <code>paths_allowed()</code> function returns <code>TRUE</code> then we should be allowed to scrape, if it returns <code>FALSE</code> then we are not permitted to scrape.</p>
 <pre class="r"><code>library(robotstxt)
 
 paths_allowed(
@@ -57,4 +58,5 @@ paths_allowed(
 <b>Remember to Always Scrape Responsibly!</b>
 </div>
 <p><br> <strong>DISCLAIMER</strong>: I only have a basic understanding of how <code>robots.txt</code> files work based on allowing or disallowing specified paths. I believe in this case CRAN’s <code>robots.txt</code> broadly permitted scraping, but too narrowly disallowed just the DESCRIPTION files. Perhaps this goes back to an older time where those DESCRIPTION files really were the best place for people to start scraping so it made sense to disallow them. Or the reason could be something else entirely.</p>
+<p><strong>UPDATE</strong>: David G. Johnston messaged me and brought up an important point that the <code>robots.txt</code> file primarily is used to tell search engines whether or not to crawl certain portions of a domain. The “Terms of Use” might be a better place to begin looking for any limitations on the usage of the data for the type of project you are creating.</p>
 </div>
