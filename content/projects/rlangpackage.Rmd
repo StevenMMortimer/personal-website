@@ -1,0 +1,86 @@
+---
+title: "@RLangPackage"
+description: "A Twitter bot tweeting one R package each day"
+author: "Steven M. Mortimer"
+tags:
+ - CRAN
+ - python
+ - Heroku
+date: 2018-06-27
+output:
+  blogdown::html_page
+---
+
+![](/projects/rlangpackage/profile-pic.png)
+
+One R Package a Day (<a target="_blank" href="https://twitter.com/RLangPackage">@RLangPackage</a> 
+on Twitter) is a Python-based Twitter bot deployed and scheduled to run on Heroku's 
+Free Tier. The purpose of the Twitter account is to feature the diversity of 
+packages that R has to offer, especially the thousands of great packages waiting 
+to be discovered by the casual R user. This project was created using a host of 
+resources which are listed on my blog <a target="_blank" href="/one-r-package-a-day">post</a> 
+introducing the account to the world.
+
+<img alt="GitHub - one-r-package-a-day" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> 
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/one-r-package-a-day">https://github.com/StevenMMortimer/one-r-package-a-day</a>
+
+When writing another blog post I was struck by how many R packages there are (over 
+12,600 at the time of this writing). Immediately my mind thought as to how many 
+that would be if you downloaded one package a day. The answer is 34+ years. I'm not sure I 
+can religiously download one a day, but I could make a bot to inspire others to 
+download a package a day. The basic pseudocode of the bot's algorithm is the following: 
+
+ 1. Load Twitter credentials from file
+ 2. Read @RLangPackage's tweets to parse out which packages it has already tweeted about
+ 3. Read a list of R packages with their metadata
+ 4. "Anti join" the two lists so that we don't tweet out a package twice
+ 5. Filter down to mildly popular packages based on CRAN downloads and GitHub Star counts
+ 6. Randomly select one row of the data (one package)
+ 7. Form the tweet based on the package name, description, and GitHub URL
+ 8. Send it out!
+
+I already had compiled a list of R packages with their name, description, URL, CRAN 
+download count, and GitHub star count. By using this data, and updating it regularly, 
+the script can pick from a menu of great R packages. To prevent the bot from tweeting 
+about the same package over and over again, I randomly select rows from the list of 
+packages after having scraped the account's tweets and ensuring it hadn't tweeted about 
+the package before.
+
+Heroku makes it a breeze to deploy this type of script and host it for free. Simply 
+create an account and then create a Python app. I decided to link my GitHub repository 
+with the app so that any code changes that are pushed to GitHub will trigger a new 
+deployment on Heroku's servers. 
+
+![](/projects/rlangpackage/github-deploy.png)
+
+I found this easier that using Heroku CLI which would require me to push new changes 
+myself. In addition, you will need to configure your app's environment by including 
+a `requirements.txt` file and adding config vars for the Twitter credentials. The 
+`requirements.txt` file is just a list of Python libraries that your app needs in 
+order to run. In this case it is **python-dotenv**, **pandas**, and **twitterAPI**. 
+These libraries will be installed on the virtual server when the script is executed. 
+Using config vars in Heroku is important so that the Twitter credentials will work 
+in the same way locally as they do on Heroku's servers. I'm hosting the project's 
+code on GitHub so I didn't want to openly put my Twitter credentials in the script, 
+so I have a `.env` file locally on my computer. On Heroku I have set up the config 
+vars with the same key value pairs. This way whenever the script runs it can read 
+these values from the `.env` file locally or the app's environment when it runs on 
+Heroku. I do recommend downloading the Heroku CLI just to be able to run and check 
+your script. I could trigger the script using the command: 
+
+```
+heroku run -a YOUR-APP-NAME python YOUR-SCRIPT-NAME.py
+```
+
+and check the logs using the command: 
+
+```
+heroku logs -a YOUR-APP-NAME --tail
+```
+
+Finally, the Twitter bot wouldn't be very robotic if it didn't tweet out everyday 
+on its own. I used the Heroku Scheduler to automate the execution of the script 
+each day. Heroku Scheduler has a really easy to use dashboard where you can add a 
+job to execute the Python script at a set time.
+
+![](/projects/rlangpackage/heroku-scheduler.png)
