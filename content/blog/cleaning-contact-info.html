@@ -32,18 +32,29 @@ output:
 
 <div id="where-are-the-examples" class="section level2">
 <h2>Where are the Examples?</h2>
-<p>R is great for cleaning data and that’s why I was surprised that I couldn’t find very many examples or even a full-fledged package for cleaning contact information (phone numbers, addresses, etc.). Instead I decided to write a few functions of my own to get the job done. I wanted to put them front and center as a table of contents at the top for people who want to quickly reference them on this page. At some point I plan on consolidating CRM-like R code into a package that can help others who are working with customer data to quickly clean and analyze using R.</p>
+<p>R is great for cleaning data and that’s why I was surprised that I couldn’t find
+very many examples or even a full-fledged package for cleaning contact information
+(phone numbers, addresses, etc.). Instead I decided to write a few functions of
+my own to get the job done. I wanted to put them front and center as a table
+of contents at the top for people who want to quickly reference them on this page.
+At some point I plan on consolidating CRM-like R code into a package that can
+help others who are working with customer data to quickly clean and analyze using R.</p>
 </div>
 <div id="cleaning-functions-framework" class="section level2">
 <h2>Cleaning Functions Framework</h2>
-<p>When I set out to write cleaning functions I wanted to write them in a way that they could be chained together as part of <code>dplyr</code> pipeline so that readers of my code could see what steps I took to process the data. For this reason I created functions that accept a <code>data.frame</code> and a target column by name to operate on and then return the cleaned <code>data.frame</code>. The flow could be something like:</p>
+<p>When I set out to write cleaning functions I wanted to write them in a way that
+they could be chained together as part of <code>dplyr</code> pipeline so that readers of
+my code could see what steps I took to process the data. For this reason I created
+functions that accept a <code>data.frame</code> and a target column by name to operate on and
+then return the cleaned <code>data.frame</code>. The flow could be something like:</p>
 <pre class="r"><code>clean_data &lt;- data %&gt;%
   clean_phone_number(targetColumn=&#39;Phone&#39;) %&gt;%
   clean_phone_number(targetColumn=&#39;CellPhone&#39;) %&gt;%
   clean_url(targetColumn=&#39;URL&#39;) %&gt;%
   clean_zip_code(targetColumn=&#39;Zip&#39;) %&gt;%
   clean_email(targetColumn=&#39;Email&#39;)</code></pre>
-<p>Below are functions that I’ve created to perform the types of cleaning demonstrated above.</p>
+<p>Below are functions that I’ve created to perform the types of cleaning demonstrated
+above.</p>
 </div>
 <div id="the-functions" class="section level2">
 <h2>The Functions</h2>

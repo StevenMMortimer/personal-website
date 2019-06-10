@@ -17,19 +17,45 @@ output:
 
 
 
-<div class="figure">
-<img src="/blog/one-r-package-a-day/profile-pic.png" />
-
-</div>
-<p>Discover one R package a day by following the <a target="_blank" href="https://twitter.com/RLangPackage"><span class="citation">@RLangPackage</span></a> account on Twitter! Inspired by One R Tip Day (<a target="_blank" href="https://twitter.com/RLangTip"><span class="citation">@RLangTip</span></a>) I created a Twitter bot that will feature one package with its description and GitHub URL each day. The R programming language (referred to as <a target="_blank" href="https://twitter.com/hashtag/rstats">#rstats</a> on Twitter) now has over 12,600 packages. Tweeting one each day would take more than 34 years to get through them all and that doesn’t even consider the rapid growth of new packages as shown in this <a target="_blank" href="ttp://blog.revolutionanalytics.com/2017/01/cran-10000.html">post</a>.</p>
-<div class="figure">
-<img src="/blog/one-r-package-a-day/r-package-growth.png" />
-
-</div>
-<p>The purpose of the <a target="_blank" href="https://twitter.com/RLangPackage"><span class="citation">@RLangPackage</span></a> Twitter account is to feature the diversity of packages that R has to offer. Most users have heard of <strong>ggplot2</strong> and <strong>dplyr</strong>, but there are thousands of other great packages waiting to be discovered. In order to highlight those I took a list of all packages on CRAN and filtered it down to ones with anywhere between 5,000 and 1,000,000 CRAN downloads. I then took a subset of that with anywhere between 10 and 1,000 stars on GitHub. I decided to focus on these mildly popular packages with source code hosted on GitHub so that I can embed the link in the tweet and promote packages with code that people have already started to explore. After following those subsetting rules, one package is selected at random after narrowing to a list of packages that haven’t already been tweeted. I am hosting the bot on Heroku and using Heroku Scheduler to send out a tweet each day at 10:30am UTC or 6:30am Eastern Time. Below the credits and resources is the sloppily written Python that’s currently being hosted on Heroku and executed.</p>
+<p><img src="/blog/one-r-package-a-day/profile-pic.png" /></p>
+<p>Discover one R package a day by following the
+<a target="_blank" href="https://twitter.com/RLangPackage"><span class="citation">@RLangPackage</span></a> account
+on Twitter! Inspired by One R Tip Day
+(<a target="_blank" href="https://twitter.com/RLangTip"><span class="citation">@RLangTip</span></a>) I created
+a Twitter bot that will feature one package with its description and GitHub URL
+each day. The R programming language (referred to as
+<a target="_blank" href="https://twitter.com/hashtag/rstats">#rstats</a> on
+Twitter) now has over 12,600 packages. Tweeting one each day would take more
+than 34 years to get through them all and that doesn’t even consider the rapid
+growth of new packages as shown in this
+<a target="_blank" href="ttp://blog.revolutionanalytics.com/2017/01/cran-10000.html">post</a>.</p>
+<p><img src="/blog/one-r-package-a-day/r-package-growth.png" /></p>
+<p>The purpose of the <a target="_blank" href="https://twitter.com/RLangPackage"><span class="citation">@RLangPackage</span></a>
+Twitter account is to feature the diversity of packages that R has to offer. Most
+users have heard of <strong>ggplot2</strong> and <strong>dplyr</strong>, but there are thousands of other great
+packages waiting to be discovered. In order to highlight those I took a list of all
+packages on CRAN and filtered it down to ones with anywhere between 5,000 and
+1,000,000 CRAN downloads. I then took a subset of that with anywhere between 10
+and 1,000 stars on GitHub. I decided to focus on these mildly popular packages with
+source code hosted on GitHub so that I can embed the link in the tweet and promote packages with
+code that people have already started to explore. After following those subsetting rules,
+one package is selected at random after narrowing to a list of packages that haven’t
+already been tweeted. I am hosting the bot on Heroku and using Heroku Scheduler to
+send out a tweet each day at 10:30am UTC or 6:30am Eastern Time. Below the credits
+and resources is the sloppily written Python that’s currently being hosted on
+Heroku and executed.</p>
 <div id="credits" class="section level2">
 <h2>Credits</h2>
-<p>I was found a couple different blog posts on creating a Twitter bot with R, namely <a target="_blank" href="https://medium.com/@randerson112358/create-a-twitter-bot-using-r-5a94f1b1b886">here</a> and <a target="_blank" href="https://rstudio-pubs-static.s3.amazonaws.com/54352_3afcd597884a4192b3361513f2d32699.html">here</a>, but they didn’t involve deploying on Heroku or another cloud service. However, there were plenty of Python based Twitter bot tutorials, so I took full advantage of them and went the Python route. Below is the host of resources I considered while figuring out how to deploy the app, what Twitter package to use, and some basic Python syntax which, embarrassingly, I should know by now. I think most users will gravitate towards the <strong>tweepy</strong> Python library but I found that it throws up an error when using it with Conda 3.6. The issue is documented on GitHub <a target="_blank" href="https://github.com/tweepy/tweepy/issues/894">https://github.com/tweepy/tweepy/issues/894</a>.</p>
+<p>I was found a couple different blog posts on creating a Twitter bot with R, namely
+<a target="_blank" href="https://medium.com/@randerson112358/create-a-twitter-bot-using-r-5a94f1b1b886">here</a> and
+<a target="_blank" href="https://rstudio-pubs-static.s3.amazonaws.com/54352_3afcd597884a4192b3361513f2d32699.html">here</a>,
+but they didn’t involve deploying on Heroku or another cloud service. However, there were
+plenty of Python based Twitter bot tutorials, so I took full advantage of them and went the Python route.
+Below is the host of resources I considered while figuring out how to deploy the app, what Twitter
+package to use, and some basic Python syntax which, embarrassingly, I should know by now.
+I think most users will gravitate towards the <strong>tweepy</strong> Python library but I found that
+it throws up an error when using it with Conda 3.6. The issue is documented on GitHub
+<a target="_blank" href="https://github.com/tweepy/tweepy/issues/894">https://github.com/tweepy/tweepy/issues/894</a>.</p>
 <p><strong>Resources</strong></p>
 <ul>
 <li>Used as a general guide to deploying: <a href="http://briancaffey.github.io/2016/04/05/twitter-bot-tutorial.html" class="uri">http://briancaffey.github.io/2016/04/05/twitter-bot-tutorial.html</a></li>

@@ -33,8 +33,10 @@ output:
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>The <strong>roas</strong> package is the R implementation of the Open Ad Stream (OAS) API. I created the package because very few tools and documentation exist for the OAS API.</p>
-<p><img alt="GitHub - roas" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/roas">https://github.com/StevenMMortimer/roas</a></p>
+<p>The <strong>roas</strong> package is the R implementation of the Open Ad Stream (OAS) API.
+I created the package because very few tools and documentation exist for the OAS API.</p>
+<p><img alt="GitHub - roas" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" />
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/roas">https://github.com/StevenMMortimer/roas</a></p>
 </div>
 <div id="features" class="section level2">
 <h2>Features</h2>
@@ -47,7 +49,10 @@ output:
 </div>
 <div id="functions" class="section level2">
 <h2>Functions</h2>
-<p>The functions are named to mimic each OAS request action (‘Add’, ‘List’, ‘Update’, ‘Delete’, ‘Read’, ‘Copy’, ‘Upload’, ‘Run Live’, ‘Reports’, ‘Inventory’), but many of these actions are reserved words, so the functions are named {oas_action}(). For example, running the ‘List’ action is done with the function oas_list().</p>
+<p>The functions are named to mimic each OAS request action (‘Add’, ‘List’, ‘Update’,
+‘Delete’, ‘Read’, ‘Copy’, ‘Upload’, ‘Run Live’, ‘Reports’, ‘Inventory’), but
+many of these actions are reserved words, so the functions are named {oas_action}().
+For example, running the ‘List’ action is done with the function oas_list().</p>
 </div>
 <div id="quickstart-guide" class="section level2">
 <h2>Quickstart Guide</h2>
@@ -57,7 +62,9 @@ output:
 </div>
 <div id="setup-and-authenticate" class="section level3">
 <h3>Setup and Authenticate</h3>
-<p>The only required authentication parameters are the Account, Username, and Password for the OAS instance you’d like to access. There is another option if you have a different URL endpoint.</p>
+<p>The only required authentication parameters are the Account, Username, and Password
+for the OAS instance you’d like to access. There is another option if you have a
+different URL endpoint.</p>
 <pre class="r"><code>library(roas)
 options(stringsAsFactors = FALSE)
 
@@ -72,7 +79,8 @@ options(roas.url_endpoint = &quot;https://openadstream11.247realmedia.com/oasapi
 </div>
 <div id="authenticate-with-oas_build_credentials" class="section level3">
 <h3>Authenticate with oas_build_credentials()</h3>
-<p>Build credentials for authorization and pass them into subsequent request function calls. The credentials can be reused as many times as needed.</p>
+<p>Build credentials for authorization and pass them into subsequent request function
+calls. The credentials can be reused as many times as needed.</p>
 <pre class="r"><code>my_credentials &lt;- oas_build_credentials(&#39;myaccount&#39;, 
                                         &#39;myusername&#39;, 
                                         &#39;mypassword&#39;)</code></pre>
@@ -82,7 +90,12 @@ options(roas.url_endpoint = &quot;https://openadstream11.247realmedia.com/oasapi
 <pre class="r"><code># list all of the sites in my account
 list_my_sites &lt;- oas_list(credentials = my_credentials, 
                           request_type = &#39;Site&#39;)</code></pre>
-<p>Here is a more complicated list example that will list all pages from the “mySite” domain and have a URL containing “001”, but they must be from the section matching the wildcard “Ar%ves” and created after Dec. 31st, 2016 and modified after Jan. 31st, 2017. This example is very specific, but we’re using this example to show how you can specify multiple difference criteria all at once to narrow down your resultset.</p>
+<p>Here is a more complicated list example that will list all pages from the “mySite”
+domain and have a URL containing “001”, but they must be from the section matching
+the wildcard “Ar%ves” and created after Dec. 31st, 2016 and modified after Jan. 
+31st, 2017. This example is very specific, but we’re using this example to show
+how you can specify multiple difference criteria all at once to narrow down your
+resultset.</p>
 <pre class="r"><code>my_criteria &lt;- list(newXMLNode(&quot;Domain&quot;, &quot;mySite&quot;), 
                     newXMLNode(&quot;Url&quot;, &quot;001&quot;), 
                     newXMLNode(&quot;SectionId&quot;, &quot;Ar%ves&quot;), 
@@ -96,13 +109,22 @@ list_my_sites &lt;- oas_list(credentials = my_credentials,
 list_w_criteria &lt;- oas_list(credentials = my_credentials, 
                             request_type = &#39;Page&#39;,
                             search_criteria = my_criteria)</code></pre>
-<p>The OAS system also contains codes for enumerated fields. For example, there is a finite list of Designated Market Areas (DMAs) that your campaigns can target. Each DMA has a code that corresponds to a longer, more descriptive name. The campaigns only show the code, so you’ll need this list of DMA codes to figure out more descriptive names of the targeting that your campaign is implementing.</p>
+<p>The OAS system also contains codes for enumerated fields. For example, there is a
+finite list of Designated Market Areas (DMAs) that your campaigns can target. Each
+DMA has a code that corresponds to a longer, more descriptive name. The campaigns
+only show the code, so you’ll need this list of DMA codes to figure out more
+descriptive names of the targeting that your campaign is implementing.</p>
 <pre class="r"><code>dma_codes &lt;- oas_list_code(credentials = my_credentials, 
                            code_type = &#39;DMA&#39;)</code></pre>
 </div>
 <div id="reading-an-oas-object" class="section level3">
 <h3>Reading an OAS Object</h3>
-<p>OAS objects are uniquely identified by their Id. Typically, you use the <code>oas_list()</code> function to pull down a list and figure out the Ids of objects you’d like to read. Once you’ve identified those individual objects you can use the <code>oas_read()</code> function to retrieve all available fields the object. In the examples below you can see how we pull back the details on a site with the Id: “www.mysite.com” and we also pull back details on a campaign with the Id: “one_campaign_id”.</p>
+<p>OAS objects are uniquely identified by their Id. Typically, you use the <code>oas_list()</code>
+function to pull down a list and figure out the Ids of objects you’d like to read.
+Once you’ve identified those individual objects you can use the <code>oas_read()</code> function to
+retrieve all available fields the object. In the examples below you can see how
+we pull back the details on a site with the Id: “www.mysite.com” and we also pull back
+details on a campaign with the Id: “one_campaign_id”.</p>
 <pre class="r"><code># details for &quot;www.mysite.com&quot;
 site_details &lt;- oas_read(credentials = my_credentials, 
                          request_type =&#39;Site&#39;, 
@@ -115,7 +137,11 @@ campaign_details &lt;- oas_read(credentials = my_credentials,
 </div>
 <div id="running-reports" class="section level3">
 <h3>Running Reports</h3>
-<p>The OAS API supports over <strong>800</strong> different template reports. These reports cover a wide range of things, such as, Campaign Delivery, Account Revenue, and many more. You <em>must</em> specify the <code>report_type</code>, <code>report_name</code>, and a date range. You can view all the different report types and names by running <code>data(available_reports)</code>. Simply pick an item from the list and plug its type and name into the <code>oas_report()</code> function.</p>
+<p>The OAS API supports over <strong>800</strong> different template reports. These reports cover
+a wide range of things, such as, Campaign Delivery, Account Revenue, and many more.
+You <em>must</em> specify the <code>report_type</code>, <code>report_name</code>, and a date range. You can view
+all the different report types and names by running <code>data(available_reports)</code>. Simply
+pick an item from the list and plug its type and name into the <code>oas_report()</code> function.</p>
 <pre class="r"><code>data(available_reports)
 
 # List out all the Campaign Delivery reports
@@ -130,7 +156,14 @@ campaign_delivery &lt;- oas_report(credentials = my_credentials,
 </div>
 <div id="getting-inventory-forecasts" class="section level3">
 <h3>Getting Inventory Forecasts</h3>
-<p>The OAS API supports inventory checking on various levels: Basic, Search, Geography. For example, if you need to see the available inventory for a particular search keyword, then you can do that by using the function <code>oas_search_inventory()</code>. If you need to see the available inventory for a particular geography, then use <code>oas_geo_inventory()</code>. Note, these functions may take awhile to run and may only support simplistic pulls that may need to be combined or averaged to come up with a reasonable estimate of available inventory. These issues are related to how the OAS API functions and not how this package operates. This package is only a wrapper to more easily retrieve the data from OAS. This is <em>no</em> intermediate logic.</p>
+<p>The OAS API supports inventory checking on various levels: Basic, Search, Geography.
+For example, if you need to see the available inventory for a particular search keyword, then
+you can do that by using the function <code>oas_search_inventory()</code>. If you need to see
+the available inventory for a particular geography, then use <code>oas_geo_inventory()</code>. Note,
+these functions may take awhile to run and may only support simplistic pulls that may need
+to be combined or averaged to come up with a reasonable estimate of available inventory. These
+issues are related to how the OAS API functions and not how this package operates. This package
+is only a wrapper to more easily retrieve the data from OAS. This is <em>no</em> intermediate logic.</p>
 <pre class="r"><code># Retrieve an inventory forecast for all sites
 # Note that start and end dates must be greater than or equal to 
 # Sys.Date() otherwise forecast reports will return a 0 row data.frame
@@ -154,11 +187,15 @@ booked &lt;- oas_search_inventory(credentials = my_credentials,
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/roas/issues">https://github.com/StevenMMortimer/roas/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at
+<a target="_blank" href="https://github.com/StevenMMortimer/roas/issues">https://github.com/StevenMMortimer/roas/issues</a>.
+I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>
-<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster
+after drinking one cup coffee and that productivity scales linearly. Imagine what
+I could accomplish if you bought me 10 cups of coffee…</p>
 <p>Thank you for your support!</p>
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div style="text-align: center;">

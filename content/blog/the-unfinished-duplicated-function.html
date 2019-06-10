@@ -17,10 +17,37 @@ output:
 
 
 
-<p>If you’re a regular R user, then you’ve probably used or have seen the function <code>duplicated()</code>. If you’ve only grown up in the world of <code>dplyr</code> and other <code>tidyverse</code> packages with its cool function <code>distinct()</code>, then I highly envy you. In any case, you might find yourself using the <code>duplicated()</code> function when you need some more control. The function has a handy argument <code>incomparables</code> that allows you to ignore certain values when doing the comparison for duplicates. One day I wanted to use this to remove duplicate customer entries from our CRM system based on name and phone number. I went through the typical pre-processing stages of removing unnecessary punctionation, converting to lowercase, removing spaces, etc. After I got familiar with the data I realized that some of the data points were missing or not complete enough to make any meaningful determination of a duplicate. I needed a solution to ignore certain missing patterns, but it needed to encompass two or more columns of data. One hack would be to <code>paste0()</code> the columns together and work on a single pasted column, but this doesn’t handle multiple incomparable values. As I found out, the duplicated function can handle multiple columns, but the <code>incomparables</code> argument does not work for multiple columns, let alone different incomparable values for each column. Here is the error I get:</p>
+<p>If you’re a regular R user, then you’ve probably used or have seen the function
+<code>duplicated()</code>. If you’ve only grown up in the world of <code>dplyr</code> and other
+<code>tidyverse</code> packages with its cool function <code>distinct()</code>, then I highly envy you. In any
+case, you might find yourself using the <code>duplicated()</code> function when you need
+some more control. The function has a handy argument <code>incomparables</code> that allows
+you to ignore certain values when doing the comparison for duplicates. One day I
+wanted to use this to remove duplicate customer entries from our CRM system based
+on name and phone number. I went through the typical pre-processing stages of removing
+unnecessary punctionation, converting to lowercase, removing spaces, etc.
+After I got familiar with the data I realized that some of the data points were
+missing or not complete enough to make any meaningful determination of a duplicate.
+I needed a solution to ignore certain missing patterns, but it needed to encompass
+two or more columns of data. One hack would be to <code>paste0()</code> the columns together and
+work on a single pasted column, but this doesn’t handle multiple incomparable values.
+As I found out, the duplicated function can handle multiple columns, but the
+<code>incomparables</code> argument does not work for multiple columns, let alone different
+incomparable values for each column. Here is the error I get:</p>
 <pre class="r"><code>duplicated(mtcars[,c(&#39;am&#39;, &#39;gear&#39;, &#39;cyl&#39;)], incomparables=6)</code></pre>
 <pre><code>## Error: argument &#39;incomparables != FALSE&#39; is not used (yet)</code></pre>
-<p>This is really a bummer because it is nice to have this explicit functionality of what should really be considered when evaluating for duplicates. The error message sure is hopeful at the end there: “is not used (yet)”! After some digging I concluded that the function existed, as-is, at least since R version 1.4, which was released in 2001! I wouldn’t hold my breath for anyone to actually fix this issue. Contributing changes to base R has become much for difficult. I submitted a patch to R core to fix this very issue, but they weren’t too responsive. I guess it will stay as a hidden gem in base R, waiting for the next data miner to unearth. If you run across this issue and really want a fix, then feel free to use the code below. I’ve implemented a function to support incomparables across multiple columns where a list of vectors will specify the incomparable values for each column. The list elements are recycled if it is shorter than the columns being compared.</p>
+<p>This is really a bummer because it is nice to have this explicit functionality of
+what should really be considered when evaluating for duplicates. The error message
+sure is hopeful at the end there: “is not used (yet)”! After some digging I concluded that
+the function existed, as-is, at least since R version 1.4, which was released in 2001!
+I wouldn’t hold my breath for anyone to actually fix this issue. Contributing
+changes to base R has become much for difficult. I submitted a patch to R core to fix
+this very issue, but they weren’t too responsive. I guess it will stay as a hidden gem
+in base R, waiting for the next data miner to unearth. If you run across this issue
+and really want a fix, then feel free to use the code below.
+I’ve implemented a function to support incomparables across multiple columns where
+a list of vectors will specify the incomparable values for each column. The list
+elements are recycled if it is shorter than the columns being compared.</p>
 <pre class="r"><code>new_duplicated &lt;- function(x, incomparables = FALSE, fromLast = FALSE, ...) {
   
  if(!identical(incomparables, FALSE)) {
@@ -81,4 +108,7 @@ mtcars2</code></pre>
 ## Hornet 4 Drive     0    3   6 FALSE
 ## Hornet Sportabout  0    3   8 FALSE
 ## Valiant            0    3   6  TRUE</code></pre>
-<p>Typically, the second row would be considered a duplicate of the first row, but since 1 is an incomparable value it is not considered a duplicate, in fact, any row containing a 1 in the column will be labeled as false since it renders the row incomparable.</p>
+<p>Typically, the second row would be considered a duplicate of the first row,
+but since 1 is an incomparable value it is not considered a duplicate, in fact,
+any row containing a 1 in the column will be labeled as false since it renders the
+row incomparable.</p>

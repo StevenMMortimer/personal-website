@@ -31,7 +31,12 @@ output:
 
 <div id="analytical-functions" class="section level3">
 <h3>Analytical Functions</h3>
-<p>Creating functions is a programming best practice. They are easier to monitor, test, and teach to others. If your team performs routine calculations, establish a standard by adding functions to the shared library and encourage everyone to use those functions. If your company works a lot with customer phone numbers, then write a function to standardize the formatting. See the example below for how to create and document these functions.</p>
+<p>Creating functions is a programming best practice. They are easier to monitor,
+test, and teach to others. If your team performs routine calculations, establish
+a standard by adding functions to the shared library and encourage everyone to
+use those functions. If your company works a lot with customer phone
+numbers, then write a function to standardize the formatting. See the example
+below for how to create and document these functions.</p>
 <pre class="r"><code>#&#39; Format A Column of Phone Numbers
 #&#39; 
 #&#39; This function takes a dataframe and formats a column
@@ -115,7 +120,10 @@ cleanPhoneNumbers &lt;- function(dat, phoneColumnName, returnExtColumn=FALSE){
     return(dat)
   }
 }</code></pre>
-<p>I strongly encourage using the <a href="https://google.github.io/styleguide/Rguide.xml" target="_blank">Google Style Guide</a> or <a href="http://adv-r.had.co.nz/Style.html" target="_blank">Hadley’s Style Guide</a>. Between the two of these guides I believe the two most important rules are:</p>
+<p>I strongly encourage using the
+<a href="https://google.github.io/styleguide/Rguide.xml" target="_blank">Google Style Guide</a> or
+<a href="http://adv-r.had.co.nz/Style.html" target="_blank">Hadley’s Style Guide</a>.
+Between the two of these guides I believe the two most important rules are:</p>
 <ol style="list-style-type: decimal">
 <li>Use snake case</li>
 <li>Name your functions with verbs and variables with nouns</li>
@@ -123,7 +131,9 @@ cleanPhoneNumbers &lt;- function(dat, phoneColumnName, returnExtColumn=FALSE){
 </div>
 <div id="company-constants" class="section level3">
 <h3>Company Constants</h3>
-<p>Again, if you’re looking to enforce standards, it is a great practice to include company-wide constants in your R package. Create an R file called <code>constants.R</code> and define these constants as follows:</p>
+<p>Again, if you’re looking to enforce standards, it is a great practice to include
+company-wide constants in your R package. Create an R file called <code>constants.R</code> and
+define these constants as follows:</p>
 <pre class="r"><code>#&#39; @export
 default_price &lt;- 9.99 # code that defines a default price constant value
 lockBinding(&quot;default_price&quot;, environment())
@@ -138,14 +148,25 @@ lockBinding(&quot;price_cutoffs&quot;, environment())</code></pre>
 </div>
 <div id="templatingformatting" class="section level3">
 <h3>Templating/Formatting</h3>
-<p>A little bit of formatting goes a long way if your team routinely presents figures internally and/or externally. Consider adapting a ggplot2 theme to your company’s colors, fonts, and other styling. Here are two links to get you started in making custom theme:</p>
+<p>A little bit of formatting goes a long way if your team routinely presents figures
+internally and/or externally. Consider adapting a ggplot2 theme to your company’s
+colors, fonts, and other styling. Here are two links to get you started in making
+custom theme:</p>
 <ol style="list-style-type: decimal">
 <li><p>Roger Peng’s Mastering Software Development in R<br />
 <a href="https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html" class="uri">https://bookdown.org/rdpeng/RProgDA/building-a-new-theme.html</a></p></li>
 <li><p>Joey Stanley’s Blog - Custom Themes in ggplot2<br />
 <a href="http://joeystanley.com/blog/custom-themes-in-ggplot2" class="uri">http://joeystanley.com/blog/custom-themes-in-ggplot2</a></p></li>
 </ol>
-<p>Also, you might find that a majority of stakeholders in your company prefer receiving data in Excel. You can export data from R to Excel with bolded, proper case column names, format columns as percentages and dollar signs so that your stakeholders are happy getting data from you. I highly recommend working with the <a href="https://github.com/awalker89/openxlsx" target="_blank">openxlsx package</a>, which does not require Java. Below is a snippet of code that will transform column names, set column widths based on the data, and format them based on some key words in the column names like formatting columns ending in “pct” as a percentage. All of this before exporting to an Excel file so that your stakeholders are happy.</p>
+<p>Also, you might find that a majority of stakeholders in your company prefer receiving
+data in Excel. You can export data from R to Excel with bolded, proper case column
+names, format columns as percentages and dollar signs so that your stakeholders are
+happy getting data from you. I highly recommend working with the
+<a href="https://github.com/awalker89/openxlsx" target="_blank">openxlsx package</a>,
+which does not require Java. Below is a snippet of code that will transform column
+names, set column widths based on the data, and format them based on some key
+words in the column names like formatting columns ending in “pct” as a percentage.
+All of this before exporting to an Excel file so that your stakeholders are happy.</p>
 <pre class="r"><code>#&#39; Add Data and Format it in an Excel Workbook
 #&#39;
 #&#39; This function is a convenience function for standardizing one-off reports
@@ -221,7 +242,11 @@ add_data_to_excel &lt;- function(wb, sheet, dat, startCol=1, startRow=1){
 </div>
 <div id="data-source-connections" class="section level3">
 <h3>Data Source Connections</h3>
-<p>On the job you’re probably accessing the same data sources over and over. Help out yourself and fellow teammates by standardizing how to connect and pull data. This could be database connections, API connections, or other server connections. Below are two examples, one for connecting to MS SQL Server database and one for connecting to the Salesforce API.</p>
+<p>On the job you’re probably accessing the same data sources over and over. Help out
+yourself and fellow teammates by standardizing how to connect and pull data. This
+could be database connections, API connections, or other server connections. Below
+are two examples, one for connecting to MS SQL Server database and one for connecting
+to the Salesforce API.</p>
 <div id="db-connection" class="section level4">
 <h4>DB Connection</h4>
 <pre class="r"><code>#&#39; Establish a connection to Our DB and execute a query
@@ -342,10 +367,16 @@ createSFAPISession &lt;- function(environment=c(&#39;prod&#39;, &#39;qa&#39;),
                                 loginURL=url, apiVersion=apiVersion)
   return(sf_session)
 }</code></pre>
-<p>Note: If you do not feel comfortable centralizing credentials for security reasons or your team does not have shared credentials, then have those stored locally in a profile and called by the package in a standardized way.</p>
+<p>Note: If you do not feel comfortable centralizing credentials for security reasons or
+your team does not have shared credentials, then have those stored locally in a
+profile and called by the package in a standardized way.</p>
 </div>
 </div>
 <div id="tutorials" class="section level3">
 <h3>Tutorials</h3>
-<p>Finally, but maybe most importantly, R packages help teammembers grow and on-board faster. You can include sample datasets and plenty of examples within the R package so that new members of your team don’t have to ask around how to do certain things. They can read the documentation and try the examples for themselves. Consider the R package a legacy asset of your team that will stand the test of time well after you’ve left the company.</p>
+<p>Finally, but maybe most importantly, R packages help teammembers grow and on-board faster.
+You can include sample datasets and plenty of examples within the R package so that
+new members of your team don’t have to ask around how to do certain things. They can
+read the documentation and try the examples for themselves. Consider the R package a legacy
+asset of your team that will stand the test of time well after you’ve left the company.</p>
 </div>

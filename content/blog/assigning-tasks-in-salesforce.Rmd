@@ -115,8 +115,8 @@ then put their User ID on the task.
 
 ```{r query-users}
 cust_reps <- sf_query("SELECT Id 
-                         FROM User 
-                         WHERE IsManager = false AND Dept = 'Customer Service'")
+                       FROM User 
+                       WHERE IsManager = false AND Dept = 'Customer Service'")
 cust_reps
 ```
 

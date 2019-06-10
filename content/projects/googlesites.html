@@ -29,15 +29,23 @@ output:
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>The <strong>googlesites</strong> package is the R implementation of the Google Sites API. Using this package assumes you’ve used the Web UI to create your site. Once you’ve got a site (and maybe some templates), you can use this package to add more content, add attachments, find content, and delete content. This package allows you to store HTML pages and other static content locally and under version control and push it to your site programmatically whenever you feel like it.</p>
+<p>The <strong>googlesites</strong> package is the R implementation of the Google Sites API. Using
+this package assumes you’ve used the Web UI to create your site. Once you’ve got
+a site (and maybe some templates), you can use this package to add more content,
+add attachments, find content, and delete content. This package allows you to store
+HTML pages and other static content locally and under version control and push
+it to your site programmatically whenever you feel like it.</p>
 <p>See my blog post on why Google Sites aren’t such a bad thing: <a href="https://stevenmortimer.com/google-sites-for-documentation/">Google Sites for Documentation</a></p>
-<p><img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/googlesites">https://github.com/StevenMMortimer/googlesites</a></p>
+<p><img alt="GitHub - googlesites" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" />
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/googlesites">https://github.com/StevenMMortimer/googlesites</a></p>
 </div>
 <div id="quickstart-guide" class="section level2">
 <h2>Quickstart Guide</h2>
 <p>First, you’ll need to install this package from GitHub.</p>
 <pre class="r"><code>devtools::install_github(&quot;StevenMMortimer/googlesites&quot;)</code></pre>
-<p>Second, you’ll need to go through a process of authenticating with Google and specifying the domain and site name so you don’t have to refer to it explicitly each time you call a function.</p>
+<p>Second, you’ll need to go through a process of authenticating with Google and
+specifying the domain and site name so you don’t have to refer to it explicitly
+each time you call a function.</p>
 <pre class="r"><code>library(googlesites)
 options(googlesites.site_domain = &quot;site&quot;) # or your Apps domain
 options(googlesites.site_name = &quot;my-site&quot;)
@@ -45,7 +53,9 @@ options(googlesites.site_name = &quot;my-site&quot;)
 library(googleAuthR)
 options(googleAuthR.scopes.selected = &quot;https://sites.google.com/feeds/&quot;)
 gar_auth()</code></pre>
-<p>Third, do stuff to your site! After you’ve loaded and configured that package, you can take advantage of all the functionality of this package to manage your site. Like this:</p>
+<p>Third, do stuff to your site! After you’ve loaded and configured that package,
+you can take advantage of all the functionality of this package to manage your
+site. Like this:</p>
 <div id="add-a-page-from-html" class="section level3">
 <h3>Add a page from HTML</h3>
 <pre class="r"><code>test_html &lt;- system.file(&quot;extdata&quot;, &quot;example-site&quot;, &quot;test.html&quot;, package=&quot;googlesites&quot;)
@@ -77,15 +87,22 @@ upload_file_to_site(local_file_path = &quot;rmarkdown-cheatsheet-2,0.pdf&quot;,
 </div>
 <div id="additional-features" class="section level2">
 <h2>Additional Features</h2>
-<p>This package currently supports the bare minimum for maintaining and uploading content to a Google Site. It’s anticipated that other functions to list sites, create sites, update site categories, and manage user permissions will be created and added to this package in the future to expand its capabilities. Thank you for using.</p>
+<p>This package currently supports the bare minimum for maintaining and uploading
+content to a Google Site. It’s anticipated that other functions to list sites,
+create sites, update site categories, and manage user permissions will be created
+and added to this package in the future to expand its capabilities. Thank you for using.</p>
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/googlesites/issues">https://github.com/StevenMMortimer/googlesites/issues</a>. I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at
+<a target="_blank" href="https://github.com/StevenMMortimer/googlesites/issues">https://github.com/StevenMMortimer/googlesites/issues</a>.
+I’m happy to answer questions, but please do not ask questions with code in Disqus comments. Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>
-<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster
+after drinking one cup coffee and that productivity scales linearly. Imagine what
+I could accomplish if you bought me 10 cups of coffee…</p>
 <p>Thank you for your support!</p>
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div style="text-align: center;">

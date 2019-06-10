@@ -28,7 +28,9 @@ output:
 
 <div id="simple-automation" class="section level3">
 <h3>Simple Automation</h3>
-<p>If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Let’s say you have script in your home directory called <code>random.R</code> and you would like to schedule it to run at 5:30pm every day. On the server you will need to edit the crontab and add the following line:</p>
+<p>If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Let’s say you have script in your home directory called <code>random.R</code>
+and you would like to schedule it to run at 5:30pm every day. On the server you will
+need to edit the crontab and add the following line:</p>
 <pre><code>30 17 * * * Rscript /home/my-user/random.R</code></pre>
 <p><img style="width:400px;" src="/blog/automating-r-scripts-with-cron/crontab.png" /></p>
 <p>Note: You can edit the of the crontab by typing</p>
@@ -42,17 +44,52 @@ output:
 </div>
 <div id="adding-error-emailing" class="section level3">
 <h3>Adding Error Emailing</h3>
-<p>It is exciting to have a routine part of your work automated, but you probably want to monitor your script and the results its creating. Cron has a built-in feature that can send an email whenever an scheduled script errors out. Just add your email address to the <code>MAILTO</code> option. If you want to include multiple emails, then separate them with a semicolon.</p>
+<p>It is exciting to have a routine part of your work automated, but you probably
+want to monitor your script and the results its creating. Cron has a built-in
+feature that can send an email whenever an scheduled script errors out. Just add
+your email address to the <code>MAILTO</code> option. If you want to include multiple emails,
+then separate them with a semicolon.</p>
 <p><img style="width:400px;" src="/blog/automating-r-scripts-with-cron/crontab-w-email.png" /></p>
-<p>Now you may be tempted to simply add your email address and call it a day, but you might notice that R starts flooding your inbox with cron emails even for successful runs of your script. If you prefer to only receive emails when your script errors out, then you have to short circuit how cron identifies R script errors. Below I’ll outline how to setup cron to only email on real R script errors.</p>
-<p>Cron determines whether to send an email based on the “exit code” of the script that runs. An exit code is a number emitted at the end of the script indicating a status of whether not an error occurred during the execution of the script. However, R emits exit codes a little differently than most scripting languages. In R any messages are converted to an exit code 1 (signaling an error), so it is possible to have a script that ran successfully, but signals an error occurred in running the script. There’s not a great reason for this behavior (see link). Upon realizing that messages are errors in disguise, it makes more sense to me why they’re displayed in red in the R console. [add picture]. Fortunately, a clever use of I/O redirection (similar to dplyr piping), can roll message-induced error codes into less benign forms so that an email is not triggered when messages were printed, but your script really didn’t error out. The way to do this is modify the command listed in your crontab file. Instead of just including <code>Rscript /home/my-user/random.R</code>, you should include:</p>
+<p>Now you may be tempted to simply add your email address and call it a day, but you might notice
+that R starts flooding your inbox with cron emails even for successful runs of your
+script. If you prefer to only receive emails when your script errors out, then you
+have to short circuit how cron identifies R script errors. Below I’ll outline how
+to setup cron to only email on real R script errors.</p>
+<p>Cron determines whether to send an email based on the “exit code” of the script
+that runs. An exit code is a number emitted at the end of the script indicating
+a status of whether not an error occurred during the execution of the script.
+However, R emits exit codes a little differently than most scripting languages.
+In R any messages are converted to an exit code 1 (signaling an error), so it is
+possible to have a script that ran successfully, but signals an error occurred
+in running the script. There’s not a great reason for this behavior (see link).
+Upon realizing that messages are errors in disguise, it makes more sense to me
+why they’re displayed in red in the R console. [add picture]. Fortunately, a
+clever use of I/O redirection (similar to dplyr piping), can roll message-induced
+error codes into less benign forms so that an email is not triggered when messages
+were printed, but your script really didn’t error out. The way to do this is modify
+the command listed in your crontab file. Instead of just including <code>Rscript /home/my-user/random.R</code>,
+you should include:</p>
 <pre><code>Rscript /home/my-user/random.R &gt; temp.log 2&gt;&amp;1 || cat temp.log</code></pre>
-<p>The <code>&gt;</code> command will redirect the error feed (captured by “2”) and roll it into the standard output (stdout) feed (captured by “1”) and push them into temp.log. The <code>||</code> command checks whether the script had a non-zero exit status. If so, then it will run the <code>cat</code> command and print everything to the console and trigger an error email from cron.</p>
+<p>The <code>&gt;</code> command will redirect the error feed (captured by “2”) and roll it into
+the standard output (stdout) feed (captured by “1”) and push them into temp.log.
+The <code>||</code> command checks whether the script had a non-zero exit status. If so,
+then it will run the <code>cat</code> command and print everything to the console and trigger
+an error email from cron.</p>
 </div>
 <div id="adding-script-logging" class="section level3">
 <h3>Adding Script Logging</h3>
-<p>Also, you might want to log the script execution, so how do you do that as well? You just need to continue redirecting output as you desire. One way is having a crontab entry like this:</p>
+<p>Also, you might want to log the script execution, so how do you do that as well?
+You just need to continue redirecting output as you desire. One way is having a
+crontab entry like this:</p>
 <pre><code>Rscript /home/my-user/random.R &gt; temp.log 2&gt;&amp;1 || cat temp.log &amp;&amp; cat temp.log &gt;&gt; persistent.log &amp;&amp; rm temp.log</code></pre>
-<p>This method will still roll error messages into the standard feed and only trigger the email if the script didn’t finish, but then it will push everything into a persistent log that will keep a record of every run that you scripts do. This way you can get the error emails and keep a complete log of everything you script did if you’re looking to do a more complete review or post-mortem.</p>
-<p>That’s it. Now that you’re aware of the format, then you can copy/paste it for every other script that you schedule. You really don’t need to understand all of the details, just the last snippet of code in this post, but I’d recommend browsing online to understand more about cron and I/O redirection. Also, I’ve outlined this logic in a Stack Overflow response at <a href="https://stackoverflow.com/a/34442846/5258043" class="uri">https://stackoverflow.com/a/34442846/5258043</a>.</p>
+<p>This method will still roll error messages into the standard feed and only trigger
+the email if the script didn’t finish, but then it will push everything into a
+persistent log that will keep a record of every run that you scripts do. This way
+you can get the error emails and keep a complete log of everything you script did
+if you’re looking to do a more complete review or post-mortem.</p>
+<p>That’s it. Now that you’re aware of the format, then you can copy/paste it for
+every other script that you schedule. You really don’t need to understand all of the details,
+just the last snippet of code in this post, but I’d recommend browsing online to understand
+more about cron and I/O redirection. Also, I’ve outlined this logic in a Stack Overflow
+response at <a href="https://stackoverflow.com/a/34442846/5258043" class="uri">https://stackoverflow.com/a/34442846/5258043</a>.</p>
 </div>

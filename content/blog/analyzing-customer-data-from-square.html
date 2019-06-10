@@ -33,15 +33,25 @@ output:
 
 <div id="the-square-data-model" class="section level2">
 <h2>The Square Data Model</h2>
-<p>Whether you own your own business or consult for a business using Square to capture payment data, Square can offer some amazing opportunities to gain insights by leveraging their Connect v1 &amp; v2 APIs. The Square data backend operates much like a CRM system that holds information about <em>transactions</em> that <em>customers</em> make when purchasing <em>items</em> offered at a <em>location</em>. Naturally, there are API endpoints for each of the object types italicized above (Locations, Customers, Transactions, and Items) and many more endpoints for administrative tasks (employees, roles, timecards, refunds, etc.).</p>
+<p>Whether you own your own business or consult for a business using Square to capture
+payment data, Square can offer some amazing opportunities to gain insights by
+leveraging their Connect v1 &amp; v2 APIs. The Square data backend operates much like
+a CRM system that holds information about <em>transactions</em> that <em>customers</em> make
+when purchasing <em>items</em> offered at a <em>location</em>. Naturally, there are API endpoints
+for each of the object types italicized above (Locations, Customers, Transactions, and Items)
+and many more endpoints for administrative tasks (employees, roles, timecards, refunds, etc.).</p>
 </div>
 <div id="authenticating" class="section level2">
 <h2>Authenticating</h2>
-<p>While working with Square data I decided to develop an R package <a target="_blank" href="https://github.com/StevenMMortimer/squareupr"><b>squareupr</b></a> that makes it easier to retrieve Square data from R so that you can focus on the analysis. After installing the <strong>squareupr</strong> package you must authenticate by supplying a personal access token (PAT) or using an OAuth 2.0 flow. You can find your PAT by logging into the <a target="_blank" href="https://squareup.com">Square Dashboard</a> -&gt; Apps -&gt; My Apps. Create an app or click “Manage App” if you’ve already created one and there you should see your personal access token:</p>
-<div class="figure">
-<img src="/blog/analyzing-customer-data-from-square/finding-your-pat.png" />
-
-</div>
+<p>While working with Square data I decided to develop an R package
+<a target="_blank" href="https://github.com/StevenMMortimer/squareupr"><b>squareupr</b></a>
+that makes it easier to retrieve Square data from R so that you can focus on
+the analysis. After installing the <strong>squareupr</strong> package you must authenticate by
+supplying a personal access token (PAT) or using an OAuth 2.0 flow. You can find your
+PAT by logging into the <a target="_blank" href="https://squareup.com">Square Dashboard</a>
+-&gt; Apps -&gt; My Apps. Create an app or click “Manage App” if you’ve already created one and
+there you should see your personal access token:</p>
+<p><img src="/blog/analyzing-customer-data-from-square/finding-your-pat.png" /></p>
 <pre class="r"><code># The squareupr package is not yet available on CRAN so you must install from GitHub
 # install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;StevenMMortimer/squareupr&quot;)
@@ -51,11 +61,17 @@ library(squareupr)
 
 # authenticate using your Personal Access Token (PAT)
 sq_auth(personal_access_token = &quot;sq-Th1s1sMyPers0nalAcessT0ken&quot;)</code></pre>
-<p>The package also offers OAuth 2.0 authentication. More information is available <a target="_blank" href-"https://github.com/StevenMMortimer/squareupr#authenticate">here</a>.</p>
+<p>The package also offers OAuth 2.0 authentication. More information is available
+&lt;a target="_blank" href-“<a href="https://github.com/StevenMMortimer/squareupr#authenticate" class="uri">https://github.com/StevenMMortimer/squareupr#authenticate</a>”&gt;here</a>.</p>
 </div>
 <div id="pulling-transaction-data" class="section level2">
 <h2>Pulling Transaction Data</h2>
-<p>As mentioned above there are endpoints for every major type of data stored by Square. The <a target="_blank" href="https://docs.connect.squareup.com/api/connect/v2">API documentation</a> does a very good job at laying out how requests should be made to each of those endpoints. One thing to note is that it is important to first pull down the location details for your business because the location is often required when searching for things like transactions and items.</p>
+<p>As mentioned above there are endpoints for every major type of data stored by Square.
+The <a target="_blank" href="https://docs.connect.squareup.com/api/connect/v2">API documentation</a>
+does a very good job at laying out how requests should be made to each of those endpoints. One
+thing to note is that it is important to first pull down the location details for
+your business because the location is often required when searching for things like
+transactions and items.</p>
 <pre class="r"><code>our_locations &lt;- sq_list_locations()
 our_locations$name &lt;- &quot;{HIDDEN}&quot;
 our_locations %&gt;% select(id, name, address, timezone, 
@@ -68,7 +84,8 @@ our_locations %&gt;% select(id, name, address, timezone,
 #&gt; 3 8T1TYXE840S00 {HIDDEN} &lt;list [… America/… &lt;list [1]&gt;   ACTIVE 2016-09-2…
 #&gt; 4 1AWPRVVVFWGQF {HIDDEN} &lt;list [… America/… &lt;list [1]&gt;   ACTIVE 2017-04-1…
 #&gt; 5 50X1GNAWEC8V0 {HIDDEN} &lt;list [… America/… &lt;list [1]&gt;   ACTIVE 2017-03-0…</code></pre>
-<p>Now that you have the location ids if you would like to pull all of the transactions during a given timeframe, you would use the function <code>sq_list_transactions()</code>.</p>
+<p>Now that you have the location ids if you would like to pull all of the transactions
+during a given timeframe, you would use the function <code>sq_list_transactions()</code>.</p>
 <pre class="r"><code># list all transactions for our 2nd location on May 11, 2018
 # by default, if a date is provided with no time, then the time component is set to midnight
 our_transactions &lt;- sq_list_transactions(location = our_locations$id[2], 
@@ -89,11 +106,22 @@ our_transactions
 #&gt;  9 tPwFXetIwe… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 0D95E79D-B44C-4…
 #&gt; 10 bqUuFrzH71… DRDCJ2X8E2P… 2018-05-11T2… &lt;list … REGIST… 48FD6A49-80A9-4…
 #&gt; # ... with 235 more rows</code></pre>
-<p>At first glance there does not appear to be very much detail on the transaction record. However, the <code>tender</code> field represents a method of payment used in a Square transaction so it contains information regarding the amount of money paid in total, in Square fees, and tip. The <code>tender</code> field even contains information regarding the <code>customer_id</code> and credit card information. In the following I will loop through the transactions in April 2018 and determine the total spend for each customer in the dataset. Note: The call to <code>sq_list_transactions</code> may take a couple minutes to complete if you are pulling thousands of transactions.</p>
+<p>At first glance there does not appear to be very much detail on the transaction record.
+However, the <code>tender</code> field represents a method of payment used in a Square transaction
+so it contains information regarding the amount of money paid in total, in Square fees,
+and tip. The <code>tender</code> field even contains information regarding the <code>customer_id</code> and
+credit card information. In the following I will loop through the transactions in
+April 2018 and determine the total spend for each customer in the dataset. Note:
+The call to <code>sq_list_transactions</code> may take a couple minutes to complete if you are pulling
+thousands of transactions.</p>
 <pre class="r"><code>april_transactions &lt;- sq_list_transactions(location = our_locations$id[2], 
                                            begin_time = as.Date(&#39;2018-04-01&#39;), 
                                            end_time = as.Date(&#39;2018-05-01&#39;))</code></pre>
-<p>In order to extract the customer ID and money spent I create a function that checks for the <code>tender</code> object on the transaction and if it exists tries to extract the data into a <code>tbl_df</code>. When I supply this function as <code>map_df(extract_cust_info_func) %&gt;%</code> I get the data from each transaction stacked into a single <code>tbl_df</code> that’s ready to analyze.</p>
+<p>In order to extract the customer ID and money spent I create a function
+that checks for the <code>tender</code> object on the transaction and if it exists tries
+to extract the data into a <code>tbl_df</code>. When I supply this function as
+<code>map_df(extract_cust_info_func) %&gt;%</code> I get the data from each transaction stacked
+into a single <code>tbl_df</code> that’s ready to analyze.</p>
 <pre class="r"><code># create a function that will extract out just the customer id and money spent
 extract_cust_info_func &lt;- function(x){
   if(!is.null(x$tender)){
@@ -127,11 +155,20 @@ april_customer_spend
 #&gt;  9 1BFCHB9MK91GQ39HTD7QK6R7ZR           0
 #&gt; 10 1DR0AK5GKX57H9ER9SG1JF01P0        2900
 #&gt; # ... with 198 more rows</code></pre>
-<p>The amounts in <code>april_customer_spend</code> may seem large, but the Square APIs return money as integers that represent whole cents. If you divide by 100, then you will have the money amounts in dollars.</p>
+<p>The amounts in <code>april_customer_spend</code> may seem large, but the Square APIs return
+money as integers that represent whole cents. If you divide by 100, then you will
+have the money amounts in dollars.</p>
 </div>
 <div id="spend-by-customer-group" class="section level2">
 <h2>Spend by Customer Group</h2>
-<p>Square has this concept of “groups” that customers belong to. These groups can be fashioned to do marketing campaigns complete with email blasts. In our analysis let’s further determine which groups these customers belong to. The Square API has an endpoint to retrieve one customer at a time; however, with large lists you may get subjected to rate limiting. Rate limiting is errors on your requests because too many are coming from the same application or access token. I would recommend pulling down the entire list of customers with <code>sq_list_customers()</code> and then matching them up in R.</p>
+<p>Square has this concept of “groups” that customers belong to. These groups can be
+fashioned to do marketing campaigns complete with email blasts. In our analysis
+let’s further determine which groups these customers belong to. The Square API has
+an endpoint to retrieve one customer at a time; however, with large lists you
+may get subjected to rate limiting. Rate limiting is errors on your requests because
+too many are coming from the same application or access token. I would recommend
+pulling down the entire list of customers with <code>sq_list_customers()</code> and then
+matching them up in R.</p>
 <pre class="r"><code>cust_groups &lt;- sq_list_customers() %&gt;%
   select(id, groups) %&gt;%
   sq_extract_cust_groups() %&gt;%
@@ -153,7 +190,8 @@ cust_groups
 #&gt;  9 78VMJPJNK959AHH0ZQPXDXEG3C CQ689YH4KCJMY.LOYALTY_ALL Loyalty Participa…
 #&gt; 10 QASM1G54VX0QN2S15YS6KHEFCC CQ689YH4KCJMY.LOYAL       Regulars          
 #&gt; # ... with 13,434 more rows</code></pre>
-<p>Now that we know the customer memberships, let’s join back with the transaction data to determine the average total spend across the different membership groups.</p>
+<p>Now that we know the customer memberships, let’s join back with the transaction data
+to determine the average total spend across the different membership groups.</p>
 <pre class="r"><code>cust_groups %&gt;% 
   # bring in the spend data
   inner_join(., april_customer_spend, by=c(&#39;id&#39;=&#39;customer_id&#39;)) %&gt;%
@@ -172,17 +210,35 @@ cust_groups
 </div>
 <div id="issues-with-the-apis" class="section level2">
 <h2>Issues with the APIs</h2>
-<p>What is great about this analysis is that we can use the Square APIs to quickly and reliably pull down transaction data, match it to customer information and see how certain customer groupings or campaigns are performing. However, I did find some quirks and drawbacks that I wish the Square team would consider:</p>
+<p>What is great about this analysis is that we can use the Square APIs to quickly and
+reliably pull down transaction data, match it to customer information and
+see how certain customer groupings or campaigns are performing. However, I did find
+some quirks and drawbacks that I wish the Square team would consider:</p>
 <div id="cannot-request-specific-fields" class="section level3">
 <h3>Cannot Request Specific Fields</h3>
-<p>First, it would be nice to implement, as part of the query parameters, the ability to only return certain fields (e.g. the <code>id</code> and <code>groups</code> fields from the Customer object). This would help for two reasons: 1) It would improve the speed since only the required data would be passed across and 2) For analysts who do not want to deal with personally identifiable information (even in RAM) you would not be forced to pull information like phone number, email, names, and even credit card information.</p>
+<p>First, it would be nice to implement, as part of the query parameters, the ability to
+only return certain fields (e.g. the <code>id</code> and <code>groups</code> fields from the Customer object).
+This would help for two reasons: 1) It would improve the speed since only the required
+data would be passed across and 2) For analysts who do not want to deal with personally
+identifiable information (even in RAM) you would not be forced to pull information like
+phone number, email, names, and even credit card information.</p>
 </div>
 <div id="cannot-update-customer-groups-programmatically" class="section level3">
 <h3>Cannot Update Customer Groups Programmatically</h3>
-<p>Second, the API will <strong>not</strong> allow you to update the customer groups programmatically. This means that you are stuck using the dashboard to create and assign customers to the groups you want to analyze. It is a drag when you want to create a reproducible research workflow to assign customer groups but the API hinders your ability to do so.</p>
+<p>Second, the API will <strong>not</strong> allow you to update the customer groups programmatically.
+This means that you are stuck using the dashboard to create and assign customers to the groups you
+want to analyze. It is a drag when you want to create a reproducible research workflow
+to assign customer groups but the API hinders your ability to do so.</p>
 </div>
 <div id="customer-id-not-on-transactions" class="section level3">
 <h3>Customer ID Not On Transactions</h3>
-<p>Finally, it appears that the customer ID associated to a transaction is not reliably captured on every transaction’s tender object. This means that you cannot get a complete picture of all the transactions. I believe part of this is an issue with the merchant capturing the customer information at the point of sale, but also partly Square’s fault since they seem to be able to piece everything together in their dashboard. However, this is not the case with the APIs. Overall, the Square APIs are a rich data resource for helping run a business and they should only get better with time as development progresses.</p>
+<p>Finally, it appears that the customer ID associated to a transaction is not reliably captured
+on every transaction’s tender object. This means that you cannot get a complete
+picture of all the transactions. I believe part of this is an issue with the
+merchant capturing the customer information at the point of sale, but also partly
+Square’s fault since they seem to be able to piece everything together in their
+dashboard. However, this is not the case with the APIs. Overall, the Square APIs
+are a rich data resource for helping run a business and they should only get better
+with time as development progresses.</p>
 </div>
 </div>

@@ -7,10 +7,9 @@ width: 960
 height: 700
 
 ```{r setup, include=FALSE}
-
+options(stringsAsFactors = FALSE)
 library(knitr)
-knitr::opts_chunk$set(echo=TRUE, eval=TRUE)
-
+knitr::opts_chunk$set(echo=TRUE, eval=TRUE, message = FALSE, warning = FALSE)
 ```
 
 2 Common Webservice API Types

@@ -37,8 +37,13 @@ output:
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>The <strong>rdfp</strong> package is the R implementation of the Double Click for Publishers (DFP) API and similar in comparison to the existing <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/clients">client libraries</a> supported by Google. I created the package because no other tools had been created to support integration of R with the Doubleclick for Publishers platform and wanted something on par with existing, supported client libraries.</p>
-<p><img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" /> View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a></p>
+<p>The <strong>rdfp</strong> package is the R implementation of the Double Click for Publishers (DFP) API and
+similar in comparison to the existing <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/clients">client libraries</a>
+supported by Google. I created the package because no other tools had been created
+to support integration of R with the Doubleclick for Publishers platform and wanted
+something on par with existing, supported client libraries.</p>
+<p><img alt="GitHub - rdfp" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" />
+View source code on GitHub at: <a target="_blank" href="https://github.com/StevenMMortimer/rdfp">https://github.com/StevenMMortimer/rdfp</a></p>
 </div>
 <div id="features" class="section level2">
 <h2>Features</h2>
@@ -62,7 +67,9 @@ devtools::install_github(&quot;StevenMMortimer/rdfp&quot;)</code></pre>
 </div>
 <div id="setup-and-authenticate" class="section level3">
 <h3>Setup and Authenticate</h3>
-<p>I recommend using the <code>dplyr</code> and <code>lubridate</code> packages along with <code>rdfp</code>. The only required authentication parameter is specifying the Id of the DFP network you would like to connect to.</p>
+<p>I recommend using the <code>dplyr</code> and <code>lubridate</code> packages along with <code>rdfp</code>. The only
+required authentication parameter is specifying the Id of the DFP network you
+would like to connect to.</p>
 <pre class="r"><code>library(dplyr)
 library(lubridate)
 library(rdfp)
@@ -78,7 +85,9 @@ network_info</code></pre>
 </div>
 <div id="setup-custom-fields-for-items" class="section level3">
 <h3>Setup Custom Fields for Items</h3>
-<p>Custom fields are helpful for “tagging” DFP items with metadata that can later be used filtering or reporting. See the following link for Google’s explanation on their uses at <a target="_blank" href="https://support.google.com/dfp\_premium/answer/2694303?hl=en">https://support.google.com/dfp_premium/answer/2694303?hl=en</a>.</p>
+<p>Custom fields are helpful for “tagging” DFP items with metadata
+that can later be used filtering or reporting. See the following link for
+Google’s explanation on their uses at <a target="_blank" href="https://support.google.com/dfp\_premium/answer/2694303?hl=en">https://support.google.com/dfp_premium/answer/2694303?hl=en</a>.</p>
 <pre class="r"><code># this creates an extra field on the USER entity type that denotes what shift 
 # the user works during the day. First we create the field, then populate
 # with potential options since it is a dropdown field.
@@ -95,7 +104,11 @@ dfp_createCustomFieldOptions_result &lt;- dfp_createCustomFieldOptions(request_d
 </div>
 <div id="setup-custom-targeting-keys-and-values" class="section level3">
 <h3>Setup Custom Targeting Keys and Values</h3>
-<p>DFP allows traffickers to create custom tags to better target line items on their site. For example, a certain section of the site or search term used by a visitor can be encoded as custom targeting keys and values that can later be used when creating orders and line items, and evaluating potential inventory. See the following link for Google’s explanation on their uses at <a target="_blank" href="https://support.google.com/dfp\_premium/answer/188092?hl=en">https://support.google.com/dfp_premium/answer/188092?hl=en</a>.</p>
+<p>DFP allows traffickers to create custom tags to better target line items on their site.
+For example, a certain section of the site or search term used by a visitor can be
+encoded as custom targeting keys and values that can later be used when creating
+orders and line items, and evaluating potential inventory. See the following link for
+Google’s explanation on their uses at <a target="_blank" href="https://support.google.com/dfp\_premium/answer/188092?hl=en">https://support.google.com/dfp_premium/answer/188092?hl=en</a>.</p>
 <pre class="r"><code># create the key
 request_data &lt;- list(keys=list(name=&#39;Test1&#39;, 
                                displayName=&#39;TestKey1&#39;, 
@@ -111,7 +124,8 @@ dfp_createCustomTargetingValues_result &lt;- dfp_createCustomTargetingValues(req
 </div>
 <div id="create-an-order" class="section level3">
 <h3>Create an Order</h3>
-<p>This example uses a test company as an advertiser and yourself as the trafficker, to create an order.</p>
+<p>This example uses a test company as an advertiser and yourself as the trafficker,
+to create an order.</p>
 <pre class="r"><code>request_data &lt;- list(&#39;filterStatement&#39;=list(&#39;query&#39;=&quot;WHERE name = &#39;TestCompany1&#39;&quot;))
 dfp_getCompaniesByStatement_result &lt;- dfp_getCompaniesByStatement(request_data) 
 
@@ -134,7 +148,10 @@ dfp_createOrders_result &lt;- dfp_createOrders(request_data)</code></pre>
 </div>
 <div id="get-line-items-by-a-filter" class="section level3">
 <h3>Get Line Items By A Filter</h3>
-<p>Below is an example of how to get objects by Publishers Query Language (PQL) statement. The statement is constructed as a list of lists that are nested to emulate the hierarchy of the XML to be created. The example uses the <code>dfp_getLineItemsByStatement</code> function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201802/LineItemService">LineItemService</a>.</p>
+<p>Below is an example of how to get objects by Publishers Query Language (PQL) statement.
+The statement is constructed as a list of lists that are nested to emulate
+the hierarchy of the XML to be created. The example uses the <code>dfp_getLineItemsByStatement</code>
+function from the <a target="_blank" href="https://developers.google.com/doubleclick-publishers/docs/reference/v201802/LineItemService">LineItemService</a>.</p>
 <pre class="r"><code># Retrieve all Line Items that have a status of &quot;DELIVERING&quot;
 request_data &lt;- list(&#39;filterStatement&#39;=list(&#39;query&#39;=&quot;WHERE status=&#39;DELIVERING&#39;&quot;))
 dfp_getLineItemsByStatement_result &lt;- dfp_getLineItemsByStatement(request_data)</code></pre>
@@ -166,8 +183,13 @@ head(report_data)</code></pre>
 </div>
 <div id="check-out-the-tests" class="section level2">
 <h2>Check out the Tests</h2>
-<p>The <strong>rdfp</strong> package has quite a bit of unit test coverage to track any changes made between newly released versions of DFP (typically 3 each year). These tests are an excellent source of examples because they cover most all cases of utilizing the package functions.</p>
-<p>For example, if you’re not sure on how to use custom date ranges when requesting a report through the ReportService, just check out the tests at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.</p>
+<p>The <strong>rdfp</strong> package has quite a bit of unit test coverage to track any changes
+made between newly released versions of DFP (typically 3 each year).
+These tests are an excellent source of examples because they cover most all
+cases of utilizing the package functions.</p>
+<p>For example, if you’re not sure on how to use custom date ranges when
+requesting a report through the ReportService, just check out the tests at
+<a target="_blank" href="https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R">https://github.com/StevenMMortimer/rdfp/blob/master/tests/testthat/test_ReportService.R</a>.</p>
 <p>If you want to know how to create a user, just look at the test for <code>dfp_createUsers()</code></p>
 <pre class="r"><code>request_data &lt;- list(users=list(name=&quot;TestUser - 1&quot;,
                                 email=&quot;testuser123456789@gmail.com&quot;,
@@ -177,19 +199,26 @@ dfp_createUsers_result &lt;- dfp_createUsers(request_data)</code></pre>
 </div>
 <div id="credits" class="section level2">
 <h2>Credits</h2>
-<p>This application uses other open source software components. The authentication components are mostly verbatim copies of the routines established in the <strong>googlesheets</strong> package <a target="_blank" href="https://github.com/jennybc/googlesheets">https://github.com/jennybc/googlesheets</a>. We acknowledge and are grateful to these developers for their contributions to open source.</p>
+<p>This application uses other open source software components. The authentication components are
+mostly verbatim copies of the routines established in the <strong>googlesheets</strong> package <a target="_blank" href="https://github.com/jennybc/googlesheets">https://github.com/jennybc/googlesheets</a>.
+We acknowledge and are grateful to these developers for their contributions to open source.</p>
 </div>
 <div id="license" class="section level2">
 <h2>License</h2>
-<p>The <strong>rdfp</strong> package is licensed under the MIT License (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)</p>
+<p>The <strong>rdfp</strong> package is licensed under the MIT License
+(<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)</p>
 </div>
 <div id="questions" class="section level2">
 <h2>Questions</h2>
-<p>If you have further questions please submit them via email or issue on GitHub at <a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>. Thank you!</p>
+<p>If you have further questions please submit them via email or issue on GitHub at
+<a target="_blank" href="https://github.com/StevenMMortimer/rdfp/issues">https://github.com/StevenMMortimer/rdfp/issues</a>.
+Thank you!</p>
 </div>
 <div id="support" class="section level2">
 <h2>Support</h2>
-<p>This project was made with love and coffee. Studies show that I write R code 3x faster after drinking one cup coffee and that productivity scales linearly. Imagine what I could accomplish if you bought me 10 cups of coffee…</p>
+<p>This project was made with love and coffee. Studies show that I write R code 3x faster
+after drinking one cup coffee and that productivity scales linearly. Imagine what
+I could accomplish if you bought me 10 cups of coffee…</p>
 <p>Thank you for your support!</p>
 <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script>
 <div style="text-align: center;">

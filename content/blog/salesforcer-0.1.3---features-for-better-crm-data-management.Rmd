@@ -1,0 +1,243 @@
+---
+title: 'salesforcer 0.1.3 - Features for Better CRM Data Management'
+author: Steven M. Mortimer
+date: '2019-06-10'
+slug: salesforcer-0.1.3---features-for-better-crm-data-management
+categories:
+  - R
+tags:
+  - CRAN
+  - r-code
+  - salesforce
+description: "The latest CRAN release of the salesforcer package (0.1.3) has many more tools for managing data, such as deleting, undeleting, finding duplicates, merging, and controlling downstream processes on record change like assignment and owner changes."
+image: "blog/salesforcer-0.1.3---features-for-better-crm-data-management/salesforcer-logo.png"
+output:
+  blogdown::html_page
+---
+
+![](/blog/salesforcer-0.1.3---features-for-better-crm-data-management/salesforcer-logo.png)
+
+The latest version of the **salesforcer** package (v0.1.3) is now available on CRAN 
+and it is ready to help you better manage your Salesforce data. Along with a host 
+of bug fixes this release has three big features: 
+
+  1. Pull lists of deleted and updated records by timeframe and be able to undelete 
+  them or permanently delete them from the Recycle Bin to free up space in your org
+  2. Search for duplicates using the duplicate rules in your org and merge records
+  3. Control API call behaviors to perform "All or None" inserts, bypass duplicate rules, 
+  configure the transfer of related records when changing a record's owner, and more
+  
+## Pulling Lists of Delete and Updated Records
+
+Salesforce is an organizational tool and with many hands touching the system sometimes 
+you are called in to do some detective work to figure out which records have been 
+deleted or updated in your org. Luckily, Salesforce has your back. Their SOAP API has 
+two methods that will return the deleted or updated records within a timeframe. Those 
+two methods have been implemented in **salesforcer** 0.1.3 as `sf_get_deleted()` and 
+`sf_get_updated()`. Here is an example pulling out anything deleted yesterday: 
+
+```{r auth, include = FALSE}
+suppressWarnings(suppressMessages(library(tidyverse)))
+suppressWarnings(suppressMessages(library(lubridate)))
+library(salesforcer)
+token_path <- here::here("blogdown", "projects", "salesforcer_token.rds")
+suppressMessages(sf_auth(token = token_path, verbose = FALSE))
+```
+
+```{r getting-deleted-today}
+library(tidyverse)
+library(lubridate)
+
+# if no timezone is provided UTC is assumed
+deleted_recs <- sf_get_deleted("Contact", start = Sys.Date() - 1, end = Sys.Date())
+# here is how to pull deleted using yesterday according to EDT with help from lubridate
+deleted_recs <- sf_get_deleted("Contact", 
+                               start = ymd(Sys.Date()-1, tz="America/New_York"), 
+                               end = ymd(Sys.Date(), tz="America/New_York"))
+deleted_recs
+```
+
+Now if you see records in there that you may want back, now it's as simple as calling 
+the `sf_undelete()` function with the ids of the records you want. 
+
+```{r undelete-three}
+# undelete the first three records from the list of records deleted yesterday 
+undeleted <- sf_undelete(deleted_recs$id[1:3])
+undeleted
+```
+
+You can double check that the records are actually no longer deleted by running a 
+query for them and checking the `IsDeleted` field like this: 
+
+```{r undelete-confirm}
+# check that the first three records are no longer deleted 
+is_not_deleted <- sf_query(sprintf("SELECT Id, IsDeleted 
+                                    FROM Contact 
+                                    WHERE Id IN ('%s')", 
+                                   paste0(undeleted$id, collapse="','")))
+is_not_deleted
+```
+
+Now let's say you really do want them deleted and by that, I mean permanently 
+from your org so they do not count against your space quota. Now you can empty 
+items in your Recycle Bin. Here is an example where we delete the records we just 
+undeleted and then empty them from the Recycle Bin.
+
+```{r empty-from-bin}
+# delete the records to move them to the Recycle Bin, them empty them from it
+deleted <- sf_delete(is_not_deleted$Id)
+really_deleted <- sf_empty_recycle_bin(deleted$id)
+really_deleted
+```
+
+If you want to double-check the field values of a deleted record, just make sure to 
+set `queryall = TRUE` in your query so that it returns deleted or archived records in the 
+resultset. Note that after records are deleted from the Recycle Bin using this call, 
+they can be queried using `queryall = TRUE` for some time. Typically this time is 
+24 hours, but may be shorter or longer.
+
+```{r still-around}
+# permanently deleted records not there in regular query
+not_visible <- sf_query(sprintf("SELECT Id, IsDeleted 
+                                 FROM Contact 
+                                 WHERE Id IN ('%s')", 
+                                paste0(really_deleted$id, collapse="','")))
+not_visible
+
+# but still there if using queryall for ~24 hrs
+still_visible <- sf_query(sprintf("SELECT Id, IsDeleted 
+                                   FROM Contact 
+                                   WHERE Id IN ('%s')", 
+                                  paste0(really_deleted$id, collapse="','")), 
+                          queryall = TRUE)
+still_visible
+```
+
+## Searching for Duplicates and Merging Them
+
+Part of having a Salesforce instance means maintaining a high-level of data integrity. 
+That means not allowing duplicates to crop up and, if they do, merging and deleting 
+them quickly so that any activity with a record can be tracked in a single place. 
+In **salesforcer** 0.1.3 you can find duplicates using the Duplicate Rules already in 
+place in your org. In the example below I will create three records with the same 
+email address. I've already set up a Duplicate Rule in my org to recognize and prevent 
+records from being creating if they have the same email address as another record already 
+in Salesforce. When I run `sf_find_duplicates()` it finds all three records.
+
+```{r create-dupes1}
+# create the records 
+new_contacts <- tibble(FirstName = rep("Rick", 3), 
+                       LastName = rep("James", 3), 
+                       Email = rep("rick.james@gmail.com", 3),
+                       Description = c("Musician", "Funk Legend", NA))
+new_contacts
+```
+
+```{r create-dupes2}
+# insert the records
+new_recs <- sf_create(new_contacts, "Contact", 
+                      DuplicateRuleHeader = list(allowSave = TRUE,
+                                                 includeRecordDetails = FALSE,
+                                                 runAsCurrentUser = TRUE))
+new_recs
+```
+
+```{r find-the-dupes}
+# find them as dupes
+dupes_found <- sf_find_duplicates(search_criteria = list(Email = "rick.james@gmail.com"),
+                                  object_name = "Contact")
+dupes_found
+```
+
+The recordset from `sf_find_duplicates()` shows the object that the records were found in 
+and their Ids. You will notice that those are the same Ids as what we received back when 
+creating the records to verify that we found those same three records based on the duplicated 
+email address. You will also notice in the call that there is a message showing which 
+rules were executed when searching for duplicates, one of them being a custom matching rule 
+I created called `Contact_Dupe_Email`. In order for this function to work you must 
+have Duplicate Rules configured in your system. There is a lot of good documentation 
+online about how to set up these rules. Here is a link to one Salesforce Trailhead article 
+that I like: <a target="_blank" href="https://trailhead.salesforce.com/en/content/learn/modules/sales_admin_duplicate_management/sales_admin_duplicate_management_unit_2">Resolve and Prevent Duplicate Data</a>.
+
+Now if I'd like to merge those three duplicates records into one I can do so using 
+the new `sf_merge()` function. I need to pick one of the records as the `master record` 
+and supply its Id to the function. The other records' Ids will be the `victim_ids`. 
+All of the fields on the master record will supercede the others, but if you would 
+like to override some of those fields, then just specify them in the `master_fields` 
+argument. In this example, we are merging the second and third record into the first 
+record. However, I like the description "Funk Legend" from the second record to be 
+on the master record, so I just specify it in the `master_fields` argument.
+
+```{r merge-dupes}
+merge_summary <- sf_merge(master_id = dupes_found$Id[1], 
+                          victim_ids = dupes_found$Id[2:3], 
+                          object_name = "Contact",
+                          master_fields = c("Description" = "Funk Legend"))
+merge_summary
+```
+
+You can check that the other two records that were merged into the master record have 
+now been deleted and that they are tagged in the `MasterRecordId` field with the Id 
+of the master record they were merged into.
+
+```{r merge-dupes-confirm}
+merge_confirm <- sf_query(sprintf("SELECT Id, MasterRecordId, IsDeleted 
+                                   FROM Contact 
+                                   WHERE Id IN ('%s')", 
+                                  paste0(dupes_found$Id, collapse="','")), 
+                          queryall = TRUE)
+merge_confirm
+```
+
+## Controlling API Call Behavior
+
+You may have noticed an argument called `all_or_none` in the previous CRAN release 
+of **salesforcer**. This argument is put into the header of the API call so that when 
+records are created/updated/deleted it will only complete if all records were successful, 
+otherwise all of the record changes are rolled back. This "All or None" behavior is just 
+one of over a dozen headers that the SOAP API accepts. The REST, Bulk, and Metadata APIs 
+also have their own headers which can be set. You can pass these controls into **salesforcer** 
+functions directly or by setting the `control` argument that now appears in many functions. 
+For example, if you are inserting records and would like to bypass the Duplicate Rules 
+in your org, then set the <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_header_duplicateruleheader.htm">DuplicateRuleHeader</a>) like this: 
+
+```{r set-dupe-header}
+new_contacts <- tibble(FirstName = rep("Test", 2),
+                       LastName = rep("Contact", 2), 
+                       Email = rep("testcontact@gmail.com", 2))
+
+# add control to allow the creation of records that violate a duplicate email rule
+new_recs <- sf_create(new_contacts, object_name = "Contact", 
+                      DuplicateRuleHeader = list(allowSave = TRUE,
+                                                 includeRecordDetails = FALSE,
+                                                 runAsCurrentUser = TRUE))
+new_recs
+```
+
+In the documentation you may notice that the control argument in the `sf_create()` function definition 
+looks like this `control = list(...)`. This allows you to include the control headers 
+as an argument right in the function or put them inside the `sf_control` function. 
+An example of using the `sf_control()` function looks like this: 
+
+```{r set-dupe-header-w-sf-control}
+new_recs <- sf_create(new_contacts, object_name = "Contact", 
+                      control=sf_control(DuplicateRuleHeader=list(allowSave=TRUE,
+                                                                  includeRecordDetails=FALSE,
+                                                                  runAsCurrentUser=TRUE)))
+new_recs
+```
+
+The `sf_control()` function works exactly like `glm.control()` when using the `glm()` 
+function in the **stats** package. It will accept any of the extra arguments in the 
+function call and validate them to see if they are accepted by the API type and operation 
+that the function is performing. As mentioned before, there are over a dozen control 
+parameters that are now possible across the various APIs. Those are documented on the 
+pkgdown website's documentation for <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/reference/sf_control.html">`sf_control()`</a>. 
+There is also a vignette which describes all of this in more detail at <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/articles/passing-control-args.html">Passing Control Args</a>.
+
+## Links to GitHub
+
+For a complete listing of all changes made in the 0.1.3 release of **salesforcer** please 
+view the <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-013">NEWS.md</a> file. Bug reports and feature requests are welcome in the GitHub <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a>. 
+
+Thank you for your continued support!

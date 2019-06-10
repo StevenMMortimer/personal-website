@@ -29,16 +29,41 @@ output:
 </ul>
 </div>
 
-<p>If you’ve built a Shiny app with R you’ll know how exciting it feels to get your first app up and running. Shiny is an amazing tool for R users, but how do you take it to the next level? This post with outline five easy ways to make Shiny apps more professional.</p>
+<p>If you’ve built a Shiny app with R you’ll know how exciting it feels to get your
+first app up and running. Shiny is an amazing tool for R users, but how do you
+take it to the next level? This post with outline five easy ways to make Shiny apps
+more professional.</p>
 <div id="add-a-progress-wheel" class="section level3">
 <h3>Add a Progress Wheel</h3>
-<p>I’ll start with the progress wheel because it is the easiest and most impactful change to make. Oftentimes, Shiny apps involve calculations that take more than one second to execute. It can be a frustrating experience for the user to interact with an application and wait without knowing what is happening. Is the application busy doing some calculation? Did the user select the correct button? Is the server down? You have likely been in this situation yourself as a user of the web. There are a few different ways to implement a progress indicator, but I have found the simplest and most effective solution already in the <a href="https://github.com/AnalytixWare/ShinySky"><code>shinysky</code> package</a>. The <code>busyIndicator()</code> function allows you to specify a custom message and wait time before the progress wheel appears.</p>
+<p>I’ll start with the progress wheel because it is the easiest and most impactful
+change to make. Oftentimes, Shiny apps involve calculations that take more than
+one second to execute. It can be a frustrating experience for the user to interact
+with an application and wait without knowing what is happening. Is the application
+busy doing some calculation? Did the user select the correct button? Is the server
+down? You have likely been in this situation yourself as a user of the web. There
+are a few different ways to implement a progress indicator, but I have found the
+simplest and most effective solution already in the <a href="https://github.com/AnalytixWare/ShinySky"><code>shinysky</code> package</a>.
+The <code>busyIndicator()</code> function allows you to specify a custom message and wait
+time before the progress wheel appears.</p>
 <pre class="r"><code>busyIndicator(text = &quot;Calculation in progress ... &quot;, wait = 0)</code></pre>
 <p><img style="width:300px;" src="/blog/tips-for-making-professional-shiny-apps-with-r/busy-indicator.png" /></p>
 </div>
 <div id="create-a-www-folder" class="section level3">
 <h3>Create a www Folder</h3>
-<p>Most web applications contain extra resources or libraries to enhance their appearance and functionality. Shiny apps are no different. If you would like to include images, styling, or even JavaScript, then all of these files should be contained inside a single folder entitled <code>www</code> that is located in the same directory as the <code>ui.R</code> and <code>server.R</code> files. The <code>www</code> folder is the main location for all web resources in your application. If you would like to enforce a global standard of styling, then create a <code>.css</code> file containing the CSS stylesheet language for formatting. If you would like to add images or GIFs to your Shiny app, then place them in the www folder as well. Shiny supports most image file formats such as <code>.jpg</code>, <code>.png</code>, and <code>.gif</code>. If you would like to add JavaScript logic, then create a <code>.js</code> file containing any functions or variables that you would like to execute. Again, place this file inside the <code>www</code> folder. Note that you must explicitly reference these files inside the <code>&lt;head&gt;</code> tag of your app. The best way to add to your app is by using <code>tags$head()</code> and <code>tags$link()</code> like this:</p>
+<p>Most web applications contain extra resources or libraries to enhance their
+appearance and functionality. Shiny apps are no different. If you would like to
+include images, styling, or even JavaScript, then all of these files should be
+contained inside a single folder entitled <code>www</code> that is located in the same directory
+as the <code>ui.R</code> and <code>server.R</code> files. The <code>www</code> folder is the main location for all
+web resources in your application. If you would like to enforce a global standard
+of styling, then create a <code>.css</code> file containing the CSS stylesheet language for
+formatting. If you would like to add images or GIFs to your Shiny app, then place
+them in the www folder as well. Shiny supports most image file formats such as
+<code>.jpg</code>, <code>.png</code>, and <code>.gif</code>. If you would like to add JavaScript logic, then
+create a <code>.js</code> file containing any functions or variables that you would
+like to execute. Again, place this file inside the <code>www</code> folder. Note that you must
+explicitly reference these files inside the <code>&lt;head&gt;</code> tag of your app. The best way to
+add to your app is by using <code>tags$head()</code> and <code>tags$link()</code> like this:</p>
 <pre class="r"><code>tags$head(
   tags$link(rel = &quot;stylesheet&quot;, type = &quot;text/css&quot;, 
             href = &quot;style.css&quot;)
@@ -49,23 +74,45 @@ output:
 </div>
 <div id="style-with-css" class="section level3">
 <h3>Style with CSS</h3>
-<p>If you are deploying your Shiny apps in a professional setting, it is a best practice to format and style your apps using rules defined by the CSS stylesheet language. This will reduce the amount of time and effort to style new applications and provide a clean and consistent experience so that users quickly become familiar with how elements of your apps function based on a consistent appearance. Using CSS in Shiny apps is no different from styling a traditional web page, so any resource teaching CSS will help, such as, the W3Schools CSS Tutorial available at <a href="http://www.w3schools.com/css/" target="_blank">http://www.w3schools.com/css/</a>. A Shiny CSS guide is also available at <a href="http://shiny.rstudio.com/articles/css.html" target="_blank">http://shiny.rstudio.com/articles/css.html</a></p>
+<p>If you are deploying your Shiny apps in a professional setting, it is a best practice
+to format and style your apps using rules defined by the CSS stylesheet language.
+This will reduce the amount of time and effort to style new applications and provide a clean
+and consistent experience so that users quickly become familiar with how elements
+of your apps function based on a consistent appearance. Using CSS in Shiny apps
+is no different from styling a traditional web page, so any resource teaching CSS
+will help, such as, the W3Schools CSS Tutorial available at <a href="http://www.w3schools.com/css/" target="_blank">http://www.w3schools.com/css/</a>.
+A Shiny CSS guide is also available at <a href="http://shiny.rstudio.com/articles/css.html" target="_blank">http://shiny.rstudio.com/articles/css.html</a></p>
 </div>
 <div id="use-a-global.r-file" class="section level3">
 <h3>Use a global.R file</h3>
-<p>It is good practice when coding software to place commonly used pieces of logic in a central location. You can put this concept into practice by creating a <code>global.R</code> file for your Shiny app. The <code>global.R</code> file is not a requirement for a Shiny app, but it will reduce redundant code and increase the app’s speed by re-using logic and variables from a global scope among concurrent app users. The <code>global.R</code> file should be located in the same directory as the <code>ui.R</code> and <code>server.R</code> files. Whenever a Shiny app is first used, the <code>global.R</code> file makes its logic available to the <code>ui.R</code> and <code>server.R</code> files. This speeds up your app because it is only runs once (when the app is first launched). Typically, <code>global.R</code> is a good place for loading libraries, sourcing R functions or variables needed by your app, and setting options like <code>stringsAsFactors = FALSE</code>.</p>
+<p>It is good practice when coding software to place commonly used pieces of logic
+in a central location. You can put this concept into practice by creating a <code>global.R</code>
+file for your Shiny app. The <code>global.R</code> file is not a requirement for a
+Shiny app, but it will reduce redundant code and increase the app’s speed by re-using
+logic and variables from a global scope among concurrent app users. The <code>global.R</code>
+file should be located in the same directory as the <code>ui.R</code> and <code>server.R</code> files.
+Whenever a Shiny app is first used, the <code>global.R</code> file makes its logic available
+to the <code>ui.R</code> and <code>server.R</code> files. This speeds up your app because it is only
+runs once (when the app is first launched). Typically, <code>global.R</code> is a good place
+for loading libraries, sourcing R functions or variables needed by your app, and
+setting options like <code>stringsAsFactors = FALSE</code>.</p>
 </div>
 <div id="encourage-data-downloading" class="section level3">
 <h3>Encourage Data Downloading</h3>
-<p>A big part of Shiny’s value proposition in the enterprise is promoting data democracy and the free sharing of information for use to further benefit the company. Shiny app users may prefer other tools, such as Excel or Tableau or Python. Empower your users and allow them the flexibility to intergrate into their preferred tool. The best way to facilitate that is to allow downloads of the data. The best package by far for displaying data and allowing for downloads is the <code>datatable</code> package. The following code snippet creates a row for your download button and then the datatable. I recommend pulling the button to the right of the screen using <code>float: right;</code> in your CSS so the button is naturally placed at the top right of your table and ready for the user to click.</p>
+<p>A big part of Shiny’s value proposition in the enterprise is promoting data democracy and the
+free sharing of information for use to further benefit the company. Shiny app users may
+prefer other tools, such as Excel or Tableau or Python. Empower your users and allow
+them the flexibility to intergrate into their preferred tool. The best way to facilitate that
+is to allow downloads of the data. The best package by far for displaying data and allowing for
+downloads is the <code>datatable</code> package. The following code snippet creates a row for your
+download button and then the datatable. I recommend pulling the button to the right of the
+screen using <code>float: right;</code> in your CSS so the button is naturally placed at the top
+right of your table and ready for the user to click.</p>
 <pre class="r"><code>fluidRow(
   column(12, downloadButton(&quot;downloadDataFromTable&quot;, &quot;Download Table Data&quot;))
 )
 fluidRow(
   column(12, DT::dataTableOutput(&quot;campaign_table&quot;, width = &quot;100%&quot;))
 )</code></pre>
-<div class="figure">
-<img src="/blog/tips-for-making-professional-shiny-apps-with-r/datatable.png" />
-
-</div>
+<p><img src="/blog/tips-for-making-professional-shiny-apps-with-r/datatable.png" /></p>
 </div>
