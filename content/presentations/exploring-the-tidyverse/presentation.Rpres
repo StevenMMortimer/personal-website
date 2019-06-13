@@ -93,12 +93,12 @@ Following three rules makes a dataset tidy:
   <li>Values are in cells</li>
 </ol>
 
-<img style="margin-left: 100px; height: 250px;" src="http://r4ds.had.co.nz/images/tidy-1.png" />
+<img style="margin-left: 100px; height: 250px;" src="https://r4ds.had.co.nz/images/tidy-1.png" />
 
 <div class="attribution">
   <div class="attribution-link">
     &nbsp;&nbsp;Paper in Journal of Statistical Software: 
-    <a target="_blank" href="http://www.jstatsoft.org/v59/i10/paper">Tidy Data</a> by Hadley Wickham<br>
+    <a target="_blank" href="https://www.jstatsoft.org/v59/i10/paper">Tidy Data</a> by Hadley Wickham<br>
     &nbsp;&nbsp;Practical Tidying Examples: 
     <a target="_blank" href="ftp://cran.r-project.org/pub/R/web/packages/tidyr/vignettes/tidy-data.html">ftp://cran.r-project.org/pub/R/web/packages/tidyr/vignettes/tidy-data.html</a>
   </div>
@@ -345,9 +345,9 @@ Resources
 <br>
 
 + <a target="_blank" href="https://mran.microsoft.com/web/packages/tidyverse/vignettes/manifesto.html">https://mran.microsoft.com/web/packages/tidyverse/vignettes/manifesto.html</a>
-+ <a target="_blank" href="http://stackoverflow.com/documentation/r/1395/tidyverse#t=2017010820463926237">http://stackoverflow.com/documentation/r/1395/tidyverse#t=2017010820463926237</a>
-+ Paper on Tidy Principles: <a target="_blank" href="http://www.jstatsoft.org/v59/i10/paper">http://www.jstatsoft.org/v59/i10/paper</a>
-+ R for Data Science: <a target="_blank" href="http://r4ds.had.co.nz/">http://r4ds.had.co.nz/</a>
++ <a target="_blank" href="https://stackoverflow.com/documentation/r/1395/tidyverse#t=2017010820463926237">https://stackoverflow.com/documentation/r/1395/tidyverse#t=2017010820463926237</a>
++ Paper on Tidy Principles: <a target="_blank" href="https://www.jstatsoft.org/v59/i10/paper">https://www.jstatsoft.org/v59/i10/paper</a>
++ R for Data Science: <a target="_blank" href="https://r4ds.had.co.nz/">https://r4ds.had.co.nz/</a>
 + <a target="_blank" href="https://github.com/michaellevy/tidyverse_talk/blob/master/tidyverse.md">https://github.com/michaellevy/tidyverse_talk/blob/master/tidyverse.md</a>
 + <a target="_blank" href="https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/">https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/</a>
 + <a target="_blank" href="https://monashbioinformaticsplatform.github.io/r-more/topics/tidyverse.html">https://monashbioinformaticsplatform.github.io/r-more/topics/tidyverse.html</a>

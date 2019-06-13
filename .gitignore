@@ -7,4 +7,5 @@
 .httr-oauth*
 public/
 blogdown/
+themes/ghostwriter
 presentation.md
