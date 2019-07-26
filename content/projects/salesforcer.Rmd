@@ -6,7 +6,7 @@ tags:
  - r-code
  - crm
  - salesforce
-date: 2018-06-11
+date: 2019-07-26
 output:
   blogdown::html_page:
     toc: true
@@ -73,7 +73,6 @@ will be passed to the API for each call and refreshed if necessary.
 
 ```{r auth, include = FALSE}
 suppressWarnings(suppressMessages(library(tidyverse)))
-suppressWarnings(suppressMessages(library(here)))
 library(salesforcer)
 token_path <- here::here("blogdown", "projects", "salesforcer_token.rds")
 suppressMessages(sf_auth(token = token_path, verbose = FALSE))
@@ -150,39 +149,35 @@ configuring which fields are captured on an Account or whether they should be di
 Even more complex configurations, such as, workflows and triggers can be configured 
 using the Metadata API. The support for the Metadata API in **salesforcer** is experimental, 
 so please use at your own risk and consult the appropriate Salesforce resources 
-when trying to use. Below is a simple example that creates a custom object and 
-adds data fields to it.
+when trying to use. One common use case for the Metadata API 
+is retrieving information about an object (fields, permissions, etc.). You can use 
+the `sf_read_metadata()` function to return a list of objects and their metadata. 
+In the example below we retrieve the metadata for the Account and Contact objects. 
+Note that the `metadata_type` argument is "CustomObject". Standard Objects are an 
+implementation of CustomObjects, so they are returned using that metadata type.
 
-```{r custom-object, eval=FALSE}
-# create an object
-base_obj_name <- "Custom_Account1"
+```{r metadata-read}
+read_obj_result <- sf_read_metadata(metadata_type='CustomObject',
+                                    object_names=c('Account', 'Contact'))
+read_obj_result[[1]][c('fullName', 'label', 'sharingModel', 'enableHistory')]
+first_two_fields_idx <- head(which(names(read_obj_result[[1]]) == 'fields'), 2)
+# show the first two returned fields of the Account object
+read_obj_result[[1]][first_two_fields_idx]
+```
 
-custom_object <- list()
-custom_object$fullName <- paste0(base_obj_name, "__c")
-custom_object$label <- paste0(gsub("_", " ", base_obj_name))
-custom_object$pluralLabel <- paste0(base_obj_name, "s")
-custom_object$nameField <- list(displayFormat = 'AN-{0000}', 
-                                label = paste0(base_obj_name, ' Number'), 
-                                type = 'AutoNumber')
-custom_object$deploymentStatus <- 'Deployed'
-custom_object$sharingModel <- 'ReadWrite'
-custom_object$enableActivities <- 'true'
-custom_object$description <- paste0(base_obj_name, " created by the Metadata API")
-custom_object_result <- sf_create_metadata(metadata_type = 'CustomObject',
-                                           metadata = custom_object)
+The data is returned as a list because object definitions are highly nested representations. 
+You may notice that we are missing some really specific details, such as, the picklist 
+values of a field with type "Picklist". You can get that information using 
+`sf_describe_object_fields()`. Here is an example using `sf_describe_object_fields()` 
+where we get a `tbl_df` with one row for each field on the Account object: 
 
-# add fields to the object
-custom_fields <- tibble(fullName=c(paste0(base_obj_name, '__c.CustomField3__c'), 
-                                   paste0(base_obj_name, '__c.CustomField4__c')), 
-                        label=c('Test Field3', 'Test Field4'), 
-                        length=c(100, 100), 
-                        type=c('Text', 'Text'))
-create_fields_result <- sf_create_metadata(metadata_type = 'CustomField', 
-                                           metadata = custom_fields)
-
-# delete the object
-deleted_custom_object_result <- sf_delete_metadata(metadata_type = 'CustomObject', 
-                                                   object_names = c('Custom_Account1__c'))
+```{r soap-describe-object-fields}
+acct_fields <- sf_describe_object_fields('Account')
+acct_fields %>% select(name, label, length, soapType, type)
+# show the picklist selection options for the Account Type field
+acct_fields %>% 
+  filter(label == "Account Type") %>% 
+  .$picklistValues
 ```
 
 ### Extension of the RForcecom Package
