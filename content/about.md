@@ -1,6 +1,6 @@
 +++
 title = "About"
-date = 2017-05-09T17:37:50Z
+date = 2019-07-26T14:22:00Z
 author = "Steven M. Mortimer"
 description = ""
 aliases = [
@@ -22,6 +22,12 @@ I'm Steve Mortimer and I enjoy helping others make better decisions and enjoy be
 
 ### Experience
 
+ - **Boston Consulting Group** (2019-Present)</br>
+ *Senior Data Scientist*</br>
+ Technology & data consultant driving results for clients through innovative product 
+ development, research and analytics, human capital initiatives, and operations 
+ transformation.
+
  - **Homes.com** (2015-2017)</br>
  *Senior Manager of Data Science*</br>
  Led analytics team in efforts to improve customer prospecting, forecasting & 
@@ -42,13 +48,13 @@ I'm Steve Mortimer and I enjoy helping others make better decisions and enjoy be
 
 ### Technical Skills
 
-  - Statistical Tools: R, SAS, SPSS, Weka
-  - Programming Languages: SQL, Python, Apache Spark
-  - Databases: SQL Server, PostgreSQL, Oracle, MySQL, MongoDB, Apache Solr
-  - Web Programming: HTML, CSS, XML, JavaScript, REST & SOAP APIs
-  - Interactive Development Environments (IDEs): RStudio, PyCharm, Eclipse
-  - Amazon Web Services: IAM, S3, EC2, EMR, RDS, DynamoDB, Lambda, API Gateway
-  - Version Control Systems: Git/Git-flow, SVN, GitHub, Stash
-  - Project Management: Atlassian Product Suite (JIRA, Confluence, Stash, Hipchat), Trello
-  - Other: Google Apps (Docs, Drive, Sheets, GMail), Microsoft Office Suite 
-  (MS Excel, MS PowerPoint, MS Outlook), Visual Basic for Applications (VBA) 
+ - Statistical Tools: R, SAS, SPSS, Weka
+ - Programming Languages: SQL, Python, Apache Spark
+ - Databases: SQL Server, PostgreSQL, Oracle, MySQL, MongoDB, Apache Solr
+ - Web Programming: HTML, CSS, XML, JavaScript, REST & SOAP APIs
+ - Interactive Development Environments (IDEs): RStudio, Visual Studio Code, PyCharm, Eclipse
+ - Amazon Web Services: IAM, S3, EC2, EMR, RDS, DynamoDB, Lambda, API Gateway
+ - Version Control Systems: Git/Git-flow, SVN, GitHub, Stash
+ - Project Management: Atlassian Product Suite (JIRA, Confluence, Stash, Hipchat), Trello
+ - Other: Google Apps (Docs, Drive, Sheets, GMail), Microsoft Office Suite (MS Excel, MS 
+ PowerPoint, MS Outlook), Visual Basic for Applications (VBA) 
