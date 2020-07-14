@@ -18,7 +18,7 @@ I'm Steve Mortimer and I enjoy helping others make better decisions and enjoy be
  - Bachelor of Arts (Mathematics & Statistics, 2009)
 
 <p style="text-align:center;">All degrees pursued and completed at the University of Virginia. Wahoowa!</p>
-<img src="/img/uvalogo.png" alt="UVA Cavaliers Logo" style="display:block;margin:auto;height:50px;">
+<img src="/img/uvalogo.png" alt="UVA Cavaliers Logo" style="display:block;margin:auto;height:50px;" />
 
 ### Experience
 

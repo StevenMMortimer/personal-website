@@ -5,7 +5,7 @@
         {{ if $pag.HasPrev }}
             <a class="newer-posts" href="{{ $pag.Prev.URL }}">&larr; Newer</a>
         {{ end }}
-        {{ if and (($pag.HasNext) ($pag.Next.Title)) }}
+        {{ if $pag.HasNext }}
             <a class="older-posts" href="{{ $pag.Next.URL }}">Older &rarr;</a>
         {{ end }}
     </nav>

@@ -8,13 +8,25 @@ slug: an-r-user-chooses-a-python-ide
 categories:
   - R
 tags:
-  - tools
+  - ide
 description: "There are many options for Python IDEs, so which one is best for R users starting to use Python for the first time?"
 image: "blog/an-r-user-chooses-a-python-ide/choose-an-ide.png"
 output:
-  blogdown::html_page:
-    toc: true
+  blogdown::html_page
 ---
+
+![](/blog/an-r-user-chooses-a-python-ide/choose-an-ide.png)
+
+**UPDATE - July 2020**: As of last summer (June 2019), I have switched to VS
+Code as a Python IDE and never looked back. The reason being that it feels a
+little bit more lightweight than PyCharm, but still has all the functionality
+one would need to write Python code and can be more easily configured to act
+like RStudio. Check out my more recent post <a target="_blank"
+href="https://stevenmortimer.com/setting-up-vs-code-for-python-development-like-rstudio/">Setting up VS Code for Python Development like RStudio</a> for my `settings.json` (user settings) and
+`keybindings.json` (shortcuts) configuration files that you can download and paste
+into your own VS Code installation to get up and running quickly.
+
+----
 
 Yes, this is a post about IDEs. I don't intend to insult or incite any ill-will 
 towards any person or project. The purpose of this post is to give other people 
@@ -86,7 +98,7 @@ out of the box from an IDE.
 
 ## PyCharm
 
-PyCharm definitely has the feel of a heavier IDE. There are alot of settings 
+PyCharm definitely has the feel of a heavier IDE. There are a lot of settings 
 and features that would be intimidating at first, but it's got everything right 
 there. A console, version control support, debugging, code completion and more. The 
 one thing I did change was the keyboard shortcuts to executing code interactively 

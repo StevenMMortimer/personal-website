@@ -1,0 +1,425 @@
+---
+title: Setting up VS Code for Python Development like RStudio
+author: Steven M. Mortimer
+date: '2020-07-13'
+slug: setting-up-vs-code-for-python-development-like-rstudio
+categories:
+  - R
+tags:
+  - ide
+description:  "A walkthrough on configuring VS Code to function like RStudio to make it easier to switch between Python and R code development."
+image: "blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png"
+output:
+  blogdown::html_page
+---
+
+
+
+<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png" />
+In this article I will highlight the features of VS Code that match RStudio
+exactly, such as the “interactive notebook window” (called the Console in R) or
+the “variable explorer” (like running <code>View()</code> on a data frame in RStudio). At
+the bottom of this post I will provide two JSON files (<code>settings.json</code> and
+<code>keybindings.json</code>) and a block of code to install from the command line a list
+of extensions that I recommend. By using these files as a guide you can
+configure your VS Code installation to do a pretty good job at mimicking
+RStudio.</p>
+<p><strong>First, why try to write Python like you write R code in RStudio??</strong></p>
+<p>RStudio is a great all around IDE for data analysis. A few years ago I was
+transitioning from writing a lot of R code to more Python code at work. I
+initially chose PyCharm as my Python IDE for a variety of reasons outlined in
+another blog post of mine: <a target="_blank"
+href="https://stevenmortimer.com/an-r-user-chooses-a-python-ide/">An R User
+Chooses a Python IDE</a>. However, as of last summer (June 2019), I switched to
+VS Code as a Python IDE and never looked back. In hindsight, PyCharm just seems
+too clunky with an over-engineered GUI of buttons to click and not really be
+sure what’s going on. VS Code is making great strides towards becoming an IDE
+that works well for the REPL (read–eval–print loop) style of coding that RStudio
+excels at supporting. I love how lightweight VS Code feels and how the
+configurations are portable via JSON files making it easier to share a common
+config with team members. I’ll keep writing R code in RStudio, but VS Code is
+quckly becoming a second home for me to write Python code.</p>
+<div id="how-to-configure-vs-code-to-run-like-rstudio" class="section level2">
+<h2>How to Configure VS Code to run like RStudio</h2>
+<div id="aesthetics-textmate-theme-and-margin-column-ruler" class="section level3">
+<h3>Aesthetics (Textmate theme and margin column ruler)</h3>
+<p>You may know that the default theme in RStudio is “Textmate”. This is found in
+<code>Tools -&gt; Global Options -&gt; Appearance</code>. To get the color scheme in VS Code you
+can install this with the <a target="_blank"
+href="https://marketplace.visualstudio.com/items?itemName=gerane.Theme-textmate">Textmate theme extension</a>.</p>
+<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/textmate-theme.png" style="display:block;margin:auto;height:300px;" /></p>
+<p>I tend to not change much beyond the default RStudio installation just so that I
+don’t need to maintain a unique and unfamiliar setup compared to other
+colleagues who are also using RStudio. The only customization I recommend is
+adding a vertical line at 80 characters. This is a must-have feature to keep
+your code readable and you can do the same with VS Code by specifying
+<code>"editor.rulers"</code> in your user settings. More detail on how to configure that is in
+the section of this post entitled <a href="#settings-json-file">Settings JSON File</a>.</p>
+</div>
+<div id="running-code" class="section level3">
+<h3>Running Code</h3>
+<p>As far as running code in RStudio, it is fairly common to write code in the
+“Source” pane (normally above the console), then send the code to the “Console”
+pane to run using <code>CMD+ENTER</code> (<code>CRTL+ENTER</code> if on Windows - please assume
+anywhere I refer to <code>CMD</code> in this article it is <code>CTRL</code> if you use Windows). In
+VS Code you can think of the Editor pane as having the exact same purpose
+(writing a script), but instead of sourcing lines to the “Console” you use the same
+command (<code>CMD+ENTER</code>) to run the code in the Python Interactive Window. More
+specifically, the keyboard shortcut you need to set in VS Code is for the
+command <code>"python.datascience.execSelectionInteractive"</code>.</p>
+<p>This is a game changer when writing Python code for analysis because you no
+longer need to code in a Jupyter Notebook to execute your analysis. Simply write
+your code in a <code>.py</code> file and press <code>CMD+ENTER</code> to execute line-by-line in the
+Python Interactive Window. Repeat this process as you run code, explore, and
+build out your analysis. Note that you can also type Python directly into the
+Interactive Window just like you can type directly in R’s Console as well to
+execute code.</p>
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/interactive-window-intellisense.gif" />
+<div style="text-align:center">
+<p><a target="_blank" href="https://code.visualstudio.com/docs/python/jupyter-support-py#_python-interactive-window">https://code.visualstudio.com/docs/python/jupyter-support-py#_python-interactive-window</a></p>
+</div>
+</div>
+<div id="variable-explorer-environment-tab-in-r" class="section level3">
+<h3>Variable Explorer (“Environment” tab in R)</h3>
+<p>Notebooks always seem clunky in terms of executing single lines of code and
+reviewing variables in the global environment, but VS Code has a variable
+explorer just like the “Environment” tab in R.</p>
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/variable-explorer.png" />
+<div style="text-align:center">
+<p><a target="_blank" href="https://code.visualstudio.com/docs/python/jupyter-support-py#_variable-explorer-and-data-viewer">https://code.visualstudio.com/docs/python/jupyter-support-py#_variable-explorer-and-data-viewer</a></p>
+</div>
+</div>
+<div id="data-viewer-like-running-view-in-r" class="section level3">
+<h3>Data Viewer (Like running <code>View()</code> in R)</h3>
+<p>Once you’ve created a <strong>pandas</strong> DataFrame you can explore a dynamic view of the
+data frame with basic filtering and sorting. I have found this be exactly like
+the <code>View()</code> function in RStudio. The only difference is it does seem to
+struggle a bit when viewing data frames over 1 million rows. It is laggy or
+crashes VS Code, but I don’t find that too much of a problem because you can
+always save a sample of your dataset into a variable or aggregate your data
+prior to viewing.</p>
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/data-viewer.png" />
+<div style="text-align:center">
+<p><a target="_blank" href="https://code.visualstudio.com/docs/python/jupyter-support-py#_variable-explorer-and-data-viewer">https://code.visualstudio.com/docs/python/jupyter-support-py#_variable-explorer-and-data-viewer</a></p>
+</div>
+</div>
+<div id="plot-viewer-plots-tab-in-r" class="section level3">
+<h3>Plot Viewer (“Plots” tab in R)</h3>
+<p>You can flip through prior plots, save them, resize, and interact with plots the
+same way as you would in the “Plots” pane of RStudio. Nothing different here.</p>
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/plot-viewer.gif" />
+<div style="text-align:center">
+<p><a target="_blank" href="https://code.visualstudio.com/docs/python/jupyter-support-py#_plot-viewer">https://code.visualstudio.com/docs/python/jupyter-support-py#_plot-viewer</a></p>
+</div>
+</div>
+<div id="version-control-git-tab-in-r" class="section level3">
+<h3>Version Control (“Git” tab in R)</h3>
+<p>Just like RStudio you can stage files, write a commit message, and push to a git
+repository. Instead of ticking a checkbox to stage files, you will have to press
+the <code>+</code> sign, which is about the only difference. Everything else is the similar
+as far as clicking on the files to see “diffs”, writing the commit message, and
+pushing code to a remote repository.</p>
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/git-integration.png" style="display:block;margin:auto;height:200px;" />
+<div style="text-align:center">
+<p><a target="_blank" href="https://code.visualstudio.com/docs/editor/versioncontrol#_git-support">https://code.visualstudio.com/docs/editor/versioncontrol#_git-support</a></p>
+</div>
+<p>All of these git features can be made even
+better with Eric Amodio’s <a target="_blank"
+href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens
+extension</a>, which I highly recommend. It makes it easier to navigate
+branches, see when files were changed and by whom.</p>
+</div>
+</div>
+<div id="whats-missing-or-different-in-vs-code" class="section level2">
+<h2>What’s missing or different in VS Code?</h2>
+<div id="rs-document-outline-aka-minimap-in-vs-code" class="section level3">
+<h3>R’s Document Outline (aka Minimap in VS Code)</h3>
+<p>RStudio creates a nice outline of your scripts based on your functions and
+comments that start with:</p>
+<pre class="r"><code># A new section ----
+code here...</code></pre>
+<p>This table of contents style view is helpful. As a somewhat suitable alternative
+I have become accustomed to annotating Python code blocks with region folding
+syntax which creates collapsible code sections in the VS Code editor.</p>
+<pre class="py"><code># region ----
+
+code here...
+
+# endregion</code></pre>
+</div>
+<div id="debugging" class="section level3">
+<h3>Debugging</h3>
+<p>RStudio has a nice feature that will ask you if you want to run a piece of code
+with debug mode on if it initially errors. VS Code’s Python Interactive Window
+also prints out error messages, but will not let you debug with the click of a
+button. You can however set breakpoints and run your script in debug mode, which
+is a familiar experience, just not as seamless as RStudio.</p>
+<p>There are obviously many other features, like having a built-in terminal, remote
+connections, app development via Shiny, etc. that make R/RStudio and Python/VS
+Code different tools, but if you’re just running analysis the two can provide
+very similar workflows, right down to the keyboard shortcuts. The only challenge
+you may have left is figuring out how to make your <strong>pandas</strong> code as legible and
+well organized as <strong>dplyr</strong> code… but that is for another day. (Hint: It’s possible
+with a strong commitment to method chaining).</p>
+</div>
+</div>
+<div id="setup-files-and-scripts" class="section level2">
+<h2>Setup Files and Scripts</h2>
+<div id="settings-json-file" class="section level3">
+<h3>Settings JSON File</h3>
+<p>In order to update your <code>settings.json</code> file, open the Command Palette with
+<code>CMD+SHIFT+P</code> and select <code>"Preferences: Open Settings (JSON)"</code> to edit the JSON
+file where your settings are held. You can copy/paste the entire block of JSON
+below or just individual lines.</p>
+<p><strong>Note:</strong> These settings files were automatically generated from my VS Code
+installation using Shan Khan’s <a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync">Settings Sync extension</a>.</p>
+<p><strong>settings.json</strong> (User Settings, as opposed to workspace/project-specific settings)</p>
+<pre class="json"><code>{
+    &quot;window.zoomLevel&quot;: 1,
+    &quot;explorer.confirmDelete&quot;: false,
+    &quot;explorer.confirmDragAndDrop&quot;: false,
+    &quot;files.associations&quot;: {},
+    &quot;files.autoSave&quot;: &quot;off&quot;,
+    &quot;files.exclude&quot;: {
+        &quot;**/.git&quot;: true,
+        &quot;**/.svn&quot;: true,
+        &quot;**/.hg&quot;: true,
+        &quot;**/CVS&quot;: true,
+        &quot;**/.DS_Store&quot;: true,
+        &quot;**/.history/**&quot;: true,
+        &quot;**/History_**&quot;: true
+    },
+    &quot;workbench.colorTheme&quot;: &quot;textmate&quot;,
+    &quot;workbench.editor.enablePreview&quot;: false,
+    &quot;workbench.startupEditor&quot;: &quot;welcomePageInEmptyWorkbench&quot;,
+    &quot;terminal.integrated.fontSize&quot;: 14,
+    &quot;terminal.integrated.cursorStyle&quot;: &quot;line&quot;,
+    &quot;terminal.integrated.copyOnSelection&quot;: true,
+    &quot;terminal.integrated.confirmOnExit&quot;: false,
+    &quot;editor.largeFileOptimizations&quot;: false,
+    &quot;editor.suggest.shareSuggestSelections&quot;: true,
+    &quot;editor.suggestSelection&quot;: &quot;first&quot;,
+    &quot;editor.minimap.enabled&quot;: false,
+    &quot;editor.foldingStrategy&quot;: &quot;indentation&quot;,
+    &quot;editor.showFoldingControls&quot;: &quot;always&quot;,
+    &quot;editor.rulers&quot;: [
+        80
+    ],
+    &quot;editor.formatOnSave&quot;: true,
+    &quot;python.linting.enabled&quot;: true,
+    &quot;python.linting.flake8Enabled&quot;: true,
+    &quot;python.linting.flake8Args&quot;: [
+        &quot;--ignore=E203, E266, E501, W503&quot;,
+        &quot;--max-line-length=79&quot;,
+        &quot;--select=B,C,E,F,W,T4,B9&quot;,
+        &quot;--max-complexity=18&quot;
+    ],
+    &quot;python.formatting.provider&quot;: &quot;autopep8&quot;,
+    &quot;python.formatting.autopep8Args&quot;: [
+        &quot;--ignore=E501,E402&quot;
+    ],
+    &quot;sonarlint.rules&quot;: {
+        &quot;python:S3776&quot;: {
+            &quot;level&quot;: &quot;off&quot;
+        }
+    },
+    &quot;python.languageServer&quot;: &quot;Microsoft&quot;,
+    &quot;python.dataScience.askForKernelRestart&quot;: false,
+    &quot;python.dataScience.runStartupCommands&quot;: &quot;%load_ext autoreload\\n%autoreload 2&quot;,
+    &quot;python.dataScience.sendSelectionToInteractiveWindow&quot;: true,
+    &quot;python.dataScience.useNotebookEditor&quot;: false,
+    &quot;git.autofetch&quot;: true,
+    &quot;git.confirmSync&quot;: false,
+    &quot;gitlens.views.repositories.location&quot;: &quot;gitlens&quot;,
+    &quot;gitlens.views.repositories.files.layout&quot;: &quot;list&quot;,
+    &quot;gitlens.views.fileHistory.location&quot;: &quot;gitlens&quot;,
+    &quot;gitlens.views.lineHistory.enabled&quot;: false,
+    &quot;gitlens.views.compare.location&quot;: &quot;gitlens&quot;,
+    &quot;gitlens.views.search.location&quot;: &quot;gitlens&quot;,
+    &quot;gitlens.mode.statusBar.enabled&quot;: true,
+    &quot;gitlens.mode.statusBar.alignment&quot;: &quot;left&quot;,
+    &quot;gitlens.currentLine.enabled&quot;: false,
+    &quot;gitlens.hovers.enabled&quot;: false,
+    &quot;vsintellicode.modify.editor.suggestSelection&quot;: &quot;automaticallyOverrodeDefaultValue&quot;,
+    &quot;tabnine.experimentalAutoImports&quot;: true,
+    &quot;indentRainbow.errorColor&quot;: &quot;rgba(255,255,255,0.0)&quot;,
+    &quot;todo-tree.tree.flat&quot;: true,
+    &quot;todo-tree.highlights.defaultHighlight&quot;: {
+        &quot;type&quot;: &quot;text-and-comment&quot;,
+        &quot;foreground&quot;: &quot;grey&quot;
+    },
+    &quot;better-comments.tags&quot;: [
+        {
+            &quot;tag&quot;: &quot;?&quot;,
+            &quot;color&quot;: &quot;#8f5785&quot;,
+            &quot;strikethrough&quot;: false,
+            &quot;backgroundColor&quot;: &quot;transparent&quot;
+        }
+        {
+            &quot;tag&quot;: &quot;*&quot;,
+            &quot;color&quot;: &quot;#69a800&quot;,
+            &quot;strikethrough&quot;: false,
+            &quot;backgroundColor&quot;: &quot;transparent&quot;
+        }
+    ],
+    &quot;bracket-pair-colorizer-2.colors&quot;: [
+        &quot;#992e24&quot;,
+        &quot;#ffb997&quot;,
+        &quot;#263859&quot;
+    ],
+    &quot;cSpell.userWords&quot;: [
+        &quot;YYYYMMDD&quot;,
+        &quot;groupby&quot;,
+        &quot;idxmax&quot;,
+        &quot;inplace&quot;,
+        &quot;itertools&quot;,
+        &quot;multindex&quot;,
+        &quot;rfind&quot;,
+        &quot;strptime&quot;
+    ]
+}</code></pre>
+</div>
+<div id="keyboard-shortcuts-json-file" class="section level3">
+<h3>Keyboard Shortcuts JSON File</h3>
+<p>Updating the keyboard shortcuts JSON file is similar to editing <code>settings.json</code>.
+Open the Command Palette with <code>CMD+SHIFT+P</code> and select <code>"Preferences: Open Keyboard Shortcuts (JSON)"</code> to edit the JSON file where your settings are held.
+You can copy/paste the entire block of JSON below or just individual lines.</p>
+<p>In addition to setting the keyboard shortcut <code>CMD+ENTER</code> to execute lines in the
+Interactive Window I have set a few other two keyboard shortcuts to work exactly
+like RStudio. For example, clearing the console and restarting the R session:</p>
+<ul>
+<li><code>CRTL+L</code> - “Clear Console” (in RStudio) =&gt; Clear Cells (in Python Interactive Window)</li>
+<li><code>CMD+SHIFT+F10</code> - “Restart R” (in RStudio) =&gt; Restart Kernel (in Python Interactive Window)</li>
+</ul>
+<p>Of course there are other shortcuts that you can configure like R’s block
+comment command (<code>Code -&gt; Comment/Uncomment Lines</code>) (CMD+SHIFT+C). Simply set
+the VS Code command <code>"editor.action.commentLine"</code> to that shortcut.</p>
+<p>Another example is R’s command (<code>Code -&gt; Reflow Comment</code>) which hard wraps code
+to 80 characters using <code>CMD+SHIFT+/</code>. VS Code can do the same after installing
+the extension called “rewrap” and then giving its command
+<code>"rewrap.rewrapComment"</code> the same keyboard shortcut. It is really up to you to
+configure the shortcuts that you use most often.</p>
+<p><strong>keybindings.json</strong></p>
+<pre class="json"><code>// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        &quot;key&quot;: &quot;cmd+enter&quot;,
+        &quot;command&quot;: &quot;python.datascience.execSelectionInteractive&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;
+    },
+    {
+        &quot;key&quot;: &quot;shift+enter&quot;,
+        &quot;command&quot;: &quot;-python.datascience.execSelectionInteractive&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;
+    },
+    {
+        &quot;key&quot;: &quot;cmd+enter&quot;,
+        &quot;command&quot;: &quot;python.datascience.runcurrentcell&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;
+    },
+    {
+        &quot;key&quot;: &quot;ctrl+enter&quot;,
+        &quot;command&quot;: &quot;-python.datascience.runcurrentcell&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;
+    },    
+    {
+        &quot;key&quot;: &quot;cmd+enter&quot;,
+        &quot;command&quot;: &quot;notebook.cell.executeAndSelectBelow&quot;,
+        &quot;when&quot;: &quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;
+    },
+    {
+        &quot;key&quot;: &quot;shift+enter&quot;,
+        &quot;command&quot;: &quot;-notebook.cell.executeAndSelectBelow&quot;,
+        &quot;when&quot;: &quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;
+    },    
+    {
+        &quot;key&quot;: &quot;ctrl+l&quot;,
+        &quot;command&quot;: &quot;python.datascience.removeallcells&quot;,
+        &quot;when&quot;: &quot;python.datascience.featureenabled &amp;&amp; !terminalFocus&quot;
+    },
+    {
+        &quot;key&quot;: &quot;ctrl+l&quot;,
+        &quot;command&quot;: &quot;workbench.action.terminal.clear&quot;,
+        &quot;when&quot;: &quot;terminalFocus&quot;
+    },    
+    {
+        &quot;key&quot;: &quot;cmd+shift+f10&quot;,
+        &quot;command&quot;: &quot;python.datascience.restartkernel&quot;
+    },
+    {
+        &quot;key&quot;: &quot;cmd+shift+c&quot;,
+        &quot;command&quot;: &quot;editor.action.commentLine&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; !editorReadonly&quot;
+    },
+    {
+        &quot;key&quot;: &quot;cmd+/&quot;,
+        &quot;command&quot;: &quot;-editor.action.commentLine&quot;,
+        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; !editorReadonly&quot;
+    },
+    {
+        &quot;key&quot;: &quot;cmd+i&quot;,
+        &quot;command&quot;: &quot;python.datascience.showhistorypane&quot;
+    },
+    {
+        &quot;key&quot;: &quot;ctrl+shift+/&quot;,
+        &quot;command&quot;: &quot;rewrap.rewrapComment&quot;,
+        &quot;when&quot;: &quot;editorTextFocus&quot;
+    },
+    {
+        &quot;key&quot;: &quot;alt+q&quot;,
+        &quot;command&quot;: &quot;-rewrap.rewrapComment&quot;,
+        &quot;when&quot;: &quot;editorTextFocus&quot;
+    },
+    {
+        &quot;key&quot;: &quot;ctrl+shift+s&quot;,
+        &quot;command&quot;: &quot;extension.updateSettings&quot;
+    },
+    {
+        &quot;key&quot;: &quot;shift+alt+u&quot;,
+        &quot;command&quot;: &quot;-extension.updateSettings&quot;
+    }
+]</code></pre>
+</div>
+<div id="extensions-installation-script" class="section level3">
+<h3>Extensions Installation Script</h3>
+<p>You can run each of the lines below in your Terminal or other Command Prompt
+after installing VS Code in order to install the extensions. Or you can search
+for them in the VS Code Marketplace (more detail is available here:
+<a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>)</p>
+<pre class="sh"><code># editor visual aids
+code --install-extension CoenraadS.bracket-pair-colorizer-2
+code --install-extension oderwat.indent-rainbow
+code --install-extension gerane.Theme-textmate
+
+# development aids
+code --install-extension eamodio.gitlens
+code --install-extension aaron-bond.better-comments
+code --install-extension Gruntfuggly.todo-tree
+code --install-extension mikestead.dotenv
+code --install-extension streetsidesoftware.code-spell-checker
+
+# code formatting
+code --install-extension ms-python.python
+code --install-extension VisualStudioExptTeam.vscodeintellicode
+code --install-extension TabNine.tabnine-vscode
+code --install-extension christian-kohler.path-intellisense
+code --install-extension stkb.rewrap
+code --install-extension SonarSource.sonarlint-vscode
+
+# file viewer tools
+code --install-extension DotJoshJohnson.xml
+code --install-extension jithurjacob.nbpreviewer
+code --install-extension GrapeCity.gc-excelviewer
+
+# remote development tools
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension ms-vscode-remote.remote-ssh
+code --install-extension ms-vscode-remote.remote-ssh-edit
+code --install-extension ms-vscode-remote.remote-wsl
+code --install-extension ms-vscode-remote.vscode-remote-extensionpack
+
+# tool to save your settings as a gist
+code --install-extension Shan.code-settings-sync</code></pre>
+</div>
+</div>

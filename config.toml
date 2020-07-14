@@ -8,7 +8,7 @@ googleAnalytics = "UA-98603021-1"
 # disqusShortname = "iamwhatir"
 canonifyURLs = true
 pluralizelisttitles = false
-paginate = 5
+paginate = 4
 paginatePath = ""
 rssLimit = 20
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
@@ -18,14 +18,19 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [Author]
     name = "Steven M. Mortimer"
-    email = "steve@evolveefficient.com"
-
-[blackfriday] 
-    hrefTargetBlank = true
+    email = "reportmort@gmail.com"
 
 [Taxonomies]
     category = "categories"
     tag = "tags"
+    
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  
+      
+[blackfriday] 
+    hrefTargetBlank = true      
 
 [Params]
     intro = true
@@ -39,7 +44,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     twitter = "StevenMMortimer"
     stackoverflow = "users/5258043/steven-m-mortimer"
     kofi = "StevenMMortimer"
-    email = "steve@evolveefficient.com"
+    email = "reportmort@gmail.com"
     opengraph = true
     twittercards = true
     shareTwitter = true
@@ -53,28 +58,28 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 	
 	# Enable global LaTeX math rendering?
 	#   If false, you can enable it locally on a per page basis.
-  MathJaxCDN = "//cdn.bootcss.com"
-  MathJaxVersion = "2.7.1"
+  MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+  MathJaxVersion = "3.0.5"
 
 	# Highlight.js options
-  highlightjsVersion = "9.11.0"
-  highlightjsCDN = "//cdn.bootcss.com"
-  highlightjsLang = ["r", "yaml"]
-  highlightjsTheme = "github"	
-
-[[menu.main]]
-    name = "Projects"
-    url = "/projects/"
-    weight = 1
-    
-[[menu.main]]
-    name = "Presentations"
-    url = "/presentations/"
-    weight = 2
+  highlightjsVersion = "10.1.1"
+  highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
+  highlightjsLang = ["r", "yml", "py", "sh", "json"]
+  highlightjsTheme = "github"
 
 [[menu.main]]
     name = "Blog"
     url = "/blog/"
+    weight = 1
+    
+[[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
+    
+[[menu.main]]
+    name = "Presentations"
+    url = "/presentations/"
     weight = 3
 
 [[menu.main]]
