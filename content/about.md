@@ -1,6 +1,6 @@
 +++
 title = "About"
-date = 2019-07-26T14:22:00Z
+date = 2020-07-14T18:37:00Z
 author = "Steven M. Mortimer"
 description = ""
 aliases = [

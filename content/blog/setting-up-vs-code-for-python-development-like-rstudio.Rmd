@@ -1,16 +1,19 @@
 ---
 title: Setting up VS Code for Python Development like RStudio
 author: Steven M. Mortimer
-date: '2020-07-14'
+date: '2020-07-14T01:00:00-04:00'
 slug: setting-up-vs-code-for-python-development-like-rstudio
 categories:
   - R
 tags:
   - ide
+  - python
+  - tools
 description:  "A walkthrough on configuring VS Code to function like RStudio to make it easier to switch between Python and R code development."
 image: "blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png"
 output:
-  blogdown::html_page
+  blogdown::html_page:
+    highlight: tango
 ---
 
 ![](/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png)

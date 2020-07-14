@@ -9,6 +9,8 @@ categories:
   - R
 tags:
   - ide
+  - python
+  - tools
 description: "There are many options for Python IDEs, so which one is best for R users starting to use Python for the first time?"
 image: "blog/an-r-user-chooses-a-python-ide/choose-an-ide.png"
 output:

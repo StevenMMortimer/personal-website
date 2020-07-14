@@ -1,18 +1,86 @@
 ---
 title: Setting up VS Code for Python Development like RStudio
 author: Steven M. Mortimer
-date: '2020-07-14'
+date: '2020-07-14T01:00:00-04:00'
 slug: setting-up-vs-code-for-python-development-like-rstudio
 categories:
   - R
 tags:
   - ide
+  - python
+  - tools
 description:  "A walkthrough on configuring VS Code to function like RStudio to make it easier to switch between Python and R code development."
 image: "blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png"
 output:
-  blogdown::html_page
+  blogdown::html_page:
+    highlight: tango
 ---
 
+<script src="/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 
 <p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png" />
@@ -136,16 +204,16 @@ branches, see when files were changed and by whom.</p>
 <h3>R’s Document Outline (aka Minimap in VS Code)</h3>
 <p>RStudio creates a nice outline of your scripts based on your functions and
 comments that start with:</p>
-<pre class="r"><code># A new section ----
-code here...</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># A new section ----</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>code here...</span></code></pre></div>
 <p>This table of contents style view is helpful. As a somewhat suitable alternative
 I have become accustomed to annotating Python code blocks with region folding
 syntax which creates collapsible code sections in the VS Code editor.</p>
-<pre class="py"><code># region ----
-
-code here...
-
-# endregion</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># region ----</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>code here...</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co"># endregion</span></span></code></pre></div>
 </div>
 <div id="debugging" class="section level3">
 <h3>Debugging</h3>
@@ -174,110 +242,110 @@ below or just individual lines.</p>
 <p><strong>Note:</strong> These settings files were automatically generated from my VS Code
 installation using Shan Khan’s <a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync">Settings Sync extension</a>.</p>
 <p><strong>settings.json</strong> (User Settings, as opposed to workspace/project-specific settings)</p>
-<pre class="json"><code>{
-    &quot;window.zoomLevel&quot;: 1,
-    &quot;explorer.confirmDelete&quot;: false,
-    &quot;explorer.confirmDragAndDrop&quot;: false,
-    &quot;files.associations&quot;: {},
-    &quot;files.autoSave&quot;: &quot;off&quot;,
-    &quot;files.exclude&quot;: {
-        &quot;**/.git&quot;: true,
-        &quot;**/.svn&quot;: true,
-        &quot;**/.hg&quot;: true,
-        &quot;**/CVS&quot;: true,
-        &quot;**/.DS_Store&quot;: true,
-        &quot;**/.history/**&quot;: true,
-        &quot;**/History_**&quot;: true
-    },
-    &quot;workbench.colorTheme&quot;: &quot;textmate&quot;,
-    &quot;workbench.editor.enablePreview&quot;: false,
-    &quot;workbench.startupEditor&quot;: &quot;welcomePageInEmptyWorkbench&quot;,
-    &quot;terminal.integrated.fontSize&quot;: 14,
-    &quot;terminal.integrated.cursorStyle&quot;: &quot;line&quot;,
-    &quot;terminal.integrated.copyOnSelection&quot;: true,
-    &quot;terminal.integrated.confirmOnExit&quot;: false,
-    &quot;editor.largeFileOptimizations&quot;: false,
-    &quot;editor.suggest.shareSuggestSelections&quot;: true,
-    &quot;editor.suggestSelection&quot;: &quot;first&quot;,
-    &quot;editor.minimap.enabled&quot;: false,
-    &quot;editor.foldingStrategy&quot;: &quot;indentation&quot;,
-    &quot;editor.showFoldingControls&quot;: &quot;always&quot;,
-    &quot;editor.rulers&quot;: [
-        80
-    ],
-    &quot;editor.formatOnSave&quot;: true,
-    &quot;python.linting.enabled&quot;: true,
-    &quot;python.linting.flake8Enabled&quot;: true,
-    &quot;python.linting.flake8Args&quot;: [
-        &quot;--ignore=E203, E266, E501, W503&quot;,
-        &quot;--max-line-length=79&quot;,
-        &quot;--select=B,C,E,F,W,T4,B9&quot;,
-        &quot;--max-complexity=18&quot;
-    ],
-    &quot;python.formatting.provider&quot;: &quot;autopep8&quot;,
-    &quot;python.formatting.autopep8Args&quot;: [
-        &quot;--ignore=E501,E402&quot;
-    ],
-    &quot;sonarlint.rules&quot;: {
-        &quot;python:S3776&quot;: {
-            &quot;level&quot;: &quot;off&quot;
-        }
-    },
-    &quot;python.languageServer&quot;: &quot;Microsoft&quot;,
-    &quot;python.dataScience.askForKernelRestart&quot;: false,
-    &quot;python.dataScience.runStartupCommands&quot;: &quot;%load_ext autoreload\\n%autoreload 2&quot;,
-    &quot;python.dataScience.sendSelectionToInteractiveWindow&quot;: true,
-    &quot;python.dataScience.useNotebookEditor&quot;: false,
-    &quot;git.autofetch&quot;: true,
-    &quot;git.confirmSync&quot;: false,
-    &quot;gitlens.views.repositories.location&quot;: &quot;gitlens&quot;,
-    &quot;gitlens.views.repositories.files.layout&quot;: &quot;list&quot;,
-    &quot;gitlens.views.fileHistory.location&quot;: &quot;gitlens&quot;,
-    &quot;gitlens.views.lineHistory.enabled&quot;: false,
-    &quot;gitlens.views.compare.location&quot;: &quot;gitlens&quot;,
-    &quot;gitlens.views.search.location&quot;: &quot;gitlens&quot;,
-    &quot;gitlens.mode.statusBar.enabled&quot;: true,
-    &quot;gitlens.mode.statusBar.alignment&quot;: &quot;left&quot;,
-    &quot;gitlens.currentLine.enabled&quot;: false,
-    &quot;gitlens.hovers.enabled&quot;: false,
-    &quot;vsintellicode.modify.editor.suggestSelection&quot;: &quot;automaticallyOverrodeDefaultValue&quot;,
-    &quot;tabnine.experimentalAutoImports&quot;: true,
-    &quot;indentRainbow.errorColor&quot;: &quot;rgba(255,255,255,0.0)&quot;,
-    &quot;todo-tree.tree.flat&quot;: true,
-    &quot;todo-tree.highlights.defaultHighlight&quot;: {
-        &quot;type&quot;: &quot;text-and-comment&quot;,
-        &quot;foreground&quot;: &quot;grey&quot;
-    },
-    &quot;better-comments.tags&quot;: [
-        {
-            &quot;tag&quot;: &quot;?&quot;,
-            &quot;color&quot;: &quot;#8f5785&quot;,
-            &quot;strikethrough&quot;: false,
-            &quot;backgroundColor&quot;: &quot;transparent&quot;
-        }
-        {
-            &quot;tag&quot;: &quot;*&quot;,
-            &quot;color&quot;: &quot;#69a800&quot;,
-            &quot;strikethrough&quot;: false,
-            &quot;backgroundColor&quot;: &quot;transparent&quot;
-        }
-    ],
-    &quot;bracket-pair-colorizer-2.colors&quot;: [
-        &quot;#992e24&quot;,
-        &quot;#ffb997&quot;,
-        &quot;#263859&quot;
-    ],
-    &quot;cSpell.userWords&quot;: [
-        &quot;YYYYMMDD&quot;,
-        &quot;groupby&quot;,
-        &quot;idxmax&quot;,
-        &quot;inplace&quot;,
-        &quot;itertools&quot;,
-        &quot;multindex&quot;,
-        &quot;rfind&quot;,
-        &quot;strptime&quot;
-    ]
-}</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>    <span class="dt">&quot;window.zoomLevel&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>    <span class="dt">&quot;explorer.confirmDelete&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="dt">&quot;explorer.confirmDragAndDrop&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="dt">&quot;files.associations&quot;</span><span class="fu">:</span> <span class="fu">{},</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="dt">&quot;files.autoSave&quot;</span><span class="fu">:</span> <span class="st">&quot;off&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>    <span class="dt">&quot;files.exclude&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>        <span class="dt">&quot;**/.git&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>        <span class="dt">&quot;**/.svn&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>        <span class="dt">&quot;**/.hg&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>        <span class="dt">&quot;**/CVS&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>        <span class="dt">&quot;**/.DS_Store&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>        <span class="dt">&quot;**/.history/**&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>        <span class="dt">&quot;**/History_**&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>    <span class="fu">},</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="dt">&quot;workbench.colorTheme&quot;</span><span class="fu">:</span> <span class="st">&quot;textmate&quot;</span><span class="fu">,</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>    <span class="dt">&quot;workbench.editor.enablePreview&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>    <span class="dt">&quot;workbench.startupEditor&quot;</span><span class="fu">:</span> <span class="st">&quot;welcomePageInEmptyWorkbench&quot;</span><span class="fu">,</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a>    <span class="dt">&quot;terminal.integrated.fontSize&quot;</span><span class="fu">:</span> <span class="dv">14</span><span class="fu">,</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>    <span class="dt">&quot;terminal.integrated.cursorStyle&quot;</span><span class="fu">:</span> <span class="st">&quot;line&quot;</span><span class="fu">,</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a>    <span class="dt">&quot;terminal.integrated.copyOnSelection&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>    <span class="dt">&quot;terminal.integrated.confirmOnExit&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a>    <span class="dt">&quot;editor.largeFileOptimizations&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a>    <span class="dt">&quot;editor.suggest.shareSuggestSelections&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a>    <span class="dt">&quot;editor.suggestSelection&quot;</span><span class="fu">:</span> <span class="st">&quot;first&quot;</span><span class="fu">,</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a>    <span class="dt">&quot;editor.minimap.enabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a>    <span class="dt">&quot;editor.foldingStrategy&quot;</span><span class="fu">:</span> <span class="st">&quot;indentation&quot;</span><span class="fu">,</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a>    <span class="dt">&quot;editor.showFoldingControls&quot;</span><span class="fu">:</span> <span class="st">&quot;always&quot;</span><span class="fu">,</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a>    <span class="dt">&quot;editor.rulers&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a>        <span class="dv">80</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a>    <span class="dt">&quot;editor.formatOnSave&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-33"><a href="#cb3-33"></a>    <span class="dt">&quot;python.linting.enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a>    <span class="dt">&quot;python.linting.flake8Enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a>    <span class="dt">&quot;python.linting.flake8Args&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a>        <span class="st">&quot;--ignore=E203, E266, E501, W503&quot;</span><span class="ot">,</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a>        <span class="st">&quot;--max-line-length=79&quot;</span><span class="ot">,</span></span>
+<span id="cb3-38"><a href="#cb3-38"></a>        <span class="st">&quot;--select=B,C,E,F,W,T4,B9&quot;</span><span class="ot">,</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a>        <span class="st">&quot;--max-complexity=18&quot;</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-41"><a href="#cb3-41"></a>    <span class="dt">&quot;python.formatting.provider&quot;</span><span class="fu">:</span> <span class="st">&quot;autopep8&quot;</span><span class="fu">,</span></span>
+<span id="cb3-42"><a href="#cb3-42"></a>    <span class="dt">&quot;python.formatting.autopep8Args&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a>        <span class="st">&quot;--ignore=E501,E402&quot;</span></span>
+<span id="cb3-44"><a href="#cb3-44"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-45"><a href="#cb3-45"></a>    <span class="dt">&quot;sonarlint.rules&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-46"><a href="#cb3-46"></a>        <span class="dt">&quot;python:S3776&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>            <span class="dt">&quot;level&quot;</span><span class="fu">:</span> <span class="st">&quot;off&quot;</span></span>
+<span id="cb3-48"><a href="#cb3-48"></a>        <span class="fu">}</span></span>
+<span id="cb3-49"><a href="#cb3-49"></a>    <span class="fu">},</span></span>
+<span id="cb3-50"><a href="#cb3-50"></a>    <span class="dt">&quot;python.languageServer&quot;</span><span class="fu">:</span> <span class="st">&quot;Microsoft&quot;</span><span class="fu">,</span></span>
+<span id="cb3-51"><a href="#cb3-51"></a>    <span class="dt">&quot;python.dataScience.askForKernelRestart&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-52"><a href="#cb3-52"></a>    <span class="dt">&quot;python.dataScience.runStartupCommands&quot;</span><span class="fu">:</span> <span class="st">&quot;%load_ext autoreload</span><span class="ch">\\</span><span class="st">n%autoreload 2&quot;</span><span class="fu">,</span></span>
+<span id="cb3-53"><a href="#cb3-53"></a>    <span class="dt">&quot;python.dataScience.sendSelectionToInteractiveWindow&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-54"><a href="#cb3-54"></a>    <span class="dt">&quot;python.dataScience.useNotebookEditor&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-55"><a href="#cb3-55"></a>    <span class="dt">&quot;git.autofetch&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-56"><a href="#cb3-56"></a>    <span class="dt">&quot;git.confirmSync&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a>    <span class="dt">&quot;gitlens.views.repositories.location&quot;</span><span class="fu">:</span> <span class="st">&quot;gitlens&quot;</span><span class="fu">,</span></span>
+<span id="cb3-58"><a href="#cb3-58"></a>    <span class="dt">&quot;gitlens.views.repositories.files.layout&quot;</span><span class="fu">:</span> <span class="st">&quot;list&quot;</span><span class="fu">,</span></span>
+<span id="cb3-59"><a href="#cb3-59"></a>    <span class="dt">&quot;gitlens.views.fileHistory.location&quot;</span><span class="fu">:</span> <span class="st">&quot;gitlens&quot;</span><span class="fu">,</span></span>
+<span id="cb3-60"><a href="#cb3-60"></a>    <span class="dt">&quot;gitlens.views.lineHistory.enabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-61"><a href="#cb3-61"></a>    <span class="dt">&quot;gitlens.views.compare.location&quot;</span><span class="fu">:</span> <span class="st">&quot;gitlens&quot;</span><span class="fu">,</span></span>
+<span id="cb3-62"><a href="#cb3-62"></a>    <span class="dt">&quot;gitlens.views.search.location&quot;</span><span class="fu">:</span> <span class="st">&quot;gitlens&quot;</span><span class="fu">,</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a>    <span class="dt">&quot;gitlens.mode.statusBar.enabled&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-64"><a href="#cb3-64"></a>    <span class="dt">&quot;gitlens.mode.statusBar.alignment&quot;</span><span class="fu">:</span> <span class="st">&quot;left&quot;</span><span class="fu">,</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a>    <span class="dt">&quot;gitlens.currentLine.enabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a>    <span class="dt">&quot;gitlens.hovers.enabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a>    <span class="dt">&quot;vsintellicode.modify.editor.suggestSelection&quot;</span><span class="fu">:</span> <span class="st">&quot;automaticallyOverrodeDefaultValue&quot;</span><span class="fu">,</span></span>
+<span id="cb3-68"><a href="#cb3-68"></a>    <span class="dt">&quot;tabnine.experimentalAutoImports&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-69"><a href="#cb3-69"></a>    <span class="dt">&quot;indentRainbow.errorColor&quot;</span><span class="fu">:</span> <span class="st">&quot;rgba(255,255,255,0.0)&quot;</span><span class="fu">,</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a>    <span class="dt">&quot;todo-tree.tree.flat&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-71"><a href="#cb3-71"></a>    <span class="dt">&quot;todo-tree.highlights.defaultHighlight&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-72"><a href="#cb3-72"></a>        <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;text-and-comment&quot;</span><span class="fu">,</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a>        <span class="dt">&quot;foreground&quot;</span><span class="fu">:</span> <span class="st">&quot;grey&quot;</span></span>
+<span id="cb3-74"><a href="#cb3-74"></a>    <span class="fu">},</span></span>
+<span id="cb3-75"><a href="#cb3-75"></a>    <span class="dt">&quot;better-comments.tags&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-76"><a href="#cb3-76"></a>        <span class="fu">{</span></span>
+<span id="cb3-77"><a href="#cb3-77"></a>            <span class="dt">&quot;tag&quot;</span><span class="fu">:</span> <span class="st">&quot;?&quot;</span><span class="fu">,</span></span>
+<span id="cb3-78"><a href="#cb3-78"></a>            <span class="dt">&quot;color&quot;</span><span class="fu">:</span> <span class="st">&quot;#8f5785&quot;</span><span class="fu">,</span></span>
+<span id="cb3-79"><a href="#cb3-79"></a>            <span class="dt">&quot;strikethrough&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-80"><a href="#cb3-80"></a>            <span class="dt">&quot;backgroundColor&quot;</span><span class="fu">:</span> <span class="st">&quot;transparent&quot;</span></span>
+<span id="cb3-81"><a href="#cb3-81"></a>        <span class="fu">}</span></span>
+<span id="cb3-82"><a href="#cb3-82"></a>        <span class="fu">{</span></span>
+<span id="cb3-83"><a href="#cb3-83"></a>            <span class="dt">&quot;tag&quot;</span><span class="fu">:</span> <span class="st">&quot;*&quot;</span><span class="fu">,</span></span>
+<span id="cb3-84"><a href="#cb3-84"></a>            <span class="dt">&quot;color&quot;</span><span class="fu">:</span> <span class="st">&quot;#69a800&quot;</span><span class="fu">,</span></span>
+<span id="cb3-85"><a href="#cb3-85"></a>            <span class="dt">&quot;strikethrough&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb3-86"><a href="#cb3-86"></a>            <span class="dt">&quot;backgroundColor&quot;</span><span class="fu">:</span> <span class="st">&quot;transparent&quot;</span></span>
+<span id="cb3-87"><a href="#cb3-87"></a>        <span class="fu">}</span></span>
+<span id="cb3-88"><a href="#cb3-88"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-89"><a href="#cb3-89"></a>    <span class="dt">&quot;bracket-pair-colorizer-2.colors&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-90"><a href="#cb3-90"></a>        <span class="st">&quot;#992e24&quot;</span><span class="ot">,</span></span>
+<span id="cb3-91"><a href="#cb3-91"></a>        <span class="st">&quot;#ffb997&quot;</span><span class="ot">,</span></span>
+<span id="cb3-92"><a href="#cb3-92"></a>        <span class="st">&quot;#263859&quot;</span></span>
+<span id="cb3-93"><a href="#cb3-93"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-94"><a href="#cb3-94"></a>    <span class="dt">&quot;cSpell.userWords&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-95"><a href="#cb3-95"></a>        <span class="st">&quot;YYYYMMDD&quot;</span><span class="ot">,</span></span>
+<span id="cb3-96"><a href="#cb3-96"></a>        <span class="st">&quot;groupby&quot;</span><span class="ot">,</span></span>
+<span id="cb3-97"><a href="#cb3-97"></a>        <span class="st">&quot;idxmax&quot;</span><span class="ot">,</span></span>
+<span id="cb3-98"><a href="#cb3-98"></a>        <span class="st">&quot;inplace&quot;</span><span class="ot">,</span></span>
+<span id="cb3-99"><a href="#cb3-99"></a>        <span class="st">&quot;itertools&quot;</span><span class="ot">,</span></span>
+<span id="cb3-100"><a href="#cb3-100"></a>        <span class="st">&quot;multindex&quot;</span><span class="ot">,</span></span>
+<span id="cb3-101"><a href="#cb3-101"></a>        <span class="st">&quot;rfind&quot;</span><span class="ot">,</span></span>
+<span id="cb3-102"><a href="#cb3-102"></a>        <span class="st">&quot;strptime&quot;</span></span>
+<span id="cb3-103"><a href="#cb3-103"></a>    <span class="ot">]</span></span>
+<span id="cb3-104"><a href="#cb3-104"></a><span class="fu">}</span></span></code></pre></div>
 </div>
 <div id="keyboard-shortcuts-json-file" class="section level3">
 <h3>Keyboard Shortcuts JSON File</h3>
@@ -300,85 +368,85 @@ the extension called “rewrap” and then giving its command
 <code>"rewrap.rewrapComment"</code> the same keyboard shortcut. It is really up to you to
 configure the shortcuts that you use most often.</p>
 <p><strong>keybindings.json</strong></p>
-<pre class="json"><code>// Place your key bindings in this file to override the defaultsauto[]
-[
-    {
-        &quot;key&quot;: &quot;cmd+enter&quot;,
-        &quot;command&quot;: &quot;python.datascience.execSelectionInteractive&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;
-    },
-    {
-        &quot;key&quot;: &quot;shift+enter&quot;,
-        &quot;command&quot;: &quot;-python.datascience.execSelectionInteractive&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;
-    },
-    {
-        &quot;key&quot;: &quot;cmd+enter&quot;,
-        &quot;command&quot;: &quot;python.datascience.runcurrentcell&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;
-    },
-    {
-        &quot;key&quot;: &quot;ctrl+enter&quot;,
-        &quot;command&quot;: &quot;-python.datascience.runcurrentcell&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;
-    },    
-    {
-        &quot;key&quot;: &quot;cmd+enter&quot;,
-        &quot;command&quot;: &quot;notebook.cell.executeAndSelectBelow&quot;,
-        &quot;when&quot;: &quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;
-    },
-    {
-        &quot;key&quot;: &quot;shift+enter&quot;,
-        &quot;command&quot;: &quot;-notebook.cell.executeAndSelectBelow&quot;,
-        &quot;when&quot;: &quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;
-    },    
-    {
-        &quot;key&quot;: &quot;ctrl+l&quot;,
-        &quot;command&quot;: &quot;python.datascience.removeallcells&quot;,
-        &quot;when&quot;: &quot;python.datascience.featureenabled &amp;&amp; !terminalFocus&quot;
-    },
-    {
-        &quot;key&quot;: &quot;ctrl+l&quot;,
-        &quot;command&quot;: &quot;workbench.action.terminal.clear&quot;,
-        &quot;when&quot;: &quot;terminalFocus&quot;
-    },    
-    {
-        &quot;key&quot;: &quot;cmd+shift+f10&quot;,
-        &quot;command&quot;: &quot;python.datascience.restartkernel&quot;
-    },
-    {
-        &quot;key&quot;: &quot;cmd+shift+c&quot;,
-        &quot;command&quot;: &quot;editor.action.commentLine&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; !editorReadonly&quot;
-    },
-    {
-        &quot;key&quot;: &quot;cmd+/&quot;,
-        &quot;command&quot;: &quot;-editor.action.commentLine&quot;,
-        &quot;when&quot;: &quot;editorTextFocus &amp;&amp; !editorReadonly&quot;
-    },
-    {
-        &quot;key&quot;: &quot;cmd+i&quot;,
-        &quot;command&quot;: &quot;python.datascience.showhistorypane&quot;
-    },
-    {
-        &quot;key&quot;: &quot;ctrl+shift+/&quot;,
-        &quot;command&quot;: &quot;rewrap.rewrapComment&quot;,
-        &quot;when&quot;: &quot;editorTextFocus&quot;
-    },
-    {
-        &quot;key&quot;: &quot;alt+q&quot;,
-        &quot;command&quot;: &quot;-rewrap.rewrapComment&quot;,
-        &quot;when&quot;: &quot;editorTextFocus&quot;
-    },
-    {
-        &quot;key&quot;: &quot;ctrl+shift+s&quot;,
-        &quot;command&quot;: &quot;extension.updateSettings&quot;
-    },
-    {
-        &quot;key&quot;: &quot;shift+alt+u&quot;,
-        &quot;command&quot;: &quot;-extension.updateSettings&quot;
-    }
-]</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1"></a><span class="er">//</span> <span class="er">Place</span> <span class="er">your</span> <span class="er">key</span> <span class="er">bindings</span> <span class="er">in</span> <span class="er">this</span> <span class="er">file</span> <span class="er">to</span> <span class="er">override</span> <span class="er">the</span> <span class="er">defaultsauto</span><span class="ot">[]</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ot">[</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="fu">{</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.execSelectionInteractive&quot;</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="fu">{</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;shift+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-python.datascience.execSelectionInteractive&quot;</span><span class="fu">,</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.ownsSelection &amp;&amp; !findInputFocussed &amp;&amp; !notebookEditorFocused &amp;&amp; !replaceInputFocussed &amp;&amp; editorLangId == &#39;python&#39;&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>    <span class="fu">{</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.runcurrentcell&quot;</span><span class="fu">,</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>    <span class="fu">{</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;ctrl+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-python.datascience.runcurrentcell&quot;</span><span class="fu">,</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; python.datascience.featureenabled &amp;&amp; python.datascience.hascodecells &amp;&amp; !editorHasSelection &amp;&amp; !notebookEditorFocused&quot;</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a>    <span class="fu">}</span><span class="ot">,</span>    </span>
+<span id="cb4-23"><a href="#cb4-23"></a>    <span class="fu">{</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;notebook.cell.executeAndSelectBelow&quot;</span><span class="fu">,</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>    <span class="fu">{</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;shift+enter&quot;</span><span class="fu">,</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-notebook.cell.executeAndSelectBelow&quot;</span><span class="fu">,</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;notebookEditorFocused &amp;&amp; activeEditor == &#39;workbench.editor.notebook&#39;&quot;</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a>    <span class="fu">}</span><span class="ot">,</span>    </span>
+<span id="cb4-33"><a href="#cb4-33"></a>    <span class="fu">{</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;ctrl+l&quot;</span><span class="fu">,</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.removeallcells&quot;</span><span class="fu">,</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.featureenabled &amp;&amp; !terminalFocus&quot;</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a>    <span class="fu">{</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;ctrl+l&quot;</span><span class="fu">,</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;workbench.action.terminal.clear&quot;</span><span class="fu">,</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;terminalFocus&quot;</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a>    <span class="fu">}</span><span class="ot">,</span>    </span>
+<span id="cb4-43"><a href="#cb4-43"></a>    <span class="fu">{</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+shift+f10&quot;</span><span class="fu">,</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.restartkernel&quot;</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a>    <span class="fu">{</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+shift+c&quot;</span><span class="fu">,</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;editor.action.commentLine&quot;</span><span class="fu">,</span></span>
+<span id="cb4-50"><a href="#cb4-50"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; !editorReadonly&quot;</span></span>
+<span id="cb4-51"><a href="#cb4-51"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-52"><a href="#cb4-52"></a>    <span class="fu">{</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+/&quot;</span><span class="fu">,</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-editor.action.commentLine&quot;</span><span class="fu">,</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus &amp;&amp; !editorReadonly&quot;</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a>    <span class="fu">{</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;cmd+i&quot;</span><span class="fu">,</span></span>
+<span id="cb4-59"><a href="#cb4-59"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python.datascience.showhistorypane&quot;</span></span>
+<span id="cb4-60"><a href="#cb4-60"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-61"><a href="#cb4-61"></a>    <span class="fu">{</span></span>
+<span id="cb4-62"><a href="#cb4-62"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;ctrl+shift+/&quot;</span><span class="fu">,</span></span>
+<span id="cb4-63"><a href="#cb4-63"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;rewrap.rewrapComment&quot;</span><span class="fu">,</span></span>
+<span id="cb4-64"><a href="#cb4-64"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus&quot;</span></span>
+<span id="cb4-65"><a href="#cb4-65"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-66"><a href="#cb4-66"></a>    <span class="fu">{</span></span>
+<span id="cb4-67"><a href="#cb4-67"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;alt+q&quot;</span><span class="fu">,</span></span>
+<span id="cb4-68"><a href="#cb4-68"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-rewrap.rewrapComment&quot;</span><span class="fu">,</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a>        <span class="dt">&quot;when&quot;</span><span class="fu">:</span> <span class="st">&quot;editorTextFocus&quot;</span></span>
+<span id="cb4-70"><a href="#cb4-70"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-71"><a href="#cb4-71"></a>    <span class="fu">{</span></span>
+<span id="cb4-72"><a href="#cb4-72"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;ctrl+shift+s&quot;</span><span class="fu">,</span></span>
+<span id="cb4-73"><a href="#cb4-73"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;extension.updateSettings&quot;</span></span>
+<span id="cb4-74"><a href="#cb4-74"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-75"><a href="#cb4-75"></a>    <span class="fu">{</span></span>
+<span id="cb4-76"><a href="#cb4-76"></a>        <span class="dt">&quot;key&quot;</span><span class="fu">:</span> <span class="st">&quot;shift+alt+u&quot;</span><span class="fu">,</span></span>
+<span id="cb4-77"><a href="#cb4-77"></a>        <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;-extension.updateSettings&quot;</span></span>
+<span id="cb4-78"><a href="#cb4-78"></a>    <span class="fu">}</span></span>
+<span id="cb4-79"><a href="#cb4-79"></a><span class="ot">]</span></span></code></pre></div>
 </div>
 <div id="extensions-installation-script" class="section level3">
 <h3>Extensions Installation Script</h3>
@@ -386,40 +454,40 @@ configure the shortcuts that you use most often.</p>
 after installing VS Code in order to install the extensions. Or you can search
 for them in the VS Code Marketplace (more detail is available here:
 <a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>)</p>
-<pre class="sh"><code># editor visual aids
-code --install-extension CoenraadS.bracket-pair-colorizer-2
-code --install-extension oderwat.indent-rainbow
-code --install-extension gerane.Theme-textmate
-
-# development aids
-code --install-extension eamodio.gitlens
-code --install-extension aaron-bond.better-comments
-code --install-extension Gruntfuggly.todo-tree
-code --install-extension mikestead.dotenv
-code --install-extension streetsidesoftware.code-spell-checker
-
-# code formatting
-code --install-extension ms-python.python
-code --install-extension VisualStudioExptTeam.vscodeintellicode
-code --install-extension TabNine.tabnine-vscode
-code --install-extension christian-kohler.path-intellisense
-code --install-extension stkb.rewrap
-code --install-extension SonarSource.sonarlint-vscode
-
-# file viewer tools
-code --install-extension DotJoshJohnson.xml
-code --install-extension jithurjacob.nbpreviewer
-code --install-extension GrapeCity.gc-excelviewer
-
-# remote development tools
-code --install-extension ms-azuretools.vscode-docker
-code --install-extension ms-vscode-remote.remote-containers
-code --install-extension ms-vscode-remote.remote-ssh
-code --install-extension ms-vscode-remote.remote-ssh-edit
-code --install-extension ms-vscode-remote.remote-wsl
-code --install-extension ms-vscode-remote.vscode-remote-extensionpack
-
-# tool to save your settings as a gist
-code --install-extension Shan.code-settings-sync</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># editor visual aids</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">code</span> --install-extension CoenraadS.bracket-pair-colorizer-2</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="ex">code</span> --install-extension oderwat.indent-rainbow</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="ex">code</span> --install-extension gerane.Theme-textmate</span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co"># development aids</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="ex">code</span> --install-extension eamodio.gitlens</span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="ex">code</span> --install-extension aaron-bond.better-comments</span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="ex">code</span> --install-extension Gruntfuggly.todo-tree</span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="ex">code</span> --install-extension mikestead.dotenv</span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="ex">code</span> --install-extension streetsidesoftware.code-spell-checker</span>
+<span id="cb5-12"><a href="#cb5-12"></a></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co"># code formatting</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="ex">code</span> --install-extension ms-python.python</span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="ex">code</span> --install-extension VisualStudioExptTeam.vscodeintellicode</span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="ex">code</span> --install-extension TabNine.tabnine-vscode</span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="ex">code</span> --install-extension christian-kohler.path-intellisense</span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="ex">code</span> --install-extension stkb.rewrap</span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="ex">code</span> --install-extension SonarSource.sonarlint-vscode</span>
+<span id="cb5-20"><a href="#cb5-20"></a></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co"># file viewer tools</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="ex">code</span> --install-extension DotJoshJohnson.xml</span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="ex">code</span> --install-extension jithurjacob.nbpreviewer</span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="ex">code</span> --install-extension GrapeCity.gc-excelviewer</span>
+<span id="cb5-25"><a href="#cb5-25"></a></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co"># remote development tools</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="ex">code</span> --install-extension ms-azuretools.vscode-docker</span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="ex">code</span> --install-extension ms-vscode-remote.remote-containers</span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="ex">code</span> --install-extension ms-vscode-remote.remote-ssh</span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="ex">code</span> --install-extension ms-vscode-remote.remote-ssh-edit</span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="ex">code</span> --install-extension ms-vscode-remote.remote-wsl</span>
+<span id="cb5-32"><a href="#cb5-32"></a><span class="ex">code</span> --install-extension ms-vscode-remote.vscode-remote-extensionpack</span>
+<span id="cb5-33"><a href="#cb5-33"></a></span>
+<span id="cb5-34"><a href="#cb5-34"></a><span class="co"># tool to save your settings as a gist</span></span>
+<span id="cb5-35"><a href="#cb5-35"></a><span class="ex">code</span> --install-extension Shan.code-settings-sync</span></code></pre></div>
 </div>
 </div>

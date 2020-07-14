@@ -45,7 +45,7 @@
           <div class="panel-body">
             <div class="blogpost">
               {{ .Content }}
-              
+
               {{ if eq .Section "blog" }}
               {{ range first 1 (where (where .Site.Pages.ByDate.Reverse ".Params.tags" "intersect" .Params.tags) "Permalink" "!=" .Permalink) }}
                 {{ $.Scratch.Set "has_related" true }}
@@ -53,16 +53,16 @@
               {{ if $.Scratch.Get "has_related" }}
               <hr>
               <div class="related-posts">
-                <h5>Related Posts</h5>
-                {{ range first 3 ( where ( where .Site.Pages.ByDate.Reverse ".Params.tags" "intersect" .Params.tags ) "Permalink" "!=" .Permalink ) }}
-                  <ol class="post-list">
-                    <li class="post-stub">
-                        <a href="{{ .Permalink }}">
-                          <h5 class="post-stub-title">{{ .Title }}</h5>
-                        </a>
-                        <p class="post-stub-description">{{ .Date.Format "January 2, 2006" }}</p>
-                    </li>
-                  </ol>
+                <h5>Related Posts</h5>  
+                {{ range first 3 ( where (.Site.RegularPages.Related . ) "Permalink" "!=" .Permalink ) }}
+                <ol class="post-list">
+                  <li class="post-stub">
+                      <a href="{{ .Permalink }}">
+                        <h5 class="post-stub-title">{{ .Title }}</h5>
+                      </a>
+                      <p class="post-stub-description">{{ .Date.Format "January 2, 2006" }}</p>
+                  </li>
+                </ol>
                 {{ end }}
               </div>
               {{ end }}

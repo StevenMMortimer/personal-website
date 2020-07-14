@@ -26,7 +26,16 @@ that seemed to work and went on my merry way. In hindsight, it would have been b
 to check whether or not the scraping was allowed and maybe find a better way to
 get the information I needed. Of course, there was a much easier way to get the
 CRAN package metadata using the function <code>tools::CRAN_package_db()</code> thanks to a hint
-from Maëlle Salmon provided in this <a target="_blank" href="https://twitter.com/ma_salmon/status/1009525735277678593">tweet</a>.</p>
+from Maëlle Salmon provided in this tweet:</p>
+<div style="margin: auto;">
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+Cool work! I see you scraped the data, you could get a table with all pkgs and an URL column via tools::CRAN_package_db() which is gentler for CRAN website I think.<br><br>Not sure their website has a robots.txt but in general <a href="https://t.co/20TtlsGBOf">https://t.co/20TtlsGBOf</a> is useful when webscraping 🙂
+</p>
+— Maëlle Salmon (<span class="citation">@ma_salmon</span>) <a href="https://twitter.com/ma_salmon/status/1009525735277678593?ref_src=twsrc%5Etfw">June 20, 2018</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
 <div id="how-to-check-if-scraping-is-permitted" class="section level2">
 <h2>How to Check if Scraping is Permitted</h2>
 <p>Also provided by Maëlle’s tweet was the recommendation for using the <strong>robotstxt</strong> package
@@ -34,16 +43,16 @@ from Maëlle Salmon provided in this <a target="_blank" href="https://twitter.co
 well known as it only has 6,571 total downloads. I’m hoping this post will help spread
 the word. It’s easy to use! In this case I’ll check whether or not CRAN permits bots
 on specific resources of the domain.</p>
-<p>My other blog post analysis originally started with trying to get a list of all current R packages
-on CRAN by parsing the HTML from <a target="_blank" href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>.
-The page looks like this:
+<p>My other blog post analysis originally started with trying to get a list of all
+current R packages on CRAN by parsing the HTML from <a target="_blank"
+href="https://cran.rstudio.com/src/contrib">https://cran.rstudio.com/src/contrib</a>. The page looks like this:
 <img src="/blog/scraping-responsibly-with-r/cran-screenshot.png" /></p>
-<p>The question is whether or not scraping this page is permitted according to the <code>robots.txt</code> file
-on the <code>cran.rstudio.com</code> domain. This is where the <strong>robotstxt</strong> package can help
-us out. We can check simply by supplying the domain and path that is used to form
-the full link we are interested in scraping. If the <code>paths_allowed()</code> function
-returns <code>TRUE</code> then we should be allowed to scrape, if it returns <code>FALSE</code> then we
-are not permitted to scrape.</p>
+<p>The question is whether or not scraping this page is permitted according to the
+<code>robots.txt</code> file on the <code>cran.rstudio.com</code> domain. This is where the
+<strong>robotstxt</strong> package can help us out. We can check simply by supplying the
+domain and path that is used to form the full link we are interested in
+scraping. If the <code>paths_allowed()</code> function returns <code>TRUE</code> then we should be
+allowed to scrape, if it returns <code>FALSE</code> then we are not permitted to scrape.</p>
 <pre class="r"><code>library(robotstxt)
 
 paths_allowed(

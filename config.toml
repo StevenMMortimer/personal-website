@@ -8,9 +8,9 @@ googleAnalytics = "UA-98603021-1"
 # disqusShortname = "iamwhatir"
 canonifyURLs = true
 pluralizelisttitles = false
-paginate = 4
+paginate = 5
 paginatePath = ""
-rssLimit = 20
+rssLimit = 100
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [Permalinks]
@@ -28,6 +28,17 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true  
+      
+[related]
+  threshold = 80
+  includeNewer = true
+  toLower = true
+  [[related.indices]]   
+    name = "tags"
+    weight = 100
+  [[related.indices]]
+    name = "date"
+    weight = 10       
       
 [blackfriday] 
     hrefTargetBlank = true      
@@ -66,7 +77,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
   highlightjsLang = ["r", "yml", "py", "sh", "json"]
   highlightjsTheme = "github"
-
+  
 [[menu.main]]
     name = "Blog"
     url = "/blog/"
