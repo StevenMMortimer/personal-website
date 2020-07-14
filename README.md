@@ -1,1 +1,1 @@
-## Visit my personal website at stevenmortimer.com.
+## Visit my personal website at [stevenmortimer.com](https://stevenmortimer.com).
