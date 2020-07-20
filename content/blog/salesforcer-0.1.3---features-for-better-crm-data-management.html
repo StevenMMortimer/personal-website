@@ -45,32 +45,27 @@ deleted_recs &lt;- sf_get_deleted(&quot;Contact&quot;, start = Sys.Date() - 1, e
 deleted_recs &lt;- sf_get_deleted(&quot;Contact&quot;, 
                                start = ymd(Sys.Date()-1, tz=&quot;America/New_York&quot;), 
                                end = ymd(Sys.Date(), tz=&quot;America/New_York&quot;))
-deleted_recs</code></pre>
-<pre><code>## # A tibble: 1,838 x 2
-##    deletedDate         id                
-##    &lt;dttm&gt;              &lt;chr&gt;             
-##  1 2019-06-09 14:54:55 0036A00000kHn3DQAS
-##  2 2019-06-09 14:54:56 0036A00000kHu13QAC
-##  3 2019-06-09 14:54:56 0036A00000kHu9RQAS
-##  4 2019-06-09 14:54:55 0036A00000kHn4VQAS
-##  5 2019-06-09 14:54:55 0036A00000kHn4WQAS
-##  6 2019-06-09 14:54:56 0036A00000kHuAyQAK
-##  7 2019-06-09 14:54:56 0036A00000kHuAzQAK
-##  8 2019-06-09 14:54:55 0036A00000kHnAnQAK
-##  9 2019-06-09 14:54:56 0036A00000kHu0FQAS
-## 10 2019-06-09 14:54:56 0036A00000kHu1wQAC
-## # … with 1,828 more rows</code></pre>
+deleted_recs
+#&gt; # A tibble: 441 x 2
+#&gt;   deletedDate         id                
+#&gt;   &lt;dttm&gt;              &lt;chr&gt;             
+#&gt; 1 2020-07-18 20:40:14 0033s000012NyCnAAK
+#&gt; 2 2020-07-18 20:40:14 0033s000012NyCoAAK
+#&gt; 3 2020-07-18 20:40:14 0033s000012NyXRAA0
+#&gt; 4 2020-07-18 20:40:14 0033s000012Nww0AAC
+#&gt; 5 2020-07-18 20:40:14 0033s000012NwMRAA0
+#&gt; # … with 436 more rows</code></pre>
 <p>Now if you see records in there that you may want back, now it’s as simple as calling
 the <code>sf_undelete()</code> function with the ids of the records you want.</p>
 <pre class="r"><code># undelete the first three records from the list of records deleted yesterday 
 undeleted &lt;- sf_undelete(deleted_recs$id[1:3])
-undeleted</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   id                 success
-##   &lt;chr&gt;              &lt;lgl&gt;  
-## 1 0036A00000kHn3DQAS TRUE   
-## 2 0036A00000kHu13QAC TRUE   
-## 3 0036A00000kHu9RQAS TRUE</code></pre>
+undeleted
+#&gt; # A tibble: 3 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000012NyCnAAK TRUE   
+#&gt; 2 0033s000012NyCoAAK TRUE   
+#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
 <p>You can double check that the records are actually no longer deleted by running a
 query for them and checking the <code>IsDeleted</code> field like this:</p>
 <pre class="r"><code># check that the first three records are no longer deleted 
@@ -78,13 +73,13 @@ is_not_deleted &lt;- sf_query(sprintf(&quot;SELECT Id, IsDeleted
                                     FROM Contact 
                                     WHERE Id IN (&#39;%s&#39;)&quot;, 
                                    paste0(undeleted$id, collapse=&quot;&#39;,&#39;&quot;)))
-is_not_deleted</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   Id                 IsDeleted
-##   &lt;chr&gt;              &lt;lgl&gt;    
-## 1 0036A00000kHn3DQAS FALSE    
-## 2 0036A00000kHu13QAC FALSE    
-## 3 0036A00000kHu9RQAS FALSE</code></pre>
+is_not_deleted
+#&gt; # A tibble: 3 x 2
+#&gt;   Id                 IsDeleted
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;    
+#&gt; 1 0033s000012NyCnAAK FALSE    
+#&gt; 2 0033s000012NyCoAAK FALSE    
+#&gt; 3 0033s000012NyXRAA0 FALSE</code></pre>
 <p>Now let’s say you really do want them deleted and by that, I mean permanently
 from your org so they do not count against your space quota. Now you can empty
 items in your Recycle Bin. Here is an example where we delete the records we just
@@ -92,13 +87,13 @@ undeleted and then empty them from the Recycle Bin.</p>
 <pre class="r"><code># delete the records to move them to the Recycle Bin, them empty them from it
 deleted &lt;- sf_delete(is_not_deleted$Id)
 really_deleted &lt;- sf_empty_recycle_bin(deleted$id)
-really_deleted</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   id                 success
-##   &lt;chr&gt;              &lt;lgl&gt;  
-## 1 0036A00000kHn3DQAS TRUE   
-## 2 0036A00000kHu13QAC TRUE   
-## 3 0036A00000kHu9RQAS TRUE</code></pre>
+really_deleted
+#&gt; # A tibble: 3 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000012NyCnAAK TRUE   
+#&gt; 2 0033s000012NyCoAAK TRUE   
+#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
 <p>If you want to double-check the field values of a deleted record, just make sure to
 set <code>queryall = TRUE</code> in your query so that it returns deleted or archived records in the
 resultset. Note that after records are deleted from the Recycle Bin using this call,
@@ -109,21 +104,22 @@ not_visible &lt;- sf_query(sprintf(&quot;SELECT Id, IsDeleted
                                  FROM Contact 
                                  WHERE Id IN (&#39;%s&#39;)&quot;, 
                                 paste0(really_deleted$id, collapse=&quot;&#39;,&#39;&quot;)))
-not_visible</code></pre>
-<pre><code>## # A tibble: 0 x 0</code></pre>
-<pre class="r"><code># but still there if using queryall for ~24 hrs
+not_visible
+#&gt; # A tibble: 0 x 0
+
+# but still there if using queryall for ~24 hrs
 still_visible &lt;- sf_query(sprintf(&quot;SELECT Id, IsDeleted 
                                    FROM Contact 
                                    WHERE Id IN (&#39;%s&#39;)&quot;, 
                                   paste0(really_deleted$id, collapse=&quot;&#39;,&#39;&quot;)), 
                           queryall = TRUE)
-still_visible</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   Id                 IsDeleted
-##   &lt;chr&gt;              &lt;lgl&gt;    
-## 1 0036A00000kHn3DQAS TRUE     
-## 2 0036A00000kHu13QAC TRUE     
-## 3 0036A00000kHu9RQAS TRUE</code></pre>
+still_visible
+#&gt; # A tibble: 3 x 2
+#&gt;   Id                 IsDeleted
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;    
+#&gt; 1 0033s000012NyCnAAK TRUE     
+#&gt; 2 0033s000012NyCoAAK TRUE     
+#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
 </div>
 <div id="searching-for-duplicates-and-merging-them" class="section level2">
 <h2>Searching for Duplicates and Merging Them</h2>
@@ -140,36 +136,39 @@ new_contacts &lt;- tibble(FirstName = rep(&quot;Rick&quot;, 3),
                        LastName = rep(&quot;James&quot;, 3), 
                        Email = rep(&quot;rick.james@gmail.com&quot;, 3),
                        Description = c(&quot;Musician&quot;, &quot;Funk Legend&quot;, NA))
-new_contacts</code></pre>
-<pre><code>## # A tibble: 3 x 4
-##   FirstName LastName Email                Description
-##   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                &lt;chr&gt;      
-## 1 Rick      James    rick.james@gmail.com Musician   
-## 2 Rick      James    rick.james@gmail.com Funk Legend
-## 3 Rick      James    rick.james@gmail.com &lt;NA&gt;</code></pre>
+new_contacts
+#&gt; # A tibble: 3 x 4
+#&gt;   FirstName LastName Email                Description
+#&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                &lt;chr&gt;      
+#&gt; 1 Rick      James    rick.james@gmail.com Musician   
+#&gt; 2 Rick      James    rick.james@gmail.com Funk Legend
+#&gt; 3 Rick      James    rick.james@gmail.com &lt;NA&gt;</code></pre>
 <pre class="r"><code># insert the records
 new_recs &lt;- sf_create(new_contacts, &quot;Contact&quot;, 
                       DuplicateRuleHeader = list(allowSave = TRUE,
                                                  includeRecordDetails = FALSE,
                                                  runAsCurrentUser = TRUE))
-new_recs</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   id                 success
-##   &lt;chr&gt;              &lt;lgl&gt;  
-## 1 0036A00000wzoYQQAY TRUE   
-## 2 0036A00000wzoYRQAY TRUE   
-## 3 0036A00000wzoYSQAY TRUE</code></pre>
+new_recs
+#&gt; # A tibble: 3 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000013Xu2HAAS TRUE   
+#&gt; 2 0033s000013Xu2IAAS TRUE   
+#&gt; 3 0033s000013Xu2JAAS TRUE</code></pre>
 <pre class="r"><code># find them as dupes
 dupes_found &lt;- sf_find_duplicates(search_criteria = list(Email = &quot;rick.james@gmail.com&quot;),
-                                  object_name = &quot;Contact&quot;)</code></pre>
-<pre><code>## Using Contact rules: Standard_Rule_for_Contacts_with_Duplicate_Leads, Contact_Dupe_Email</code></pre>
-<pre class="r"><code>dupes_found</code></pre>
-<pre><code>## # A tibble: 3 x 2
-##   sObject Id                
-##   &lt;chr&gt;   &lt;chr&gt;             
-## 1 Contact 0036A00000wzoYQQAY
-## 2 Contact 0036A00000wzoYRQAY
-## 3 Contact 0036A00000wzoYSQAY</code></pre>
+                                  object_name = &quot;Contact&quot;)
+#&gt; Using Contact rules:
+#&gt;   - Standard_Rule_for_Contacts_with_Duplicate_Leads
+#&gt;   - Contact_Dupe_Email
+dupes_found
+#&gt; # A tibble: 4 x 2
+#&gt;   sObject Id                
+#&gt;   &lt;chr&gt;   &lt;chr&gt;             
+#&gt; 1 Contact 0033s000013Xt92AAC
+#&gt; 2 Contact 0033s000013Xu2HAAS
+#&gt; 3 Contact 0033s000013Xu2IAAS
+#&gt; 4 Contact 0033s000013Xu2JAAS</code></pre>
 <p>The recordset from <code>sf_find_duplicates()</code> shows the object that the records were found in
 and their Ids. You will notice that those are the same Ids as what we received back when
 creating the records to verify that we found those same three records based on the duplicated
@@ -191,11 +190,11 @@ on the master record, so I just specify it in the <code>master_fields</code> arg
                           victim_ids = dupes_found$Id[2:3], 
                           object_name = &quot;Contact&quot;,
                           master_fields = c(&quot;Description&quot; = &quot;Funk Legend&quot;))
-merge_summary</code></pre>
-<pre><code>## # A tibble: 1 x 5
-##   id                 success mergedRecordIds updatedRelatedIds errors
-##   &lt;chr&gt;              &lt;lgl&gt;   &lt;list&gt;          &lt;lgl&gt;             &lt;lgl&gt; 
-## 1 0036A00000wzoYQQAY TRUE    &lt;chr [2]&gt;       NA                NA</code></pre>
+merge_summary
+#&gt; # A tibble: 1 x 5
+#&gt;   id                 success mergedRecordIds updatedRelatedIds errors
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;   &lt;list&gt;          &lt;lgl&gt;             &lt;lgl&gt; 
+#&gt; 1 0033s000013Xt92AAC TRUE    &lt;chr [2]&gt;       NA                NA</code></pre>
 <p>You can check that the other two records that were merged into the master record have
 now been deleted and that they are tagged in the <code>MasterRecordId</code> field with the Id
 of the master record they were merged into.</p>
@@ -204,13 +203,14 @@ of the master record they were merged into.</p>
                                    WHERE Id IN (&#39;%s&#39;)&quot;, 
                                   paste0(dupes_found$Id, collapse=&quot;&#39;,&#39;&quot;)), 
                           queryall = TRUE)
-merge_confirm</code></pre>
-<pre><code>## # A tibble: 3 x 3
-##   Id                 MasterRecordId     IsDeleted
-##   &lt;chr&gt;              &lt;chr&gt;              &lt;lgl&gt;    
-## 1 0036A00000wzoYQQAY &lt;NA&gt;               FALSE    
-## 2 0036A00000wzoYRQAY 0036A00000wzoYQQAY TRUE     
-## 3 0036A00000wzoYSQAY 0036A00000wzoYQQAY TRUE</code></pre>
+merge_confirm
+#&gt; # A tibble: 4 x 3
+#&gt;   Id                 IsDeleted MasterRecordId    
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;     &lt;chr&gt;             
+#&gt; 1 0033s000013Xt92AAC FALSE     &lt;NA&gt;              
+#&gt; 2 0033s000013Xu2HAAS TRUE      0033s000013Xt92AAC
+#&gt; 3 0033s000013Xu2IAAS TRUE      0033s000013Xt92AAC
+#&gt; 4 0033s000013Xu2JAAS FALSE     &lt;NA&gt;</code></pre>
 </div>
 <div id="controlling-api-call-behavior" class="section level2">
 <h2>Controlling API Call Behavior</h2>
@@ -232,12 +232,12 @@ new_recs &lt;- sf_create(new_contacts, object_name = &quot;Contact&quot;,
                       DuplicateRuleHeader = list(allowSave = TRUE,
                                                  includeRecordDetails = FALSE,
                                                  runAsCurrentUser = TRUE))
-new_recs</code></pre>
-<pre><code>## # A tibble: 2 x 2
-##   id                 success
-##   &lt;chr&gt;              &lt;lgl&gt;  
-## 1 0036A00000wzoYaQAI TRUE   
-## 2 0036A00000wzoYbQAI TRUE</code></pre>
+new_recs
+#&gt; # A tibble: 2 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000013Xu2MAAS TRUE   
+#&gt; 2 0033s000013Xu2NAAS TRUE</code></pre>
 <p>In the documentation you may notice that the control argument in the <code>sf_create()</code> function definition
 looks like this <code>control = list(...)</code>. This allows you to include the control headers
 as an argument right in the function or put them inside the <code>sf_control</code> function.
@@ -246,12 +246,12 @@ An example of using the <code>sf_control()</code> function looks like this:</p>
                       control=sf_control(DuplicateRuleHeader=list(allowSave=TRUE,
                                                                   includeRecordDetails=FALSE,
                                                                   runAsCurrentUser=TRUE)))
-new_recs</code></pre>
-<pre><code>## # A tibble: 2 x 2
-##   id                 success
-##   &lt;chr&gt;              &lt;lgl&gt;  
-## 1 0036A00000wzoYkQAI TRUE   
-## 2 0036A00000wzoYlQAI TRUE</code></pre>
+new_recs
+#&gt; # A tibble: 2 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000013Xu2RAAS TRUE   
+#&gt; 2 0033s000013Xu2SAAS TRUE</code></pre>
 <p>The <code>sf_control()</code> function works exactly like <code>glm.control()</code> when using the <code>glm()</code>
 function in the <strong>stats</strong> package. It will accept any of the extra arguments in the
 function call and validate them to see if they are accepted by the API type and operation
@@ -262,7 +262,9 @@ There is also a vignette which describes all of this in more detail at <a target
 </div>
 <div id="links-to-github" class="section level2">
 <h2>Links to GitHub</h2>
-<p>For a complete listing of all changes made in the 0.1.3 release of <strong>salesforcer</strong> please
-view the <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-013">NEWS.md</a> file. Bug reports and feature requests are welcome in the GitHub <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a>.</p>
+<p>For a complete listing of all changes made in the 0.1.3 release of
+<strong>salesforcer</strong> please view the <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-1-3-release">NEWS.md</a>
+file on the <strong>pkgdown</strong> site. Bug reports and feature requests are welcome in the GitHub <a target="_blank"
+href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a>.</p>
 <p>Thank you for your continued support!</p>
 </div>

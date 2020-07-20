@@ -6,8 +6,8 @@ slug: setting-up-vs-code-for-python-development-like-rstudio
 categories:
   - R
 tags:
-  - ide
-  - python
+  - IDE
+  - Python
   - tools
 description:  "A walkthrough on configuring VS Code to function like RStudio to make it easier to switch between Python and R code development."
 image: "blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png"
@@ -17,8 +17,8 @@ output:
 
 
 
-<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png" />
-In this article I will highlight the features of VS Code that match RStudio
+<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png" /></p>
+<p>In this article I will highlight the features of VS Code that match RStudio
 exactly, such as the “interactive notebook window” (called the Console in R) or
 the “variable explorer” (like running <code>View()</code> on a data frame in RStudio). At
 the bottom of this post I will provide two JSON files (<code>settings.json</code> and
@@ -49,7 +49,7 @@ quckly becoming a second home for me to write Python code.</p>
 <code>Tools -&gt; Global Options -&gt; Appearance</code>. To get the color scheme in VS Code you
 can install this with the <a target="_blank"
 href="https://marketplace.visualstudio.com/items?itemName=gerane.Theme-textmate">Textmate theme extension</a>.</p>
-<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/textmate-theme.png" style="display:block;margin:auto;height:300px;" /></p>
+<p><img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/textmate-theme.png" style="display:block;margin:auto;max-height:300px;" /></p>
 <p>I tend to not change much beyond the default RStudio installation just so that I
 don’t need to maintain a unique and unfamiliar setup compared to other
 colleagues who are also using RStudio. The only customization I recommend is
@@ -121,7 +121,7 @@ repository. Instead of ticking a checkbox to stage files, you will have to press
 the <code>+</code> sign, which is about the only difference. Everything else is the similar
 as far as clicking on the files to see “diffs”, writing the commit message, and
 pushing code to a remote repository.</p>
-<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/git-integration.png" style="display:block;margin:auto;height:200px;" />
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/git-integration.png" style="display:block;margin:auto;max-height:200px;" />
 <div style="text-align:center">
 <p><a target="_blank" href="https://code.visualstudio.com/docs/editor/versioncontrol#_git-support">https://code.visualstudio.com/docs/editor/versioncontrol#_git-support</a></p>
 </div>
@@ -163,6 +163,7 @@ very similar workflows, right down to the keyboard shortcuts. The only challenge
 you may have left is figuring out how to make your <strong>pandas</strong> code as legible and
 well organized as <strong>dplyr</strong> code… but that is for another day. (Hint: It’s possible
 with a strong commitment to method chaining).</p>
+<hr />
 </div>
 </div>
 <div id="setup-files-and-scripts" class="section level2">
@@ -385,9 +386,12 @@ configure the shortcuts that you use most often.</p>
 <div id="extensions-installation-script" class="section level3">
 <h3>Extensions Installation Script</h3>
 <p>You can run each of the lines below in your Terminal or other Command Prompt
-after installing VS Code in order to install the extensions. Or you can search
-for them in the VS Code Marketplace (more detail is available here:
-<a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>)</p>
+after installing VS Code in order to install the extensions. <strong>NOTE</strong>: This does
+require having the <code>code</code> command in your PATH. On Mac use the following instructions
+to install ‘code’ command in PATH: <a target="_blank" href="https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line">https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line</a>.
+Alternatively, you can search for extensions in the VS Code Marketplace and install
+from there (more detail is available here:
+<a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>).</p>
 <pre class="sh"><code># editor visual aids
 code --install-extension CoenraadS.bracket-pair-colorizer-2
 code --install-extension oderwat.indent-rainbow

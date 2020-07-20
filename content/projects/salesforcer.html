@@ -3,10 +3,11 @@ title: "salesforcer"
 description: "An R Package for the Salesforce APIs"
 author: "Steven M. Mortimer"
 tags:
- - r-code
- - crm
- - salesforce
-date: 2019-07-26
+  - r-code
+  - salesforce
+  - CRAN
+  - CRM
+date: 2020-07-19
 output:
   blogdown::html_page:
     toc: true
@@ -34,8 +35,8 @@ output:
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>The <strong>salesforcer</strong> package is the R implementation of the Salesforce platform APIs.
-I created the package to build upon the functionality provided in the <strong>RForcecom</strong>
+<p>The {salesforcer} package is the R implementation of the Salesforce platform APIs.
+I created the package to build upon the functionality provided in the {RForcecom}
 package by including calls from more APIs (REST, SOAP, Bulk, and Metadata) along with
 following more tidy data principles when wrangling data from the APIs.</p>
 <p><img alt="GitHub - salesforcer" style="display:inline-block;float:left;vertical-align:text-top;margin-right:10px;margin-left:0px;margin-top:0px;margin-bottom:0px;" src="/img/github-25px.png" />
@@ -46,18 +47,34 @@ View source code on GitHub at: <a target="_blank" href="https://github.com/Steve
 <p>This R package supports a variety of Salesforce API operations and more will be added.
 Package features include:</p>
 <ul>
-<li>OAuth 2.0 (Single Sign On) and Basic (Username-Password) Authentication methods (<code>sf_auth()</code>)</li>
-<li>CRUD (Create, Retrieve, Update, Delete) methods for records using the SOAP, REST, and Bulk APIs</li>
-<li>Query records via the SOAP, REST, and Bulk 1.0 APIs using <code>sf_query()</code></li>
-<li>Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata API with:
+<li>OAuth 2.0 (Single Sign On) and Basic (Username-Password) Authentication
+methods (<code>sf_auth()</code>)</li>
+<li>CRUD (Create, Retrieve, Update, Delete) methods for records using the SOAP,
+REST, and Bulk APIs</li>
+<li>Query records via the SOAP, REST, Bulk 1.0, and Bulk 2.0 APIs using <code>sf_query()</code></li>
+<li>Manage and execute reports and dashboards with:
 <ul>
-<li><code>sf_describe_objects()</code>, <code>sf_create_metadata()</code>, <code>sf_update_metadata()</code></li>
+<li><code>sf_list_reports()</code>, <code>sf_create_report()</code>, <code>sf_run_report()</code>, and more</li>
+</ul></li>
+<li>Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata
+API with:
+<ul>
+<li><code>sf_describe_objects()</code>, <code>sf_create_metadata()</code>, <code>sf_update_metadata()</code>, and more</li>
 </ul></li>
 <li>Utilize backwards compatible functions for the <strong>RForcecom</strong> package, such as:
 <ul>
-<li><code>rforcecom.login()</code>, <code>rforcecom.query()</code>, <code>rforcecom.create()</code>, <code>rforcecom.update()</code></li>
+<li><code>rforcecom.login()</code>, <code>rforcecom.getObjectDescription()</code>, <code>rforcecom.query()</code>,
+<code>rforcecom.create()</code></li>
 </ul></li>
 <li>Basic utility calls (<code>sf_user_info()</code>, <code>sf_server_timestamp()</code>, <code>sf_list_objects()</code>)</li>
+<li>Functions to assist with master data managment (MDM) or data integrity of
+records by finding duplicates (<code>sf_find_duplicates()</code>, <code>sf_find_duplicates_by_id()</code>),
+merging records (<code>sf_merge()</code>), and converting leads (<code>sf_convert_lead()</code>)</li>
+<li>Recover (<code>sf_undelete()</code>) or delete from the Recycle Bin (<code>sf_empty_recycle_bin()</code>)
+and list ids of records deleted (<code>sf_get_deleted()</code>) or updated (<code>sf_get_updated()</code>)
+within a specific timeframe</li>
+<li>Passing API call control parameters such as, “All or None”, “Duplicate Rule”,
+“Assignment Rule” execution and many more!</li>
 </ul>
 </div>
 <div id="quickstart-guide" class="section level2">
@@ -73,7 +90,7 @@ devtools::install_github(&quot;StevenMMortimer/salesforcer&quot;)</code></pre>
 </div>
 <div id="authentication" class="section level3">
 <h3>Authentication</h3>
-<p>The <strong>salesforcer</strong> package provides two methods to authenticate:</p>
+<p>The {salesforcer} package provides two methods to authenticate:</p>
 <ol style="list-style-type: decimal">
 <li>OAuth 2.0</li>
 <li>Basic Username-Password with Security Token</li>
@@ -95,7 +112,7 @@ sf_auth(username = &quot;test@gmail.com&quot;,
 </div>
 <div id="support-for-multiple-apis" class="section level3">
 <h3>Support for Multiple APIs</h3>
-<p>The <strong>salesforcer</strong> package is unique in that it provides a common interface to
+<p>The {salesforcer} package is unique in that it provides a common interface to
 all of the REST, SOAP, and Bulk APIs. If you would like to create a set of records,
 then you would use the same R function, <code>sf_create()</code>, in the same way and just
 change the function argument called <code>api_type</code>.</p>
@@ -107,11 +124,11 @@ new_contacts &lt;- tibble(FirstName = rep(&quot;Test&quot;, n),
 # using the REST API
 rest_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;REST&quot;)
 rest_records
-#&gt; # A tibble: 2 x 3
-#&gt;   id                 success errors    
-#&gt;   &lt;chr&gt;              &lt;lgl&gt;   &lt;list&gt;    
-#&gt; 1 0033s00000zLbIqAAK TRUE    &lt;list [0]&gt;
-#&gt; 2 0033s00000zLbIrAAK TRUE    &lt;list [0]&gt;
+#&gt; # A tibble: 2 x 2
+#&gt;   id                 success
+#&gt;   &lt;chr&gt;              &lt;lgl&gt;  
+#&gt; 1 0033s000013Xx6vAAC TRUE   
+#&gt; 2 0033s000013Xx6wAAC TRUE
 
 # using the REST API
 soap_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;SOAP&quot;)
@@ -119,8 +136,8 @@ soap_records
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s00000zLbIvAAK TRUE   
-#&gt; 2 0033s00000zLbIwAAK TRUE
+#&gt; 1 0033s000013XwYGAA0 TRUE   
+#&gt; 2 0033s000013XwYHAA0 TRUE
 
 # using the Bulk 1.0 API
 bulk_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;Bulk 1.0&quot;)
@@ -128,8 +145,8 @@ bulk_records
 #&gt; # A tibble: 2 x 4
 #&gt;   Id                 Success Created Error
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;
-#&gt; 1 0033s00000zLbJ0AAK TRUE    TRUE    NA   
-#&gt; 2 0033s00000zLbJ1AAK TRUE    TRUE    NA</code></pre>
+#&gt; 1 0033s000013Xx70AAC TRUE    TRUE    NA   
+#&gt; 2 0033s000013Xx71AAC TRUE    TRUE    NA</code></pre>
 <p>This form is especially useful when switching between the REST and Bulk APIs where
 if you start dealing with larger and larger datasets, then you can switch code
 easily to the Bulk API. <strong>Note</strong>: The Bulk 2.0 API does NOT guarantee the order of
@@ -142,12 +159,12 @@ which IDs were successfully deleted.</p>
 </div>
 <div id="support-for-metadata" class="section level3">
 <h3>Support for Metadata</h3>
-<p>The <strong>salesforcer</strong> package also supports the creating, editing, and deleting of
+<p>The {salesforcer} package also supports the creating, editing, and deleting of
 Salesforce metadata. Metadata refers to the configuration of “objects” within Salesforce.
 An object could be a standard or new type of record. For example, the Metadata API can
 configuring which fields are captured on an Account or whether they should be displayed on the page.
 Even more complex configurations, such as, workflows and triggers can be configured
-using the Metadata API. The support for the Metadata API in <strong>salesforcer</strong> is experimental,
+using the Metadata API. The support for the Metadata API in {salesforcer} is experimental,
 so please use at your own risk and consult the appropriate Salesforce resources
 when trying to use. One common use case for the Metadata API
 is retrieving information about an object (fields, permissions, etc.). You can use
@@ -196,20 +213,15 @@ values of a field with type “Picklist”. You can get that information using
 where we get a <code>tbl_df</code> with one row for each field on the Account object:</p>
 <pre class="r"><code>acct_fields &lt;- sf_describe_object_fields(&#39;Account&#39;)
 acct_fields %&gt;% select(name, label, length, soapType, type)
-#&gt; # A tibble: 67 x 5
-#&gt;    name              label                   length soapType    type     
-#&gt;    &lt;chr&gt;             &lt;chr&gt;                   &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;    
-#&gt;  1 Id                Account ID              18     tns:ID      id       
-#&gt;  2 IsDeleted         Deleted                 0      xsd:boolean boolean  
-#&gt;  3 MasterRecordId    Master Record ID        18     tns:ID      reference
-#&gt;  4 Name              Account Name            255    xsd:string  string   
-#&gt;  5 Type              Account Type            40     xsd:string  picklist 
-#&gt;  6 ParentId          Parent Account ID       18     tns:ID      reference
-#&gt;  7 BillingStreet     Billing Street          255    xsd:string  textarea 
-#&gt;  8 BillingCity       Billing City            40     xsd:string  string   
-#&gt;  9 BillingState      Billing State/Province  80     xsd:string  string   
-#&gt; 10 BillingPostalCode Billing Zip/Postal Code 20     xsd:string  string   
-#&gt; # … with 57 more rows
+#&gt; # A tibble: 69 x 5
+#&gt;   name           label            length soapType    type     
+#&gt;   &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;    
+#&gt; 1 Id             Account ID       18     tns:ID      id       
+#&gt; 2 IsDeleted      Deleted          0      xsd:boolean boolean  
+#&gt; 3 MasterRecordId Master Record ID 18     tns:ID      reference
+#&gt; 4 Name           Account Name     255    xsd:string  string   
+#&gt; 5 Type           Account Type     40     xsd:string  picklist 
+#&gt; # … with 64 more rows
 # show the picklist selection options for the Account Type field
 acct_fields %&gt;% 
   filter(label == &quot;Account Type&quot;) %&gt;% 
@@ -223,18 +235,17 @@ acct_fields %&gt;%
 #&gt; 3 TRUE   FALSE        Customer - Channel         Customer - Channel        
 #&gt; 4 TRUE   FALSE        Channel Partner / Reseller Channel Partner / Reseller
 #&gt; 5 TRUE   FALSE        Installation Partner       Installation Partner      
-#&gt; 6 TRUE   FALSE        Technology Partner         Technology Partner        
-#&gt; 7 TRUE   FALSE        Other                      Other</code></pre>
+#&gt; # … with 2 more rows</code></pre>
 </div>
 <div id="extension-of-the-rforcecom-package" class="section level3">
 <h3>Extension of the RForcecom Package</h3>
-<p>The <strong>salesforcer</strong> package can be seen as an extension of the popular <strong>RForcecom</strong>
+<p>The {salesforcer} package can be seen as an extension of the popular {RForcecom}
 package that originally introduced R users to the Salesforce APIs. However, there are
-a few key differences. First, <strong>salesforcer</strong> supports more APIs. It allows for the same
+a few key differences. First, {salesforcer} supports more APIs. It allows for the same
 methods to utilize either the REST or SOAP APIs. It also supports the newer version of the
 Bulk API called “Bulk 2.0” and a limited set of functionality from the Metadata API.
 There are future plans to incorporate the Reporting and Analytics APIs. Second,
-<strong>salesforcer</strong> makes it easier to submit multiple records at once by supplying a
+{salesforcer} makes it easier to submit multiple records at once by supplying a
 <code>data.frame</code> instead of a named vector.</p>
 <pre class="r"><code>n &lt;- 2
 new_contacts &lt;- tibble(FirstName = rep(&quot;Test&quot;, n),
@@ -250,8 +261,8 @@ for(i in 1:nrow(new_contacts)){
 }
 rforcecom_results
 #&gt;                   id success
-#&gt; 1 0033s00000zLbJ5AAK    true
-#&gt; 2 0033s00000zLbJAAA0    true
+#&gt; 1 0033s000013Xx7UAAS    true
+#&gt; 2 0033s000013Xx7ZAAS    true
 
 # the salesforcer way
 salesforcer_results &lt;- salesforcer::sf_create(new_contacts, object_name=&quot;Contact&quot;)
@@ -259,18 +270,18 @@ salesforcer_results
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s00000zLbJFAA0 TRUE   
-#&gt; 2 0033s00000zLbJGAA0 TRUE</code></pre>
+#&gt; 1 0033s000013Xx7eAAC TRUE   
+#&gt; 2 0033s000013Xx7fAAC TRUE</code></pre>
 <p>Finally, the package is meant to adhere to principles outlined by the <strong>tidyverse</strong>
 package. Function names are snake case and data is returned as <code>tbl_df</code> objects.
-Do not worry if you are fully utilizing the <strong>RForcecom</strong> package. Many of those
-functions are included in the <strong>salesforcer</strong> package so you can drop the <strong>RForcecom</strong>
+Do not worry if you are fully utilizing the {RForcecom} package. Many of those
+functions are included in the {salesforcer} package so you can drop the {RForcecom}
 dependency but not have to change all of your code at once.</p>
 </div>
 </div>
 <div id="check-out-the-tests" class="section level2">
 <h2>Check out the Tests</h2>
-<p>The <strong>salesforcer</strong> package has quite a bit of unit test coverage to track any code changes
+<p>The {salesforcer} package has quite a bit of unit test coverage to track any code changes
 and ensure package reliabilty. These tests are an excellent source of examples because
 they cover most all cases of utilizing the package functions.</p>
 <p>For example, if you are not sure on how to upsert records using the Bulk API just
@@ -283,14 +294,14 @@ REST and SOAP APIs as well.</p>
 <div id="credits" class="section level2">
 <h2>Credits</h2>
 <p>This application uses other open source software components. The authentication
-components are mostly verbatim copies of the routines established in the <strong>googlesheets</strong>
+components are mostly verbatim copies of the routines established in the {googlesheets}
 package (<a target="_blank" href="https://github.com/jennybc/googlesheets">https://github.com/jennybc/googlesheets</a>).
-Methods are inspired by the <strong>RForcecom</strong> package (<a target="_blank" href="https://github.com/hiratake55/RForcecom">https://github.com/hiratake55/RForcecom</a>).
+Methods are inspired by the {RForcecom} package (<a target="_blank" href="https://github.com/hiratake55/RForcecom">https://github.com/hiratake55/RForcecom</a>).
 We acknowledge and are grateful to these developers for their contributions to open source.</p>
 </div>
 <div id="license" class="section level2">
 <h2>License</h2>
-<p>The <strong>salesforcer</strong> package is licensed under the MIT License
+<p>The {salesforcer} package is licensed under the MIT License
 (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)</p>
 </div>
 <div id="questions" class="section level2">

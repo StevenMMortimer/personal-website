@@ -6,8 +6,8 @@ slug: setting-up-vs-code-for-python-development-like-rstudio
 categories:
   - R
 tags:
-  - ide
-  - python
+  - IDE
+  - Python
   - tools
 description:  "A walkthrough on configuring VS Code to function like RStudio to make it easier to switch between Python and R code development."
 image: "blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png"
@@ -16,6 +16,7 @@ output:
 ---
 
 ![](/blog/setting-up-vs-code-for-python-development-like-rstudio/vscode-screenshot.png)
+
 In this article I will highlight the features of VS Code that match RStudio
 exactly, such as the "interactive notebook window" (called the Console in R) or
 the "variable explorer" (like running `View()` on a data frame in RStudio). At
@@ -51,7 +52,7 @@ You may know that the default theme in RStudio is "Textmate". This is found in
 can install this with the <a target="_blank"
 href="https://marketplace.visualstudio.com/items?itemName=gerane.Theme-textmate">Textmate theme extension</a>.
 
-<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/textmate-theme.png" style="display:block;margin:auto;height:300px;" />
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/textmate-theme.png" style="display:block;margin:auto;max-height:300px;" />
 
 I tend to not change much beyond the default RStudio installation just so that I
 don't need to maintain a unique and unfamiliar setup compared to other
@@ -130,7 +131,7 @@ the `+` sign, which is about the only difference. Everything else is the similar
 as far as clicking on the files to see "diffs", writing the commit message, and
 pushing code to a remote repository. 
 
-<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/git-integration.png" style="display:block;margin:auto;height:200px;" />
+<img src="/blog/setting-up-vs-code-for-python-development-like-rstudio/git-integration.png" style="display:block;margin:auto;max-height:200px;" />
 <div style="text-align:center">
 <a target="_blank" href="https://code.visualstudio.com/docs/editor/versioncontrol#_git-support">https://code.visualstudio.com/docs/editor/versioncontrol#_git-support</a>
 </div>
@@ -179,6 +180,8 @@ very similar workflows, right down to the keyboard shortcuts. The only challenge
 you may have left is figuring out how to make your **pandas** code as legible and 
 well organized as **dplyr** code... but that is for another day. (Hint: It's possible 
 with a strong commitment to method chaining).
+
+----
 
 ## Setup Files and Scripts
 
@@ -410,9 +413,12 @@ configure the shortcuts that you use most often.
 ### Extensions Installation Script
 
 You can run each of the lines below in your Terminal or other Command Prompt
-after installing VS Code in order to install the extensions. Or you can search
-for them in the VS Code Marketplace (more detail is available here: 
-<a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>)
+after installing VS Code in order to install the extensions. **NOTE**: This does 
+require having the `code` command in your PATH. On Mac use the following instructions 
+to install 'code' command in PATH: <a target="_blank" href="https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line">https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line</a>. 
+Alternatively, you can search for extensions in the VS Code Marketplace and install 
+from there (more detail is available here: 
+<a target="_blank" href="https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions">https://code.visualstudio.com/docs/editor/extension-gallery#_browse-for-extensions</a>).
 
 ```sh
 # editor visual aids

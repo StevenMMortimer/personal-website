@@ -3,15 +3,15 @@ title: "salesforcer"
 description: "An R Package for the Salesforce APIs"
 author: "Steven M. Mortimer"
 tags:
- - r-code
- - crm
- - salesforce
-date: 2019-07-26
+  - r-code
+  - salesforce
+  - CRAN
+  - CRM
+date: 2020-07-19
 output:
   blogdown::html_page:
     toc: true
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -20,12 +20,13 @@ knitr::opts_chunk$set(
   cache = FALSE,
   fig.align = "center"
 )
+options(tibble.print_min = 5L, tibble.print_max = 5L)
 ```
 
 ## Overview
 
-The **salesforcer** package is the R implementation of the Salesforce platform APIs. 
-I created the package to build upon the functionality provided in the **RForcecom** 
+The {salesforcer} package is the R implementation of the Salesforce platform APIs. 
+I created the package to build upon the functionality provided in the {RForcecom} 
 package by including calls from more APIs (REST, SOAP, Bulk, and Metadata) along with 
 following more tidy data principles when wrangling data from the APIs.
 
@@ -37,14 +38,28 @@ View source code on GitHub at: <a target="_blank" href="https://github.com/Steve
 This R package supports a variety of Salesforce API operations and more will be added. 
 Package features include:
 
-  * OAuth 2.0 (Single Sign On) and Basic (Username-Password) Authentication methods (`sf_auth()`)
-  * CRUD (Create, Retrieve, Update, Delete) methods for records using the SOAP, REST, and Bulk APIs 
-  * Query records via the SOAP, REST, and Bulk 1.0 APIs using `sf_query()`
-  * Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata API with: 
-    * `sf_describe_objects()`, `sf_create_metadata()`, `sf_update_metadata()`
+  * OAuth 2.0 (Single Sign On) and Basic (Username-Password) Authentication 
+  methods (`sf_auth()`)
+  * CRUD (Create, Retrieve, Update, Delete) methods for records using the SOAP, 
+  REST, and Bulk APIs 
+  * Query records via the SOAP, REST, Bulk 1.0, and Bulk 2.0 APIs using `sf_query()`
+  * Manage and execute reports and dashboards with:  
+    * `sf_list_reports()`, `sf_create_report()`, `sf_run_report()`, and more
+  * Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata 
+  API with:  
+    * `sf_describe_objects()`, `sf_create_metadata()`, `sf_update_metadata()`, and more
   * Utilize backwards compatible functions for the **RForcecom** package, such as: 
-    * `rforcecom.login()`, `rforcecom.query()`, `rforcecom.create()`, `rforcecom.update()`
+    * `rforcecom.login()`, `rforcecom.getObjectDescription()`, `rforcecom.query()`, 
+    `rforcecom.create()`
   * Basic utility calls (`sf_user_info()`, `sf_server_timestamp()`, `sf_list_objects()`)
+  * Functions to assist with master data managment (MDM) or data integrity of 
+  records by finding duplicates (`sf_find_duplicates()`, `sf_find_duplicates_by_id()`), 
+  merging records (`sf_merge()`), and converting leads (`sf_convert_lead()`)
+  * Recover (`sf_undelete()`) or delete from the Recycle Bin (`sf_empty_recycle_bin()`) 
+  and list ids of records deleted (`sf_get_deleted()`) or updated (`sf_get_updated()`) 
+  within a specific timeframe
+  * Passing API call control parameters such as, "All or None", "Duplicate Rule", 
+  "Assignment Rule" execution and many more!
 
 ## Quickstart Guide
 
@@ -61,7 +76,7 @@ devtools::install_github("StevenMMortimer/salesforcer")
 
 ### Authentication
 
-The **salesforcer** package provides two methods to authenticate:  
+The {salesforcer} package provides two methods to authenticate:  
 
   1. OAuth 2.0
   2. Basic Username-Password with Security Token
@@ -74,15 +89,17 @@ will be passed to the API for each call and refreshed if necessary.
 ```{r auth, include = FALSE}
 suppressWarnings(suppressMessages(library(tidyverse)))
 library(salesforcer)
-token_path <- here::here("blogdown", "projects", "salesforcer_token.rds")
-suppressMessages(sf_auth(token = token_path, verbose = FALSE))
-options_path <- here::here("blogdown", "projects", "salesforcer_test_settings.rds")
-salesforcer_test_settings <- readRDS(options_path)
-username <- salesforcer_test_settings$username
-password <- salesforcer_test_settings$password
-security_token <- salesforcer_test_settings$security_token
-session <- RForcecom::rforcecom.login(username, paste0(password, security_token), 
-                                      apiVersion=getOption("salesforcer.api_version"))
+username <- Sys.getenv("SALESFORCER_USERNAME")
+password <- Sys.getenv("SALESFORCER_PASSWORD")
+security_token <- Sys.getenv("SALESFORCER_SECURITY_TOKEN")
+
+sf_auth(username = username,
+        password = password,
+        security_token = security_token)
+
+session <- RForcecom::rforcecom.login(username, 
+                                      paste0(password, security_token), 
+                                      apiVersion = getOption("salesforcer.api_version"))
 ```
 
 ```{r, eval=FALSE}
@@ -100,7 +117,7 @@ sf_auth(username = "test@gmail.com",
 
 ### Support for Multiple APIs
 
-The **salesforcer** package is unique in that it provides a common interface to 
+The {salesforcer} package is unique in that it provides a common interface to 
 all of the REST, SOAP, and Bulk APIs. If you would like to create a set of records, 
 then you would use the same R function, `sf_create()`, in the same way and just 
 change the function argument called `api_type`.
@@ -142,12 +159,12 @@ which IDs were successfully deleted.
 
 ### Support for Metadata
 
-The **salesforcer** package also supports the creating, editing, and deleting of 
+The {salesforcer} package also supports the creating, editing, and deleting of 
 Salesforce metadata. Metadata refers to the configuration of "objects" within Salesforce. 
 An object could be a standard or new type of record. For example, the Metadata API can 
 configuring which fields are captured on an Account or whether they should be displayed on the page. 
 Even more complex configurations, such as, workflows and triggers can be configured 
-using the Metadata API. The support for the Metadata API in **salesforcer** is experimental, 
+using the Metadata API. The support for the Metadata API in {salesforcer} is experimental, 
 so please use at your own risk and consult the appropriate Salesforce resources 
 when trying to use. One common use case for the Metadata API 
 is retrieving information about an object (fields, permissions, etc.). You can use 
@@ -182,13 +199,13 @@ acct_fields %>%
 
 ### Extension of the RForcecom Package
 
-The **salesforcer** package can be seen as an extension of the popular **RForcecom** 
+The {salesforcer} package can be seen as an extension of the popular {RForcecom} 
 package that originally introduced R users to the Salesforce APIs. However, there are 
-a few key differences. First, **salesforcer** supports more APIs. It allows for the same 
+a few key differences. First, {salesforcer} supports more APIs. It allows for the same 
 methods to utilize either the REST or SOAP APIs. It also supports the newer version of the 
 Bulk API called "Bulk 2.0" and a limited set of functionality from the Metadata API. 
 There are future plans to incorporate the Reporting and Analytics APIs. Second, 
-**salesforcer** makes it easier to submit multiple records at once by supplying a 
+{salesforcer} makes it easier to submit multiple records at once by supplying a 
 `data.frame` instead of a named vector.
 
 ```{r not-looping-to-create, warning=FALSE}
@@ -218,13 +235,13 @@ deleted_records <- sf_delete(salesforcer_results$id)
 
 Finally, the package is meant to adhere to principles outlined by the **tidyverse** 
 package. Function names are snake case and data is returned as `tbl_df` objects. 
-Do not worry if you are fully utilizing the **RForcecom** package. Many of those 
-functions are included in the **salesforcer** package so you can drop the **RForcecom** 
+Do not worry if you are fully utilizing the {RForcecom} package. Many of those 
+functions are included in the {salesforcer} package so you can drop the {RForcecom} 
 dependency but not have to change all of your code at once.
 
 ## Check out the Tests
 
-The **salesforcer** package has quite a bit of unit test coverage to track any code changes 
+The {salesforcer} package has quite a bit of unit test coverage to track any code changes 
 and ensure package reliabilty. These tests are an excellent source of examples because 
 they cover most all cases of utilizing the package functions. 
 
@@ -239,14 +256,14 @@ REST and SOAP APIs as well.
 ## Credits
 
 This application uses other open source software components. The authentication 
-components are mostly verbatim copies of the routines established in the **googlesheets** 
+components are mostly verbatim copies of the routines established in the {googlesheets} 
 package (<a target="_blank" href="https://github.com/jennybc/googlesheets">https://github.com/jennybc/googlesheets</a>). 
-Methods are inspired by the **RForcecom** package (<a target="_blank" href="https://github.com/hiratake55/RForcecom">https://github.com/hiratake55/RForcecom</a>). 
+Methods are inspired by the {RForcecom} package (<a target="_blank" href="https://github.com/hiratake55/RForcecom">https://github.com/hiratake55/RForcecom</a>). 
 We acknowledge and are grateful to these developers for their contributions to open source.
 
 ## License
 
-The **salesforcer** package is licensed under the MIT License 
+The {salesforcer} package is licensed under the MIT License 
 (<a target="_blank" href="http://choosealicense.com/licenses/mit/">http://choosealicense.com/licenses/mit/</a>)
   
 ## Questions

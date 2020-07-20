@@ -76,7 +76,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   highlightjsVersion = "10.1.1"
   highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
   highlightjsLang = ["r", "yml", "py", "sh", "json"]
-  highlightjsTheme = "github"
+  highlightjsTheme = "vs"
   
 [[menu.main]]
     name = "Blog"
