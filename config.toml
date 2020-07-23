@@ -75,7 +75,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 	# Highlight.js options
   highlightjsVersion = "10.1.1"
   highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
-  highlightjsLang = ["r", "yml", "py", "sh", "json"]
+  highlightjsLang = ["r", "yml", "py", "sh", "shell", "json"]
   highlightjsTheme = "vs"
   
 [[menu.main]]

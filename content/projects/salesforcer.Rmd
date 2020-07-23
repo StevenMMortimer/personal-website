@@ -48,11 +48,11 @@ Package features include:
   * Retrieve and modify metadata (Custom Objects, Fields, etc.) using the Metadata 
   API with:  
     * `sf_describe_objects()`, `sf_create_metadata()`, `sf_update_metadata()`, and more
-  * Utilize backwards compatible functions for the **RForcecom** package, such as: 
+  * Utilize backwards compatible functions for the {RForcecom} package, such as: 
     * `rforcecom.login()`, `rforcecom.getObjectDescription()`, `rforcecom.query()`, 
     `rforcecom.create()`
   * Basic utility calls (`sf_user_info()`, `sf_server_timestamp()`, `sf_list_objects()`)
-  * Functions to assist with master data managment (MDM) or data integrity of 
+  * Functions to assist with master data management (MDM) or data integrity of 
   records by finding duplicates (`sf_find_duplicates()`, `sf_find_duplicates_by_id()`), 
   merging records (`sf_merge()`), and converting leads (`sf_convert_lead()`)
   * Recover (`sf_undelete()`) or delete from the Recycle Bin (`sf_empty_recycle_bin()`) 
@@ -66,10 +66,10 @@ Package features include:
 ### Install salesforcer Library
 
 ```{r, eval = FALSE}
-# install from CRAN
+# install the current version from CRAN
 install.packages("salesforcer")
 
-# or get the latest version available on GitHub using the devtools package
+# or get the development version on GitHub
 # install.packages("devtools")
 devtools::install_github("StevenMMortimer/salesforcer")
 ```

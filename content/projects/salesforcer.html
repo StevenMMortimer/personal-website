@@ -13,12 +13,14 @@ output:
     toc: true
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#features">Features</a></li>
-<li><a href="#quickstart-guide">Quickstart Guide</a><ul>
+<li><a href="#quickstart-guide">Quickstart Guide</a>
+<ul>
 <li><a href="#install-salesforcer-library">Install salesforcer Library</a></li>
 <li><a href="#authentication">Authentication</a></li>
 <li><a href="#support-for-multiple-apis">Support for Multiple APIs</a></li>
@@ -61,13 +63,13 @@ API with:
 <ul>
 <li><code>sf_describe_objects()</code>, <code>sf_create_metadata()</code>, <code>sf_update_metadata()</code>, and more</li>
 </ul></li>
-<li>Utilize backwards compatible functions for the <strong>RForcecom</strong> package, such as:
+<li>Utilize backwards compatible functions for the {RForcecom} package, such as:
 <ul>
 <li><code>rforcecom.login()</code>, <code>rforcecom.getObjectDescription()</code>, <code>rforcecom.query()</code>,
 <code>rforcecom.create()</code></li>
 </ul></li>
 <li>Basic utility calls (<code>sf_user_info()</code>, <code>sf_server_timestamp()</code>, <code>sf_list_objects()</code>)</li>
-<li>Functions to assist with master data managment (MDM) or data integrity of
+<li>Functions to assist with master data management (MDM) or data integrity of
 records by finding duplicates (<code>sf_find_duplicates()</code>, <code>sf_find_duplicates_by_id()</code>),
 merging records (<code>sf_merge()</code>), and converting leads (<code>sf_convert_lead()</code>)</li>
 <li>Recover (<code>sf_undelete()</code>) or delete from the Recycle Bin (<code>sf_empty_recycle_bin()</code>)
@@ -81,10 +83,10 @@ within a specific timeframe</li>
 <h2>Quickstart Guide</h2>
 <div id="install-salesforcer-library" class="section level3">
 <h3>Install salesforcer Library</h3>
-<pre class="r"><code># install from CRAN
+<pre class="r"><code># install the current version from CRAN
 install.packages(&quot;salesforcer&quot;)
 
-# or get the latest version available on GitHub using the devtools package
+# or get the development version on GitHub
 # install.packages(&quot;devtools&quot;)
 devtools::install_github(&quot;StevenMMortimer/salesforcer&quot;)</code></pre>
 </div>
@@ -127,8 +129,8 @@ rest_records
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013Xx6vAAC TRUE   
-#&gt; 2 0033s000013Xx6wAAC TRUE
+#&gt; 1 0033s000013YPkFAAW TRUE   
+#&gt; 2 0033s000013YPkGAAW TRUE
 
 # using the REST API
 soap_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;SOAP&quot;)
@@ -136,8 +138,8 @@ soap_records
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013XwYGAA0 TRUE   
-#&gt; 2 0033s000013XwYHAA0 TRUE
+#&gt; 1 0033s000013YPiAAAW TRUE   
+#&gt; 2 0033s000013YPiBAAW TRUE
 
 # using the Bulk 1.0 API
 bulk_records &lt;- sf_create(new_contacts, object_name=&quot;Contact&quot;, api_type=&quot;Bulk 1.0&quot;)
@@ -145,8 +147,8 @@ bulk_records
 #&gt; # A tibble: 2 x 4
 #&gt;   Id                 Success Created Error
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;   &lt;lgl&gt;   &lt;lgl&gt;
-#&gt; 1 0033s000013Xx70AAC TRUE    TRUE    NA   
-#&gt; 2 0033s000013Xx71AAC TRUE    TRUE    NA</code></pre>
+#&gt; 1 0033s000013YPkKAAW TRUE    TRUE    NA   
+#&gt; 2 0033s000013YPkLAAW TRUE    TRUE    NA</code></pre>
 <p>This form is especially useful when switching between the REST and Bulk APIs where
 if you start dealing with larger and larger datasets, then you can switch code
 easily to the Bulk API. <strong>Note</strong>: The Bulk 2.0 API does NOT guarantee the order of
@@ -229,12 +231,12 @@ acct_fields %&gt;%
 #&gt; [[1]]
 #&gt; # A tibble: 7 x 4
 #&gt;   active defaultValue label                      value                     
-#&gt;   &lt;lgl&gt;  &lt;lgl&gt;        &lt;chr&gt;                      &lt;chr&gt;                     
-#&gt; 1 TRUE   FALSE        Prospect                   Prospect                  
-#&gt; 2 TRUE   FALSE        Customer - Direct          Customer - Direct         
-#&gt; 3 TRUE   FALSE        Customer - Channel         Customer - Channel        
-#&gt; 4 TRUE   FALSE        Channel Partner / Reseller Channel Partner / Reseller
-#&gt; 5 TRUE   FALSE        Installation Partner       Installation Partner      
+#&gt;   &lt;chr&gt;  &lt;chr&gt;        &lt;chr&gt;                      &lt;chr&gt;                     
+#&gt; 1 true   false        Prospect                   Prospect                  
+#&gt; 2 true   false        Customer - Direct          Customer - Direct         
+#&gt; 3 true   false        Customer - Channel         Customer - Channel        
+#&gt; 4 true   false        Channel Partner / Reseller Channel Partner / Reseller
+#&gt; 5 true   false        Installation Partner       Installation Partner      
 #&gt; # … with 2 more rows</code></pre>
 </div>
 <div id="extension-of-the-rforcecom-package" class="section level3">
@@ -261,8 +263,8 @@ for(i in 1:nrow(new_contacts)){
 }
 rforcecom_results
 #&gt;                   id success
-#&gt; 1 0033s000013Xx7UAAS    true
-#&gt; 2 0033s000013Xx7ZAAS    true
+#&gt; 1 0033s000013YPkPAAW    true
+#&gt; 2 0033s000013YPkUAAW    true
 
 # the salesforcer way
 salesforcer_results &lt;- salesforcer::sf_create(new_contacts, object_name=&quot;Contact&quot;)
@@ -270,8 +272,8 @@ salesforcer_results
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013Xx7eAAC TRUE   
-#&gt; 2 0033s000013Xx7fAAC TRUE</code></pre>
+#&gt; 1 0033s000013YPkZAAW TRUE   
+#&gt; 2 0033s000013YPkaAAG TRUE</code></pre>
 <p>Finally, the package is meant to adhere to principles outlined by the <strong>tidyverse</strong>
 package. Function names are snake case and data is returned as <code>tbl_df</code> objects.
 Do not worry if you are fully utilizing the {RForcecom} package. Many of those
