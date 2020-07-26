@@ -10,7 +10,7 @@ categories:
 tags:
   - r-code
   - CRAN
-  - github
+  - GitHub
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
 image: "blog/most-starred-r-packages-on-github/star-download-relationship.png"
 output:

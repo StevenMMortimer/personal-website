@@ -1,7 +1,7 @@
 ---
 title: salesforcer 0.2.0 - Relationship Queries and the Reports API
 author: Steven M. Mortimer
-date: '2020-07-24T13:00:00Z'
+date: '2020-07-28T12:15:21Z'
 slug: salesforcer-0.2.0---relationship-queries-and-the-reports-api
 categories:
   - R
@@ -17,7 +17,7 @@ output:
 draft: true
 ---
 
-![](/blog/salesforcer-0.2.0---relationship-queries-and-the-reports-api/salesforcer-logo.png)
+<img src="/blog/salesforcer-0.2.0---relationship-queries-and-the-reports-api/salesforcer-logo.png" style="display:block;margin:auto;max-height:300px;" />
 
 The latest version of the {salesforcer} package (v0.2.0) is now available on CRAN 
 and ready to help you have better access to data in your Salesforce Org. Along 
@@ -80,10 +80,10 @@ manage them in your Org.
 In Salesforce there is a dedicated page to displaying the list of reports in your 
 Org. It typically follows the pattern: `https://na1.salesforce.com/00O/o` 
 (replace `na1` with your server instance). When you click on a report in the GUI 
-you should see the report's results. Below is a screenshot of how a report may look in 
-your Org (note the report Id in the URL bar): 
+you should see the report's results. Below is a screenshot of how a report may 
+look in your Org (note the report Id in the URL bar): 
 
-![](/blog/salesforcer-0.2.0---relationship-queries-and-the-reports-api/report-screenshot.png)
+<img src="/blog/salesforcer-0.2.0---relationship-queries-and-the-reports-api/report-screenshot.png" style="display:block;margin:auto;max-height:500px;" />
 
 The report Id above (`"00O3s000006tE7zEAE"`) is the only information needed to pull 
 those same results from an R session, like so: 

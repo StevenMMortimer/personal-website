@@ -6,8 +6,8 @@ slug: 5-steps-to-change-github-default-branch-from-master-to-main
 categories:
   - R
 tags:
-  - tools
   - GitHub
+  - tools
 description: "Follow these easy 5 steps to change the default branch name in your repo to 'main' instead of 'master' to show support for removing divisive language in tech."
 image: "blog/5-steps-to-change-github-default-branch-from-master-to-main/master-to-main.png"
 output:
@@ -27,13 +27,13 @@ listed in order of publishing date:
 
   * <a target="_blank" href="https://www.hanselman.com/blog/EasilyRenameYourGitDefaultBranchFromMasterToMain.aspx"><i>Easily rename your Git default branch from master to main</i></a> by Scott Hanselman
   * <a target="_blank" href="https://dev.to/rhymu8354/git-renaming-the-master-branch-137b"><i>Git: Renaming the "master" branch</i></a> by Richard Walters
-  * <a target="_blank" href="https://jarv.is/notes/github-rename-master/"><i>How To: Safely Rename master Branch on GitHub</i></a> by Jake Jarvis
-  
+  * <a target="_blank" href="https://jarv.is/notes/github-rename-master/"><i>How To: Safely Rename master Branch on GitHub</i></a> by Jake Jarvis  
+
 Eugene Shen even made a small web app to automate the entire process for you that is 
-available at: (<a target="_blank" href="https://eyqs.ca/tools/rename/">https://eyqs.ca/tools/rename/</a>).
-I thought I'd share the 5 simple steps that I tested and used to make the change in **under 1
-minute**. Yes, you can do this in under a minute, so what's stopping you? If you 
-are concerned about compatibility, GitHub is providing updates on their 
+available at: (<a target="_blank" href="https://eyqs.ca/tools/rename/">https://eyqs.ca/tools/rename/</a>). 
+I thought I'd share the 5 simple steps that I tested and used to make the change 
+in **under 1 minute**. Yes, you can do this in under a minute, so what's stopping 
+you? If you are concerned about compatibility, GitHub is providing updates on their 
 renaming efforts here: <a target="_blank" href="https://github.com/github/renaming">https://github.com/github/renaming</a>.
 
 Below are screenshots to walk you through each step. In addition, there is a block 

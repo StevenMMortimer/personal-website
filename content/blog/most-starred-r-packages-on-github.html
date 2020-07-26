@@ -10,13 +10,14 @@ categories:
 tags:
   - r-code
   - CRAN
-  - github
+  - GitHub
 description: "This post analyzes how many stars an R package repository on GitHub receives relative to its number of CRAN downloads."
 image: "blog/most-starred-r-packages-on-github/star-download-relationship.png"
 output:
   blogdown::html_page
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
@@ -45,20 +46,25 @@ pkgs &lt;- pkgs[,unique(names(pkgs))]
 pkgs %&gt;%
   select(Package, Version, Author, BugReports, URL) %&gt;%
   as.tibble()
-#&gt; # A tibble: 12,662 x 5
-#&gt;    Package     Version Author                  BugReports     URL         
-#&gt;    &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;                   &lt;chr&gt;          &lt;chr&gt;       
-#&gt;  1 A3          1.0.0   Scott Fortmann-Roe      &lt;NA&gt;           &lt;NA&gt;        
-#&gt;  2 abbyyR      0.5.4   Gaurav Sood [aut, cre]  http://github… http://gith…
-#&gt;  3 abc         2.1     &quot;Csillery Katalin [aut… &lt;NA&gt;           &lt;NA&gt;        
-#&gt;  4 abc.data    1.0     &quot;Csillery Katalin [aut… &lt;NA&gt;           &lt;NA&gt;        
-#&gt;  5 ABC.RAP     0.9.0   Abdulmonem Alsaleh [cr… &lt;NA&gt;           &lt;NA&gt;        
-#&gt;  6 ABCanalysis 1.2.1   Michael Thrun, Jorn Lo… &lt;NA&gt;           https://www…
-#&gt;  7 abcdeFBA    0.4     Abhilash Gangadharan, … &lt;NA&gt;           &lt;NA&gt;        
-#&gt;  8 ABCoptim    0.15.0  &quot;George Vega Yon [aut,… &lt;NA&gt;           http://gith…
-#&gt;  9 ABCp2       1.2     &quot;M. Catherine Duryea, … &lt;NA&gt;           &lt;NA&gt;        
-#&gt; 10 abcrf       1.7     &quot;Jean-Michel Marin [au… &lt;NA&gt;           &lt;NA&gt;        
-#&gt; # ... with 12,652 more rows</code></pre>
+#&gt; Warning: `as.tibble()` is deprecated as of tibble 2.0.0.
+#&gt; Please use `as_tibble()` instead.
+#&gt; The signature and semantics have changed, see `?as_tibble`.
+#&gt; This warning is displayed once every 8 hours.
+#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.
+#&gt; # A tibble: 16,070 x 5
+#&gt;    Package  Version Author                  BugReports          URL             
+#&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                   &lt;chr&gt;               &lt;chr&gt;           
+#&gt;  1 A3       1.0.0   &quot;Scott Fortmann-Roe&quot;    &lt;NA&gt;                &lt;NA&gt;            
+#&gt;  2 aaSEA    1.1.0   &quot;Raja Sekhara Reddy D.… &lt;NA&gt;                &lt;NA&gt;            
+#&gt;  3 AATtools 0.0.1   &quot;Sercan Kahveci [aut, … https://github.com… &lt;NA&gt;            
+#&gt;  4 ABACUS   1.0.0   &quot;Mintu Nath [aut, cre]&quot; &lt;NA&gt;                https://shiny.a…
+#&gt;  5 abbyyR   0.5.5   &quot;Gaurav Sood [aut, cre… http://github.com/… http://github.c…
+#&gt;  6 abc      2.1     &quot;Csillery Katalin [aut… &lt;NA&gt;                &lt;NA&gt;            
+#&gt;  7 abc.data 1.0     &quot;Csillery Katalin [aut… &lt;NA&gt;                &lt;NA&gt;            
+#&gt;  8 ABC.RAP  0.9.0   &quot;Abdulmonem Alsaleh [c… &lt;NA&gt;                &lt;NA&gt;            
+#&gt;  9 abcADM   1.0     &quot;Zongjun Liu [aut],\n … &lt;NA&gt;                &lt;NA&gt;            
+#&gt; 10 ABCanal… 1.2.1   &quot;Michael Thrun, Jorn L… &lt;NA&gt;                https://www.uni…
+#&gt; # … with 16,060 more rows</code></pre>
 <p>From there I looked at the package description fields <code>"URL"</code> and <code>"BugReports"</code> to see
 if either contained “github.com”. It turns out that 3,718 of the packages (29.3%
 of the total) referenced GitHub. After retrieving the package metadata I pinged
