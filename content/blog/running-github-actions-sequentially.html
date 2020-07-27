@@ -21,7 +21,7 @@ output:
 <p><strong>TL;DR</strong>: If you need sequential execution in GitHub Actions consider these solutions:</p>
 <ul>
 <li><p><b>Sequential <u>steps</u></b>: Steps within a job are always executed sequentially!</p></li>
-<li><p><b>Sequential <u>jobs</u></b>: Set <code>max-parallel: 1</code> within the <a target="_blank" href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel"><code><u>jobs.strategy</u></code></a> element of the workflow.</p></li>
+<li><p><b>Sequential <u>jobs</u></b>: Set <code>max-parallel: 1</code> within the <a target="_blank" href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel"><code>jobs.strategy</code></a> element of the workflow.</p></li>
 <li><p><b>Sequential <u>workflows</u></b>: Use a <code>repository_dispatch</code> API call at the end of the workflow to trigger the next workflow (code available in the <a href="#an-example">An Example</a> section below).</p></li>
 </ul>
 <hr />
@@ -47,7 +47,7 @@ the <code>.github/workflows</code> folder in the top level of the repository. Ea
 By default, all steps in a single job execute sequentially. If you’re trying to
 limit the number of parallel ‘jobs’ then you you can set a limit of 1 for the
 workflow by setting <code>max-parallel: 1</code> within the <a target="_blank"
-href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel"><code><u>jobs.strategy</u></code></a>
+href="https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategymax-parallel"><code>jobs.strategy</code></a>
 element of the workflow YAML. However, the issue with multiple jobs in a single
 workflow is that if one job fails out of 10 jobs in your workflow, then
 you’ll have to re-run all 10 jobs for the workflow status to be a success. For
@@ -178,8 +178,8 @@ run, even if some fail, then just change the <code>if:</code> statement mentione
 to <code>if: always()</code>. The only reason I did not do this is that even if the following
 workflow is successful, it will get triggered again when we re-run the failed workflow,
 which I didn’t want. In order to achieve that you may need to use some more
-advanced tricks/hacks to only execute if the next workflow has the same <code>ref</code>
-and <code>sha</code> <b><u>and</u></b> the latest run does not have a ‘completed’ status.</p>
+advanced tricks/hacks to only execute if the next workflow has the same <code>sha</code>
+<b><u>and</u></b> the latest run does not have a ‘completed’ status.</p>
 <p>Another consideration is the cost to execute GitHub actions in private repositories.
 It’s true that many projects will not likely need to enforce sequential workflows
 because the tests, examples, checks or dependencies do not affect other
