@@ -11,24 +11,26 @@ tags:
   - tools
   - enterprise-r
 description: "Get started automating routine R scripts today. This article explains how to enable logging and receive error emails using the cron scheduler."
-image: "blog/automating-r-scripts-with-cron/chalkboard-timer.jpg"
+image: "blog/automating-r-scripts-with-cron/cronjob.png"
 output:
-  blogdown::html_page:
-    toc: true
+  blogdown::html_page
 ---
 
-### Simple Automation
-If you would like to automate R scripts, one method is to use the cron daemon already packaged on Unix-like servers. Let's say you have script in your home directory called `random.R` 
-and you would like to schedule it to run at 5:30pm every day. On the server you will 
-need to edit the crontab and add the following line: 
+<img src="/blog/automating-r-scripts-with-cron/cronjob.png" style="display:block;margin:auto;max-height:125px;" />
 
-```
+## Scheduling a Script to Execute
+
+If you would like to automate R scripts, one method is to use the cron daemon
+already packaged on Linux servers. Let's say you have script in your home
+directory called `random.R` and you would like to schedule it to run at 5:30pm
+every day. On the server you will need to edit the crontab and add the following
+line:
+
+```shell
 30 17 * * * Rscript /home/my-user/random.R
 ```
 
-<img style="width:400px;" src="/blog/automating-r-scripts-with-cron/crontab.png" />
-
-Note: You can edit the of the crontab by typing 
+Note: You can add this line to the the crontab by typing 
 
 1. `crontab -e`
 2. Press `i` to enter insert mode
@@ -36,63 +38,96 @@ Note: You can edit the of the crontab by typing
 4. Press CTRL+C to exit insert mode
 5. Save and quit by typing `:wq`
 
-### Adding Error Emailing
+For reference, it should look like this while adding:
+
+<img src="/blog/automating-r-scripts-with-cron/crontab.png" style="display:block;margin:auto;max-height:100px;" />
+
+## Sending Cron Results to your Email Inbox
+
 It is exciting to have a routine part of your work automated, but you probably 
 want to monitor your script and the results its creating. Cron has a built-in 
 feature that can send an email whenever an scheduled script errors out. Just add 
 your email address to the `MAILTO` option. If you want to include multiple emails, 
-then separate them with a semicolon.
+then separate them with a semicolon, like so:
 
-<img style="width:400px;" src="/blog/automating-r-scripts-with-cron/crontab-w-email.png" />
+<img src="/blog/automating-r-scripts-with-cron/crontab-w-email.png" style="display:block;margin:auto;max-height:100px;" />
 
-Now you may be tempted to simply add your email address and call it a day, but you might notice 
-that R starts flooding your inbox with cron emails even for successful runs of your 
-script. If you prefer to only receive emails when your script errors out, then you 
-have to short circuit how cron identifies R script errors. Below I’ll outline how 
-to setup cron to only email on real R script errors.
+**NOTE**: New servers may not be setup as an email server. You will not receive
+any emails or even errors that it didn't work if you set the `MAILTO` parameter
+but haven't configured the server to send email. I recommend using Postfix, a
+free and open-source mail transfer agent, which is fairly easy to setup. Below
+are abbreviated instructions for an Ubuntu server. See the additional resources
+or run a Google search if you need more detail on setting up a custom hostname,
+domain, SASL authentication, etc.
+
+**From the command prompt of the server use the following steps**:    
+
+  * Step 1 - Update package information: `sudo apt-get update`
+  * Step 2 - Insall Postfix: `sudo apt-get install postfix`
+  * Step 3 - Complete two prompts to install Postfix: 
+    * Step 3a - Select `Internet Site`
+    * Step 3b - Click `OK` to approve the "System mail name" (usually the server's assigned hostname, like `ip-172-88-99-0.ec2.internal` for an AWS EC2 instance)
+
+Additional resources:  
+
+  * <a target="_blank" href="https://tecadmin.net/install-postfix-on-ubuntu/">https://tecadmin.net/install-postfix-on-ubuntu/</a>
+  * <a target="_blank" href="http://www.postfix.org/documentation.html">http://www.postfix.org/documentation.html</a>  
+  * <a target="_blank" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-on-ubuntu-16-04">https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-on-ubuntu-16-04</a>
+
+## Setting Things Up to Only Email on Error
+
+Now you may be tempted to simply add your email address and call it a day, but
+you might notice that R starts flooding your inbox with cron emails even for
+successful runs of your script. If you prefer to only receive emails when your
+script errors out, then you have to short circuit how cron identifies R script
+errors. Below I’ll outline how to setup cron to only email on actual R script
+errors.
 
 Cron determines whether to send an email based on the “exit code” of the script 
 that runs. An exit code is a number emitted at the end of the script indicating 
 a status of whether not an error occurred during the execution of the script. 
 However, R emits exit codes a little differently than most scripting languages. 
-In R any messages are converted to an exit code 1 (signaling an error), so it is 
+In R, any messages are converted to `STDERR` (signaling an error), so it is 
 possible to have a script that ran successfully, but signals an error occurred 
-in running the script. There’s not a great reason for this behavior (see link). 
-Upon realizing that messages are errors in disguise, it makes more sense to me 
-why they’re displayed in red in the R console. [add picture]. Fortunately, a 
-clever use of I/O redirection (similar to dplyr piping), can roll message-induced 
-error codes into less benign forms so that an email is not triggered when messages 
-were printed, but your script really didn’t error out. The way to do this is modify 
-the command listed in your crontab file. Instead of just including `Rscript /home/my-user/random.R`, 
-you should include:
+in running the script. Upon realizing that R treats messages as errors in 
+disguise, it makes more sense to me why they are displayed in red in the R console: 
 
-```
+<img src="/blog/automating-r-scripts-with-cron/message-example.png" style="display:block;margin:auto;max-height:100px;" />
+
+Fortunately, a clever use of I/O redirection (similar to dplyr piping), can roll
+message-induced error codes into less benign forms (`STDOUT`) so that an email is
+not triggered when messages were printed and your script really didn't error
+out. The way to do this is modify the command listed in your crontab file.
+Instead of just including `Rscript /home/my-user/random.R`, you should include:
+
+```shell
 Rscript /home/my-user/random.R > temp.log 2>&1 || cat temp.log
 ```
 
-The `>` command will redirect the error feed (captured by “2”) and roll it into 
-the standard output (stdout) feed (captured by “1”) and push them into temp.log. 
-The `||` command checks whether the script had a non-zero exit status. If so, 
-then it will run the `cat` command and print everything to the console and trigger 
-an error email from cron.
+The `>` symbol will redirect the error feed(`STDERR` - captured by "2") and roll
+it into the standard output feed (`STDOUT` - captured by "1") and push them into
+temp.log. The `||` symbol checks whether the script had a non-zero exit status.
+If so, then it will run the `cat` command and print everything to the console
+and trigger an error email from cron.
 
-### Adding Script Logging
-Also, you might want to log the script execution, so how do you do that as well? 
-You just need to continue redirecting output as you desire. One way is having a 
-crontab entry like this:
+## Emailing Errors, but Logging All Runs
 
-```
+Finally, you might want to log the script output regardless of whether the 
+script errored out. To do tha you just need to continue redirecting the output that 
+you want to appear in the log file. The command below method will still roll
+error messages into the standard feed and only trigger the email if the script
+didn’t finish, but it will also push everything into a persistent log that will
+keep a record of every run that you scripts do. This way you can get the error
+emails, but still keep a complete log of everything your script did if you want
+to have a complete log of all runs (successful or not).
+
+```shell
 Rscript /home/my-user/random.R > temp.log 2>&1 || cat temp.log && cat temp.log >> persistent.log && rm temp.log
 ```
 
-This method will still roll error messages into the standard feed and only trigger 
-the email if the script didn’t finish, but then it will push everything into a 
-persistent log that will keep a record of every run that you scripts do. This way 
-you can get the error emails and keep a complete log of everything you script did 
-if you’re looking to do a more complete review or post-mortem. 
-
-That's it. Now that you're aware of the format, then you can copy/paste it for 
-every other script that you schedule. You really don't need to understand all of the details, 
-just the last snippet of code in this post, but I'd recommend browsing online to understand 
-more about cron and I/O redirection. Also, I’ve outlined this logic in a Stack Overflow 
+That's it. Now that you're aware of this command you can swap out the R script
+name and log names for every other script that you want to schedule. You really
+don't need to understand all of the details, just the last snippet of code in
+this post, but I would recommend browsing online to understand more about cron
+and I/O redirection. **Note**: I’ve outlined this logic in a Stack Overflow
 response at https://stackoverflow.com/a/34442846/5258043.

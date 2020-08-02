@@ -1,0 +1,223 @@
+---
+title: salesforcer 0.2.1 - Relationship Queries and the Reports API
+author: Steven M. Mortimer
+date: '2020-08-28T12:15:21Z'
+slug: salesforcer-0.2.1---relationship-queries-and-the-reports-api
+categories:
+  - R
+tags:
+  - r-code
+  - salesforce
+  - CRAN
+  - CRM
+description: "The latest CRAN release of the salesforcer package (0.2.1) has enhanced support for complex relationship queries and functions to execute and manage reports in your Salesforce Org."
+image: "blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/salesforcer-logo.png"
+output:
+  blogdown::html_page
+draft: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><img src="/blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/salesforcer-logo.png" style="display:block;margin:auto;max-height:300px;" /></p>
+<p>The latest version of the {salesforcer} package (v0.2.1) is now available on CRAN
+and ready to help you have better access to data in your Salesforce Org. Along
+with a host of bug fixes this release has three big features:</p>
+<ol style="list-style-type: decimal">
+<li><p><u><strong>Experimental Functions for the Reports and Dashboards REST API</strong></u> (jump
+to <a href="#experimental-functions-for-reports-and-dashboards-rest-api">section</a>) - Now
+you have programmatic access to executing and managing reports, dashboards, and
+analytics notifications in your Org. You can familiarize yourself with the
+Salesforce documentation <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.api_analytics.meta/api_analytics/sforce_analytics_rest_api_intro.htm">HERE</a>. Not all functions have been implemented yet, but your questions, comments,
+and feedback are welcome!</p></li>
+<li><p><u><strong>Support for Bulk 2.0 API Queries</strong></u> (jump to
+<a href="#support-for-bulk-2.0-api-queries">section</a>) - In Salesforce version 47.0
+(Winter ’20) query jobs in the Bulk API 2.0 were added. Now you can leverage
+this resource from the {salesforcer} package in addition to the queries via
+the REST, SOAP, and Bulk 1.0 APIs.</p></li>
+<li><p><u><strong>Support for Relationship Queries</strong></u> (jump to
+<a href="#support-for-relationship-queries">section</a>) - In previous versions of the package the
+child-to-parent and nested parent-to-child queries did not work or returned a
+jumbled mess of results that were not parsed correctly. This version fixes those
+issues in both the REST and SOAP APIs with better test coverage on a variety of
+query types.</p></li>
+</ol>
+<p>For a complete list of updates, please review the release notes on the documentation
+site for {salesforcer} here: <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-1-release">https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-1-release</a>.</p>
+<div id="experimental-functions-for-reports-and-dashboards-rest-api" class="section level2">
+<h2>Experimental Functions for Reports and Dashboards REST API</h2>
+<p>Salesforce has rich support for Reports in your Salesforce Org. Sometimes
+reports are a better way to collaborate with other users because they can create
+reports in the GUI or you can create one for them so they always have access to
+the most current recordset meeting your report criteria. The challenge comes
+when trying to access this data programmatically. Fortunately, Salesforce
+provides the <a target="_blank"
+href="https://developer.salesforce.com/docs/atlas.en-us.api_analytics.meta/api_analytics/sforce_analytics_rest_api_intro.htm">Reports
+and Dashboards REST API</a> as a means to not only execute Reports, but to also
+manage them in your Org.</p>
+<p>In Salesforce there is a dedicated page to displaying the list of reports in your
+Org. It typically follows the pattern: <code>https://na1.salesforce.com/00O/o</code>
+(replace <code>na1</code> with your server instance). When you click on a report in the GUI
+you should see the report’s results. Below is a screenshot of how a report may
+look in your Org (note the report Id in the URL bar):</p>
+<p><img src="/blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/report-screenshot.png" style="display:block;margin:auto;max-height:500px;" /></p>
+<p>The report Id above (<code>"00O3s000006tE7zEAE"</code>) is the only information needed to pull
+those same results from an R session, like so:</p>
+<pre class="r"><code>my_report_id &lt;- &quot;00O3s000006tE7zEAE&quot;
+results &lt;- sf_run_report(my_report_id)
+results
+#&gt; # A tibble: 14 x 8
+#&gt;   `Contact ID` `First Name` `test number` `Contact Owner` `Account ID`
+#&gt;   &lt;chr&gt;        &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
+#&gt; 1 0036A000002… Rose                    NA Steven Mortimer 0016A000003…
+#&gt; 2 0036A000002… Sean                    NA Steven Mortimer 0016A000003…
+#&gt; 3 0036A000002… Jack                    99 Steven Mortimer 0016A000003…
+#&gt; 4 0036A000002… Tim                     NA Steven Mortimer 0016A000003…
+#&gt; 5 0036A000002… John                    23 Steven Mortimer 0016A000003…
+#&gt; # … with 9 more rows, and 3 more variables: `Account Name` &lt;chr&gt;, `Billing
+#&gt; #   City` &lt;chr&gt;, `Account Owner` &lt;chr&gt;</code></pre>
+<p>Currently, all of the report related functionality in the Reports and Dashboards
+REST API has been ported into the {salesforcer} package and you can do some pretty
+neat stuff like on-the-fly filtering and sorting:</p>
+<pre class="r"><code># filter records that was created before this month
+filter1 &lt;- list(column = &quot;CREATED_DATE&quot;,
+                        operator = &quot;lessThan&quot;, 
+                        value = &quot;THIS_MONTH&quot;)
+
+# filter records where the account billing address city is not empty
+filter2 &lt;-  list(column = &quot;ACCOUNT.ADDRESS1_CITY&quot;,
+                        operator = &quot;notEqual&quot;, 
+                        value = &quot;&quot;)
+
+# combine filter1 and filter2 using &#39;AND&#39; which means that records must meet both filters
+results_using_AND &lt;- sf_run_report(my_report_id, 
+                                   report_boolean_logic = &quot;1 AND 2&quot;,
+                                   report_filters = list(filter1, filter2))
+results_using_AND
+#&gt; # A tibble: 14 x 8
+#&gt;   `Contact ID` `First Name` `test number` `Contact Owner` `Account ID`
+#&gt;   &lt;chr&gt;        &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
+#&gt; 1 0036A000002… Rose                    NA Steven Mortimer 0016A000003…
+#&gt; 2 0036A000002… Sean                    NA Steven Mortimer 0016A000003…
+#&gt; 3 0036A000002… Jack                    99 Steven Mortimer 0016A000003…
+#&gt; 4 0036A000002… Tim                     NA Steven Mortimer 0016A000003…
+#&gt; 5 0036A000002… John                    23 Steven Mortimer 0016A000003…
+#&gt; # … with 9 more rows, and 3 more variables: `Account Name` &lt;chr&gt;, `Billing
+#&gt; #   City` &lt;chr&gt;, `Account Owner` &lt;chr&gt;
+
+# combine filter1 and filter2 using &#39;OR&#39; which means that records must meet one 
+# of the filters but also throw in a row limit based on a specific sort order
+results_using_OR &lt;- sf_run_report(my_report_id, 
+                                  report_boolean_logic = &quot;1 OR 2&quot;,
+                                  report_filters = list(filter1, filter2), 
+                                  sort_by = &quot;Contact.test_number__c&quot;, 
+                                  decreasing = TRUE, 
+                                  top_n = 3)
+results_using_OR
+#&gt; # A tibble: 3 x 8
+#&gt;   `Contact ID` `First Name` `test number` `Contact Owner` `Account ID`
+#&gt;   &lt;chr&gt;        &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
+#&gt; 1 0033s000012… KEEP                  1000 Steven Mortimer 0013s00000z…
+#&gt; 2 0033s000012… KEEP                  1000 Steven Mortimer 0013s00000z…
+#&gt; 3 0033s000012… KEEP                  1000 Steven Mortimer 0013s00000z…
+#&gt; # … with 3 more variables: `Account Name` &lt;chr&gt;, `Billing City` &lt;chr&gt;, `Account
+#&gt; #   Owner` &lt;chr&gt;</code></pre>
+<p>For more detail on how to take advantage of this new functionality please see
+the pkgdown website <a target="_blank"
+href="https://stevenmmortimer.github.io/salesforcer">https://stevenmmortimer.github.io/salesforcer</a>
+and, more specifically, the <a target="_blank"
+href="https://stevenmmortimer.github.io/salesforcer/articles/working-with-reports.html">Working
+with Reports vignette</a> which provides a soft introduction to these concepts.
+Finally, keep an eye out as more dashboard and analytics notifications
+functionality is also added.</p>
+</div>
+<div id="support-for-bulk-2.0-api-queries" class="section level2">
+<h2>Support for Bulk 2.0 API Queries</h2>
+<p>In Salesforce version 47.0 (Winter ’20) query functionality added to
+the Bulk 2.0 API. In the overview of this feature Salesforce emphasizes the
+consistency with the REST APIs and the ease of use (e.g. “Automatic File
+Batching”), but does not mention any claims in terms of speed compared to the
+Bulk 1.0 query functionality. In {salesforcer} 0.2.1 the default API when using
+<code>sf_run_bulk_query()</code> or <code>sf_query_bulk()</code> is now the Bulk 2.0 API, assuming it
+is better than the Bulk 1.0 API. However, You can easily switch between the APIs
+just as you did before in previous {salesforcer} releases by specifying it in the
+<code>api_type</code> argument. Please note that, because of additional standardization on
+the column ordering and arguments to guess types, the queries below will all
+return the same exact format of results. For example we prioritize the following
+fields in queries alphabetically within this prioritization waterfall:</p>
+<ol style="list-style-type: decimal">
+<li>First, the <code>sObject</code> field (indicates the record’s object if multiple objects returned in the results)</li>
+<li>Second, the Id field (<code>Id</code>, <code>id</code>, <code>sf__Id</code>)</li>
+<li>Third, record success status (<code>Success</code>, <code>success</code>, <code>sf_Success</code>)</li>
+<li>Fourth, record created status (<code>Created</code>, <code>created</code>, <code>sf__Created</code>)</li>
+<li>Fifth, record error(s) status (<code>Error</code>, <code>error</code>, <code>errors</code>,
+<code>errors.statusCode</code>, <code>errors.fields</code>, <code>errors.message</code>, <code>sf__Error</code>)</li>
+<li>Sixth, all other fields from the target object (e.g. <code>Name</code>, <code>Phone</code>, etc.)</li>
+<li>Seventh, relationship fields (fields from a parent or child of the target). For example,
+anything typically containing a dot like <code>Account.Id</code>, <code>Owner.Name</code>, etc.</li>
+</ol>
+<p>In short, Bulk 2.0 now has query functionality and it is consistent with the
+other API’s query functionality. I recommend checking to see for yourself which
+API works well. Below is a simple example comparing a single run of the REST,
+Bulk 1.0, and Bulk 2.0 APIs. Consider using the {microbenchmark} package to run
+more precise performance tests.</p>
+<pre class="r"><code>soql &lt;- &quot;SELECT Id, LastName, Account.Id, Account.Name, Owner.Id
+         FROM Contact
+         LIMIT 1000&quot;
+system.time(sf_query(soql, api_type = &quot;REST&quot;))
+#&gt;    user  system elapsed 
+#&gt;   6.157   0.099   7.263
+system.time(sf_query(soql, object_name = &quot;Contact&quot;, api_type = &quot;Bulk 1.0&quot;))
+#&gt;    user  system elapsed 
+#&gt;   0.196   0.016   9.116
+system.time(sf_query(soql, api_type = &quot;Bulk 2.0&quot;))
+#&gt;    user  system elapsed 
+#&gt;   0.043   0.008   7.264</code></pre>
+</div>
+<div id="support-for-relationship-queries" class="section level2">
+<h2>Support for Relationship Queries</h2>
+<p>One upgrade for {salesforcer} v0.2.1 is better support for relationship queries,
+both child-to-parent lookups using the dot notation and parent-to-child nested
+queries. In prior releases the results were not parsed consistently and presented
+themselves in a variety of hard to debug issues on GitHub that were brought up in <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/19">#19</a>, <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/35">#35</a>, <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/38">#38</a>, and <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/54">#54</a>. This
+release finally aims to address some of those bugs through more consistent parsing methods
+for both the XML returned by the SOAP API and the JSON returned by the REST API. However,
+I would strongly recommend testing in your Org with your own queries to see the
+impact before deploying to a production environment. If any unexpected behavior
+crops up, then please file an issue on GitHub using the <a href="https://github.com/StevenMMortimer/salesforcer/issues/new?assignees=StevenMMortimer&amp;labels=&amp;template=query-issue-template.md&amp;title=">query issue template</a> so we can get it resolved.</p>
+<p><strong>Old Nested Query Behavior (v0.1.4 or earlier)</strong></p>
+<pre class="r"><code>sf_query(&quot;SELECT Name, (SELECT LastName FROM Contacts) FROM Account&quot;, api_type=&quot;SOAP&quot;)
+#&gt; # A tibble: 24 x 4
+#&gt;    Id    Name                        Contacts         LastName
+#&gt;    &lt;lgl&gt; &lt;chr&gt;                       &lt;list&gt;           &lt;chr&gt;   
+#&gt;  1 NA    GenePoint                   &lt;named list [4]&gt; &lt;NA&gt;    
+#&gt;  2 NA    &lt;NA&gt;                        &lt;NULL&gt;           Frank   
+#&gt;  3 NA    United Oil &amp; Gas, UK        &lt;named list [4]&gt; &lt;NA&gt;    
+#&gt;  4 NA    &lt;NA&gt;                        &lt;NULL&gt;           James   
+#&gt;  5 NA    United Oil &amp; Gas, Singapore &lt;named list [5]&gt; &lt;NA&gt; 
+#&gt; # … with 19 more rows</code></pre>
+<p><strong>New Query Behavior (v0.2.1)</strong></p>
+<pre class="r"><code>sf_query(&quot;SELECT Name, (SELECT LastName FROM Contacts) FROM Account&quot;, api_type=&quot;SOAP&quot;)
+#&gt; # A tibble: 16 x 4
+#&gt;    Name                        Contact.LastName
+#&gt;    &lt;chr&gt;                       &lt;chr&gt;
+#&gt;  1 GenePoint                   Frank
+#&gt;  2 United Oil &amp; Gas, UK        James
+#&gt;  3 United Oil &amp; Gas, Singapore D&#39;Cruz
+#&gt;  4 United Oil &amp; Gas, Singapore Ripley
+#&gt;  5 Edge Communications         Forbes
+#&gt; # … with 11 more rows</code></pre>
+<p>A new vignette has been included with this release that covers the types of
+queries currently supported by the package and is available here: <a
+target="_blank"
+href="https://stevenmmortimer.github.io/salesforcer/articles/supported-queries.html">Supported
+Queries</a>. I highly recommend reviewing for guidance and inspiration on how to
+what types of queries are possible running against your Org.</p>
+</div>
+<div id="additional-information" class="section level2">
+<h2>Additional Information</h2>
+<p>For a complete listing of all changes made in the 0.2.1 release of {salesforcer} please
+view the <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-0-release">Changelog (aka NEWS.md)</a> file. Bug reports and feature requests are welcome on GitHub in the repository <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a> section.</p>
+<p>Thank you for your continued support!</p>
+</div>
