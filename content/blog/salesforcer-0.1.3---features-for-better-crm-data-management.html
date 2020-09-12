@@ -6,15 +6,19 @@ slug: salesforcer-0.1.3---features-for-better-crm-data-management
 categories:
   - R
 tags:
+  - salesforcer
+  - release 
   - CRAN
   - r-code
   - salesforce
+  - CRM
 description: "The latest CRAN release of the salesforcer package (0.1.3) has many more tools for managing data, such as deleting, undeleting, finding duplicates, merging, and controlling downstream processes on record change like assignment and owner changes."
 image: "blog/salesforcer-0.1.3---features-for-better-crm-data-management/salesforcer-logo.png"
 output:
   blogdown::html_page
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p><img src="/blog/salesforcer-0.1.3---features-for-better-crm-data-management/salesforcer-logo.png" /></p>
@@ -46,15 +50,15 @@ deleted_recs &lt;- sf_get_deleted(&quot;Contact&quot;,
                                start = ymd(Sys.Date()-1, tz=&quot;America/New_York&quot;), 
                                end = ymd(Sys.Date(), tz=&quot;America/New_York&quot;))
 deleted_recs
-#&gt; # A tibble: 441 x 2
+#&gt; # A tibble: 125 x 2
 #&gt;   deletedDate         id                
 #&gt;   &lt;dttm&gt;              &lt;chr&gt;             
-#&gt; 1 2020-07-18 20:40:14 0033s000012NyCnAAK
-#&gt; 2 2020-07-18 20:40:14 0033s000012NyCoAAK
-#&gt; 3 2020-07-18 20:40:14 0033s000012NyXRAA0
-#&gt; 4 2020-07-18 20:40:14 0033s000012Nww0AAC
-#&gt; 5 2020-07-18 20:40:14 0033s000012NwMRAA0
-#&gt; # … with 436 more rows</code></pre>
+#&gt; 1 2020-09-11 19:08:40 0033s000014AyIXAA0
+#&gt; 2 2020-09-11 19:08:40 0033s000014AyIbAAK
+#&gt; 3 2020-09-11 19:08:46 0033s000014AyIgAAK
+#&gt; 4 2020-09-11 19:11:08 0033s000014AyLFAA0
+#&gt; 5 2020-09-11 19:11:08 0033s000014AyLGAA0
+#&gt; # … with 120 more rows</code></pre>
 <p>Now if you see records in there that you may want back, now it’s as simple as calling
 the <code>sf_undelete()</code> function with the ids of the records you want.</p>
 <pre class="r"><code># undelete the first three records from the list of records deleted yesterday 
@@ -63,9 +67,9 @@ undeleted
 #&gt; # A tibble: 3 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000012NyCnAAK TRUE   
-#&gt; 2 0033s000012NyCoAAK TRUE   
-#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
+#&gt; 1 0033s000014AyIXAA0 TRUE   
+#&gt; 2 0033s000014AyIbAAK TRUE   
+#&gt; 3 0033s000014AyIgAAK TRUE</code></pre>
 <p>You can double check that the records are actually no longer deleted by running a
 query for them and checking the <code>IsDeleted</code> field like this:</p>
 <pre class="r"><code># check that the first three records are no longer deleted 
@@ -77,9 +81,9 @@ is_not_deleted
 #&gt; # A tibble: 3 x 2
 #&gt;   Id                 IsDeleted
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;    
-#&gt; 1 0033s000012NyCnAAK FALSE    
-#&gt; 2 0033s000012NyCoAAK FALSE    
-#&gt; 3 0033s000012NyXRAA0 FALSE</code></pre>
+#&gt; 1 0033s000014AyIXAA0 FALSE    
+#&gt; 2 0033s000014AyIbAAK FALSE    
+#&gt; 3 0033s000014AyIgAAK FALSE</code></pre>
 <p>Now let’s say you really do want them deleted and by that, I mean permanently
 from your org so they do not count against your space quota. Now you can empty
 items in your Recycle Bin. Here is an example where we delete the records we just
@@ -91,9 +95,9 @@ really_deleted
 #&gt; # A tibble: 3 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000012NyCnAAK TRUE   
-#&gt; 2 0033s000012NyCoAAK TRUE   
-#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
+#&gt; 1 0033s000014AyIXAA0 TRUE   
+#&gt; 2 0033s000014AyIbAAK TRUE   
+#&gt; 3 0033s000014AyIgAAK TRUE</code></pre>
 <p>If you want to double-check the field values of a deleted record, just make sure to
 set <code>queryall = TRUE</code> in your query so that it returns deleted or archived records in the
 resultset. Note that after records are deleted from the Recycle Bin using this call,
@@ -117,9 +121,9 @@ still_visible
 #&gt; # A tibble: 3 x 2
 #&gt;   Id                 IsDeleted
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;    
-#&gt; 1 0033s000012NyCnAAK TRUE     
-#&gt; 2 0033s000012NyCoAAK TRUE     
-#&gt; 3 0033s000012NyXRAA0 TRUE</code></pre>
+#&gt; 1 0033s000014AyIXAA0 TRUE     
+#&gt; 2 0033s000014AyIbAAK TRUE     
+#&gt; 3 0033s000014AyIgAAK TRUE</code></pre>
 </div>
 <div id="searching-for-duplicates-and-merging-them" class="section level2">
 <h2>Searching for Duplicates and Merging Them</h2>
@@ -152,9 +156,9 @@ new_recs
 #&gt; # A tibble: 3 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013Xu2HAAS TRUE   
-#&gt; 2 0033s000013Xu2IAAS TRUE   
-#&gt; 3 0033s000013Xu2JAAS TRUE</code></pre>
+#&gt; 1 0033s000014B3IZAA0 TRUE   
+#&gt; 2 0033s000014B3IaAAK TRUE   
+#&gt; 3 0033s000014B3IbAAK TRUE</code></pre>
 <pre class="r"><code># find them as dupes
 dupes_found &lt;- sf_find_duplicates(search_criteria = list(Email = &quot;rick.james@gmail.com&quot;),
                                   object_name = &quot;Contact&quot;)
@@ -162,13 +166,15 @@ dupes_found &lt;- sf_find_duplicates(search_criteria = list(Email = &quot;rick.j
 #&gt;   - Standard_Rule_for_Contacts_with_Duplicate_Leads
 #&gt;   - Contact_Dupe_Email
 dupes_found
-#&gt; # A tibble: 4 x 2
+#&gt; # A tibble: 6 x 2
 #&gt;   sObject Id                
 #&gt;   &lt;chr&gt;   &lt;chr&gt;             
 #&gt; 1 Contact 0033s000013Xt92AAC
-#&gt; 2 Contact 0033s000013Xu2HAAS
-#&gt; 3 Contact 0033s000013Xu2IAAS
-#&gt; 4 Contact 0033s000013Xu2JAAS</code></pre>
+#&gt; 2 Contact 0033s000014B35QAAS
+#&gt; 3 Contact 0033s000014B35RAAS
+#&gt; 4 Contact 0033s000014B3IZAA0
+#&gt; 5 Contact 0033s000014B3IaAAK
+#&gt; # … with 1 more row</code></pre>
 <p>The recordset from <code>sf_find_duplicates()</code> shows the object that the records were found in
 and their Ids. You will notice that those are the same Ids as what we received back when
 creating the records to verify that we found those same three records based on the duplicated
@@ -204,13 +210,15 @@ of the master record they were merged into.</p>
                                   paste0(dupes_found$Id, collapse=&quot;&#39;,&#39;&quot;)), 
                           queryall = TRUE)
 merge_confirm
-#&gt; # A tibble: 4 x 3
+#&gt; # A tibble: 6 x 3
 #&gt;   Id                 IsDeleted MasterRecordId    
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;     &lt;chr&gt;             
 #&gt; 1 0033s000013Xt92AAC FALSE     &lt;NA&gt;              
-#&gt; 2 0033s000013Xu2HAAS TRUE      0033s000013Xt92AAC
-#&gt; 3 0033s000013Xu2IAAS TRUE      0033s000013Xt92AAC
-#&gt; 4 0033s000013Xu2JAAS FALSE     &lt;NA&gt;</code></pre>
+#&gt; 2 0033s000014B35QAAS TRUE      0033s000013Xt92AAC
+#&gt; 3 0033s000014B35RAAS TRUE      0033s000013Xt92AAC
+#&gt; 4 0033s000014B3IZAA0 FALSE     &lt;NA&gt;              
+#&gt; 5 0033s000014B3IaAAK FALSE     &lt;NA&gt;              
+#&gt; # … with 1 more row</code></pre>
 </div>
 <div id="controlling-api-call-behavior" class="section level2">
 <h2>Controlling API Call Behavior</h2>
@@ -236,8 +244,8 @@ new_recs
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013Xu2MAAS TRUE   
-#&gt; 2 0033s000013Xu2NAAS TRUE</code></pre>
+#&gt; 1 0033s000014B3IjAAK TRUE   
+#&gt; 2 0033s000014B3IkAAK TRUE</code></pre>
 <p>In the documentation you may notice that the control argument in the <code>sf_create()</code> function definition
 looks like this <code>control = list(...)</code>. This allows you to include the control headers
 as an argument right in the function or put them inside the <code>sf_control</code> function.
@@ -250,8 +258,8 @@ new_recs
 #&gt; # A tibble: 2 x 2
 #&gt;   id                 success
 #&gt;   &lt;chr&gt;              &lt;lgl&gt;  
-#&gt; 1 0033s000013Xu2RAAS TRUE   
-#&gt; 2 0033s000013Xu2SAAS TRUE</code></pre>
+#&gt; 1 0033s000014B3HhAAK TRUE   
+#&gt; 2 0033s000014B3HiAAK TRUE</code></pre>
 <p>The <code>sf_control()</code> function works exactly like <code>glm.control()</code> when using the <code>glm()</code>
 function in the <strong>stats</strong> package. It will accept any of the extra arguments in the
 function call and validate them to see if they are accepted by the API type and operation

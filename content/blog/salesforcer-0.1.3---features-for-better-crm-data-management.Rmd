@@ -6,9 +6,12 @@ slug: salesforcer-0.1.3---features-for-better-crm-data-management
 categories:
   - R
 tags:
+  - salesforcer
+  - release 
   - CRAN
   - r-code
   - salesforce
+  - CRM
 description: "The latest CRAN release of the salesforcer package (0.1.3) has many more tools for managing data, such as deleting, undeleting, finding duplicates, merging, and controlling downstream processes on record change like assignment and owner changes."
 image: "blog/salesforcer-0.1.3---features-for-better-crm-data-management/salesforcer-logo.png"
 output:

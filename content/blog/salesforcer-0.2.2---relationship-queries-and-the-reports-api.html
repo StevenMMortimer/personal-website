@@ -1,35 +1,36 @@
 ---
-title: salesforcer 0.2.1 - Relationship Queries and the Reports API
+title: salesforcer 0.2.2 - Relationship Queries and the Reports API
 author: Steven M. Mortimer
-date: '2020-08-28T12:15:21Z'
-slug: salesforcer-0.2.1---relationship-queries-and-the-reports-api
+date: '2020-09-12T15:35:33Z'
+slug: salesforcer-0.2.2---relationship-queries-and-the-reports-api
 categories:
   - R
 tags:
+  - salesforcer
+  - release 
+  - CRAN
   - r-code
   - salesforce
-  - CRAN
   - CRM
-description: "The latest CRAN release of the salesforcer package (0.2.1) has enhanced support for complex relationship queries and functions to execute and manage reports in your Salesforce Org."
-image: "blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/salesforcer-logo.png"
+description: "The latest CRAN release of the salesforcer package (0.2.2) has enhanced support for complex relationship queries and functions to execute and manage reports in your Salesforce Org."
+image: "blog/salesforcer-0.2.2---relationship-queries-and-the-reports-api/salesforcer-logo.png"
 output:
   blogdown::html_page
-draft: true
 ---
 
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p><img src="/blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/salesforcer-logo.png" style="display:block;margin:auto;max-height:300px;" /></p>
-<p>The latest version of the {salesforcer} package (v0.2.1) is now available on CRAN
-and ready to help you have better access to data in your Salesforce Org. Along
+<p><img src="/blog/salesforcer-0.2.2---relationship-queries-and-the-reports-api/salesforcer-logo.png" style="display:block;margin:auto;max-height:300px;" /></p>
+<p>The latest version of the {salesforcer} package (v0.2.2) is now available on CRAN
+and is ready to help you have better access to data in your Salesforce Org. Along
 with a host of bug fixes this release has three big features:</p>
 <ol style="list-style-type: decimal">
 <li><p><u><strong>Experimental Functions for the Reports and Dashboards REST API</strong></u> (jump
 to <a href="#experimental-functions-for-reports-and-dashboards-rest-api">section</a>) - Now
 you have programmatic access to executing and managing reports, dashboards, and
 analytics notifications in your Org. You can familiarize yourself with the
-Salesforce documentation <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.api_analytics.meta/api_analytics/sforce_analytics_rest_api_intro.htm">HERE</a>. Not all functions have been implemented yet, but your questions, comments,
+Salesforce documentation <a rel="noopener noreferrer" target="_blank"  href="https://developer.salesforce.com/docs/atlas.en-us.api_analytics.meta/api_analytics/sforce_analytics_rest_api_intro.htm">HERE</a>. Not all functions have been implemented yet, but your questions, comments,
 and feedback are welcome!</p></li>
 <li><p><u><strong>Support for Bulk 2.0 API Queries</strong></u> (jump to
 <a href="#support-for-bulk-2.0-api-queries">section</a>) - In Salesforce version 47.0
@@ -43,8 +44,8 @@ jumbled mess of results that were not parsed correctly. This version fixes those
 issues in both the REST and SOAP APIs with better test coverage on a variety of
 query types.</p></li>
 </ol>
-<p>For a complete list of updates, please review the release notes on the documentation
-site for {salesforcer} here: <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-1-release">https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-1-release</a>.</p>
+<p>For a complete list of updates, please review the release notes from v0.2.0 onwards
+listed on the {salesforcer} pkgdown site here: <a rel="noopener noreferrer" target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html">https://stevenmmortimer.github.io/salesforcer/news/index.html</a>.</p>
 <div id="experimental-functions-for-reports-and-dashboards-rest-api" class="section level2">
 <h2>Experimental Functions for Reports and Dashboards REST API</h2>
 <p>Salesforce has rich support for Reports in your Salesforce Org. Sometimes
@@ -61,7 +62,7 @@ Org. It typically follows the pattern: <code>https://na1.salesforce.com/00O/o</c
 (replace <code>na1</code> with your server instance). When you click on a report in the GUI
 you should see the report’s results. Below is a screenshot of how a report may
 look in your Org (note the report Id in the URL bar):</p>
-<p><img src="/blog/salesforcer-0.2.1---relationship-queries-and-the-reports-api/report-screenshot.png" style="display:block;margin:auto;max-height:500px;" /></p>
+<p><img src="/blog/salesforcer-0.2.2---relationship-queries-and-the-reports-api/report-screenshot.png" style="display:block;margin:auto;max-height:500px;" /></p>
 <p>The report Id above (<code>"00O3s000006tE7zEAE"</code>) is the only information needed to pull
 those same results from an R session, like so:</p>
 <pre class="r"><code>my_report_id &lt;- &quot;00O3s000006tE7zEAE&quot;
@@ -70,11 +71,11 @@ results
 #&gt; # A tibble: 14 x 8
 #&gt;   `Contact ID` `First Name` `test number` `Contact Owner` `Account ID`
 #&gt;   &lt;chr&gt;        &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;           &lt;chr&gt;       
-#&gt; 1 0036A000002… Rose                    NA Steven Mortimer 0016A000003…
-#&gt; 2 0036A000002… Sean                    NA Steven Mortimer 0016A000003…
-#&gt; 3 0036A000002… Jack                    99 Steven Mortimer 0016A000003…
-#&gt; 4 0036A000002… Tim                     NA Steven Mortimer 0016A000003…
-#&gt; 5 0036A000002… John                    23 Steven Mortimer 0016A000003…
+#&gt; 1 0036A000002… Edna                    NA Steven Mortimer 0016A000003…
+#&gt; 2 0036A000002… Liz                     NA Steven Mortimer 0016A000003…
+#&gt; 3 0036A000002… Tom                     NA Steven Mortimer 0016A000003…
+#&gt; 4 0036A000002… Sean                    NA Steven Mortimer 0016A000003…
+#&gt; 5 0036A000002… Rose                    NA Steven Mortimer 0016A000003…
 #&gt; # … with 9 more rows, and 3 more variables: `Account Name` &lt;chr&gt;, `Billing
 #&gt; #   City` &lt;chr&gt;, `Account Owner` &lt;chr&gt;</code></pre>
 <p>Currently, all of the report related functionality in the Reports and Dashboards
@@ -138,7 +139,7 @@ functionality is also added.</p>
 the Bulk 2.0 API. In the overview of this feature Salesforce emphasizes the
 consistency with the REST APIs and the ease of use (e.g. “Automatic File
 Batching”), but does not mention any claims in terms of speed compared to the
-Bulk 1.0 query functionality. In {salesforcer} 0.2.1 the default API when using
+Bulk 1.0 query functionality. In {salesforcer 0.2.2} the default API when using
 <code>sf_run_bulk_query()</code> or <code>sf_query_bulk()</code> is now the Bulk 2.0 API, assuming it
 is better than the Bulk 1.0 API. However, You can easily switch between the APIs
 just as you did before in previous {salesforcer} releases by specifying it in the
@@ -167,20 +168,20 @@ more precise performance tests.</p>
          LIMIT 1000&quot;
 system.time(sf_query(soql, api_type = &quot;REST&quot;))
 #&gt;    user  system elapsed 
-#&gt;   6.157   0.099   7.263
+#&gt;   4.033   0.032   5.065
 system.time(sf_query(soql, object_name = &quot;Contact&quot;, api_type = &quot;Bulk 1.0&quot;))
 #&gt;    user  system elapsed 
-#&gt;   0.196   0.016   9.116
+#&gt;   0.186   0.018   8.345
 system.time(sf_query(soql, api_type = &quot;Bulk 2.0&quot;))
 #&gt;    user  system elapsed 
-#&gt;   0.043   0.008   7.264</code></pre>
+#&gt;   0.046   0.009   7.541</code></pre>
 </div>
 <div id="support-for-relationship-queries" class="section level2">
 <h2>Support for Relationship Queries</h2>
-<p>One upgrade for {salesforcer} v0.2.1 is better support for relationship queries,
+<p>One upgrade for {salesforcer 0.2.2} is better support for relationship queries,
 both child-to-parent lookups using the dot notation and parent-to-child nested
 queries. In prior releases the results were not parsed consistently and presented
-themselves in a variety of hard to debug issues on GitHub that were brought up in <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/19">#19</a>, <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/35">#35</a>, <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/38">#38</a>, and <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/54">#54</a>. This
+themselves in a variety of hard to debug issues on GitHub that were brought up in <a rel="noopener noreferrer" target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/19">#19</a>, <a rel="noopener noreferrer" target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues/35">#35</a>, <a rel="noopener noreferrer" target="_blank"  href="https://github.com/StevenMMortimer/salesforcer/issues/38">#38</a>, and <a rel="noopener noreferrer" target="_blank"  href="https://github.com/StevenMMortimer/salesforcer/issues/54">#54</a>. This
 release finally aims to address some of those bugs through more consistent parsing methods
 for both the XML returned by the SOAP API and the JSON returned by the REST API. However,
 I would strongly recommend testing in your Org with your own queries to see the
@@ -197,7 +198,7 @@ crops up, then please file an issue on GitHub using the <a href="https://github.
 #&gt;  4 NA    &lt;NA&gt;                        &lt;NULL&gt;           James   
 #&gt;  5 NA    United Oil &amp; Gas, Singapore &lt;named list [5]&gt; &lt;NA&gt; 
 #&gt; # … with 19 more rows</code></pre>
-<p><strong>New Query Behavior (v0.2.1)</strong></p>
+<p><strong>New Query Behavior (v0.2.2)</strong></p>
 <pre class="r"><code>sf_query(&quot;SELECT Name, (SELECT LastName FROM Contacts) FROM Account&quot;, api_type=&quot;SOAP&quot;)
 #&gt; # A tibble: 16 x 4
 #&gt;    Name                        Contact.LastName
@@ -209,15 +210,13 @@ crops up, then please file an issue on GitHub using the <a href="https://github.
 #&gt;  5 Edge Communications         Forbes
 #&gt; # … with 11 more rows</code></pre>
 <p>A new vignette has been included with this release that covers the types of
-queries currently supported by the package and is available here: <a
-target="_blank"
-href="https://stevenmmortimer.github.io/salesforcer/articles/supported-queries.html">Supported
+queries currently supported by the package and is available here: <a rel="noopener noreferrer" target="_blank" href="https://stevenmmortimer.github.io/salesforcer/articles/supported-queries.html">Supported
 Queries</a>. I highly recommend reviewing for guidance and inspiration on how to
 what types of queries are possible running against your Org.</p>
 </div>
 <div id="additional-information" class="section level2">
 <h2>Additional Information</h2>
-<p>For a complete listing of all changes made in the 0.2.1 release of {salesforcer} please
-view the <a target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-0-release">Changelog (aka NEWS.md)</a> file. Bug reports and feature requests are welcome on GitHub in the repository <a target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a> section.</p>
+<p>For a complete listing of all changes made in recent releases of {salesforcer} please
+view the <a rel="noopener noreferrer" target="_blank" href="https://stevenmmortimer.github.io/salesforcer/news/index.html#salesforcer-0-2-2-release">Changelog (aka NEWS.md)</a> file. Bug reports and feature requests are welcome on GitHub in the repository <a rel="noopener noreferrer" target="_blank" href="https://github.com/StevenMMortimer/salesforcer/issues">issues</a> section.</p>
 <p>Thank you for your continued support!</p>
 </div>
